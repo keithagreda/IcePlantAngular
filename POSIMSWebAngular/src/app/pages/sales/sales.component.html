@@ -1,0 +1,156 @@
+<mat-card
+  class="cardWithShadow"
+  *ngIf="authService.hasRole('Cashier') || authService.hasRole('Admin')"
+>
+  <mat-card-content>
+    <div class="k-header">
+      <mat-card-title>Sales Table</mat-card-title>
+      <!-- <button
+        (click)="showCreateModal()"
+        mat-flat-button
+        color="primary"
+        class="m-r-8"
+      >
+        Add
+      </button> -->
+    </div>
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" class="w-100">
+        <!-- Transaction Number -->
+        <ng-container matColumnDef="transNum">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14"
+          >
+            Transaction #
+          </th>
+
+          <td mat-cell *matCellDef="let element" class="mat-body-1">
+            <h6 class="mat-body-1 f-s-16 m-b-4">
+              <span class="text-dark f-w-600 text-capitalize"
+                >{{ element.transNum | titlecase }}
+              </span>
+            </h6>
+          </td>
+        </ng-container>
+
+        <!-- Customer Name -->
+        <ng-container matColumnDef="customerName">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14"
+          >
+            Customer Name
+          </th>
+          <td mat-cell *matCellDef="let element" class="mat-body-1">
+            {{ element.customerName }}
+          </td>
+        </ng-container>
+
+        <!-- Total Amount -->
+        <ng-container matColumnDef="totalAmount">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14 text-capitalize"
+          >
+            Total Amount
+          </th>
+          <td mat-cell *matCellDef="let element" class="mat-body-1">
+            ${{ element.totalAmount }}
+          </td>
+        </ng-container>
+
+        <!-- Transaction Date -->
+        <ng-container matColumnDef="transactionDate">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14"
+          >
+            Transaction Date
+          </th>
+          <td mat-cell *matCellDef="let element" class="mat-body-1">
+            {{ element.transactionDate | date : "medium" }}
+          </td>
+        </ng-container>
+
+        <!-- Sold By -->
+        <ng-container matColumnDef="soldBy">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14"
+          >
+            Sold By
+          </th>
+          <td mat-cell *matCellDef="let element" class="mat-body-1">
+            {{ element.soldBy }}
+          </td>
+        </ng-container>
+
+        <!-- Action -->
+        <ng-container matColumnDef="action">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14"
+          >
+            Action
+          </th>
+          <td mat-cell *matCellDef="let element" class="mat-body-1">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              aria-label="Actions"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="showSalesDetails(element.id)">
+                <mat-icon> more_horiz</mat-icon>
+                <span>View More</span>
+              </button>
+              <!-- <button mat-menu-item (click)="editTransaction(element.id)">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </button>
+                <button mat-menu-item (click)="deleteTransaction(element.id)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete</span>
+                </button> -->
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <!-- Table Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
+      </table>
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 20]"
+        [length]="totalRecords"
+        (page)="getSales($event)"
+        showFirstLastButtons
+      ></mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<p-dialog
+  header="View Sales Details"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+  (onHide)="closeForm()"
+>
+  <app-view-sales-details-v1></app-view-sales-details-v1>
+</p-dialog>
+
+<app-sales-summary></app-sales-summary>

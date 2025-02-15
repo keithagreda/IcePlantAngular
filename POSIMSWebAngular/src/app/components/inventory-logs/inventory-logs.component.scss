@@ -1,0 +1,17 @@
+.filter-container {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-input {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .filter-input {
+    flex-direction: column;
+  }
+}

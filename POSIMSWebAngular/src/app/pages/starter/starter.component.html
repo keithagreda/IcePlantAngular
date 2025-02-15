@@ -1,0 +1,44 @@
+<div class="row">
+  <div class="col-lg-8">
+    <app-monthly-sales-chart></app-monthly-sales-chart>
+  </div>
+  <!-- <div class="col-lg-8">
+    <app-revenue-forecast></app-revenue-forecast>
+  </div> -->
+
+  <div class="col-lg-4">
+    <div class="row">
+      <div class="col-12">
+        <app-stocks-generation></app-stocks-generation>
+        <!-- <app-new-customers></app-new-customers> -->
+      </div>
+      <div class="col-12">
+        <app-total-income></app-total-income>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <app-current-stocks></app-current-stocks>
+    <!-- <app-revenue-product></app-revenue-product> -->
+  </div>
+  <div class="col-lg-4">
+    <app-daily-activities></app-daily-activities>
+  </div>
+  <!-- <div class="col-12">
+    <app-blog-card></app-blog-card>
+  </div> -->
+</div>
+
+<!-- <button class="rounded-full" (click)="onShow()">show</button> -->
+
+<p-dialog
+  header="Header"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <p class="text-red-500">Lorem ipsum dolor sit amet...</p>
+</p-dialog>
