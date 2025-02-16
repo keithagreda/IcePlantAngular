@@ -7,6 +7,7 @@ import { SidebarModule } from 'primeng/sidebar';
 import { MaterialModule } from 'src/app/material.module';
 import { CartService } from 'src/app/services/cart.service';
 import {
+  ApiException,
   CreateOrEditSalesV1Dto,
   CreateSalesDetailV1Dto,
   CustomerDropDownDto,
@@ -20,6 +21,7 @@ import Swal from 'sweetalert2';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ViewSalesDetailsComponent } from 'src/app/components/view-sales-details/view-sales-details.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-cashier',
@@ -67,9 +69,18 @@ export class CashierComponent implements OnInit {
   getProducts() {
     this._productService
       .getProductDropDownTableV1(null, null, null)
-      .subscribe((res) => {
-        if (res.isSuccess) {
-          this.items = res.data.items ?? [];
+      .subscribe({
+        next: (res) => {
+          if (res.isSuccess) {
+            this.items = res.data.items ?? [];
+          }
+          if(!res.isSuccess){
+            this._toastr.error(res.message);
+          }
+        },
+        error: (err: ApiException) =>{
+          console.log(err.message);
+          
         }
       });
   }

@@ -56,7 +56,7 @@ export class CreateOrEditProductComponent implements OnInit {
     private _productCategoryService: ProductCategoryService
   ) {
     this.createProductForm = this.fb.group({
-      id: [''],
+      id: [null],
       name: ['', [Validators.required]],
       price: ['', [Validators.required, Validators.min(0.01)]],
       daysTillExpiration: ['', [Validators.required, Validators.min(1)]],
@@ -156,7 +156,7 @@ export class CreateOrEditProductComponent implements OnInit {
           }
         },
         error: (err) => {
-          this._toastr.error('Something went wrong. While creating product');
+          this._toastr.error('Something went wrong while creating product');
         },
       });
   }
