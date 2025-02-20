@@ -31,7 +31,7 @@ export class StocksGenerationComponent implements OnInit {
   dataSource1: GetStocksGenerationDto[] = [];
   constructor(private _stocksService: StocksService) {}
   ngOnInit(): void {
-    this._stocksService.getStocksGeneration(4).subscribe({
+    this._stocksService.getStocksGeneration(8).subscribe({
       next: (res) => {
         if (res.isSuccess) {
           this.dataSource1 = res.data;

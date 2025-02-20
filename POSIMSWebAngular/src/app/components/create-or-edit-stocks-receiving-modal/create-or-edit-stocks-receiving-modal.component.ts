@@ -1,13 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { MaterialModule } from 'src/app/material.module';
 import {
   CreateStocksReceivingDto,
+  GetMachineForDropDown,
   GetProductDropDownTableDto,
   GetStorageLocationForDropDownDto,
+  MachineService,
   ProductService,
   StocksService,
   StorageLocationService,
@@ -36,34 +44,44 @@ import { LoadingService } from 'src/app/services/loading.service';
 })
 export class CreateOrEditStocksReceivingModalComponent implements OnInit {
   @Output() modalSave = new EventEmitter<any>();
-  createOrEditReceiveStocks: CreateStocksReceivingDto =
-    new CreateStocksReceivingDto();
-  selectedStorageLocation: GetStorageLocationForDropDownDto =
-    new GetStorageLocationForDropDownDto();
-  selectedProduct: GetProductDropDownTableDto | null = null;
-  storageLocations: GetStorageLocationForDropDownDto[] = [];
+  form: FormGroup;
   products: GetProductDropDownTableDto[] = [];
+  storageLocations: GetStorageLocationForDropDownDto[] = [];
+  machines: GetMachineForDropDown[] = [];
   title = '';
 
   filterTextProduct = '';
-
   filteredProduct: GetProductDropDownTableDto[] = [];
   visible = false;
   saving = false;
+
   constructor(
+    private fb: FormBuilder,
     private _toastr: ToastrService,
     private _stocksReceivingService: StocksService,
     private _productService: ProductService,
     private _storageLocationService: StorageLocationService,
+    private _machineService: MachineService,
     private _lodingService: LoadingService
-  ) {}
+  ) {
+    this.form = this.fb.group({
+      selectedProduct: [null, Validators.required],
+      quantity: [null, Validators.required],
+      selectedStorageLocation: [null, Validators.required],
+      selectedMachine: [null, Validators.required],
+    });
+  }
+
   ngOnInit(): void {
     this.getProducts();
     this.getStorageLocation();
+    this.getMachine();
   }
+
   closeForm() {
     this.visible = false;
   }
+
   show() {
     this.visible = true;
   }
@@ -91,7 +109,9 @@ export class CreateOrEditStocksReceivingModalComponent implements OnInit {
 
   onProductSelect() {
     this.filterTextProduct =
-      this.selectedProduct != null ? this.selectedProduct.name! : '';
+      this.form.get('selectedProduct')?.value != null
+        ? this.form.get('selectedProduct')?.value.name!
+        : '';
   }
 
   getStorageLocation() {
@@ -107,15 +127,44 @@ export class CreateOrEditStocksReceivingModalComponent implements OnInit {
     });
   }
 
+  getMachine() {
+    this._machineService
+      .getMachineForDropdown(undefined, undefined, undefined)
+      .subscribe({
+        next: (res) => {
+          if (res.isSuccess) {
+            this.machines = res.data.items || [];
+          }
+          if (!res.isSuccess) {
+            this._toastr.error(
+              'Something went wrong while trying to retrieve machines dropdown'
+            );
+          }
+        },
+        error: (err) => {
+          this._toastr.error(err);
+        },
+      });
+  }
+
   save() {
+    if (this.form.invalid) {
+      return;
+    }
+
     this._lodingService.show();
     this.saving = true;
-    this.createOrEditReceiveStocks.productId =
-      this.selectedProduct != null ? this.selectedProduct.id! : 0;
-    this.createOrEditReceiveStocks.storageLocationId =
-      this.selectedStorageLocation.id ?? 0;
+    const formValue = this.form.value;
+    const createOrEditReceiveStocks: CreateStocksReceivingDto =
+      new CreateStocksReceivingDto();
+    createOrEditReceiveStocks.productId = formValue.selectedProduct.id;
+    createOrEditReceiveStocks.quantity = formValue.quantity;
+    createOrEditReceiveStocks.storageLocationId =
+      formValue.selectedStorageLocation.id;
+    createOrEditReceiveStocks.machineId = formValue.selectedMachine.id;
+
     this._stocksReceivingService
-      .receiveStocks(this.createOrEditReceiveStocks)
+      .receiveStocks(createOrEditReceiveStocks)
       .subscribe({
         next: (res) => {
           this._lodingService.hide();

@@ -10,32 +10,32 @@
   (onHide)="closeForm()"
 >
   <div class="sm:container sm:mt-5">
-    <form *ngIf="visible" #createStocksReceiving="ngForm" (ngSubmit)="save()">
+    <form [formGroup]="form" (ngSubmit)="save()">
       <div class="row">
         <div class="col-lg-6">
           <mat-label class="f-w-600 m-b-8 d-block">Product</mat-label>
           <div class="card flex justify-content-center">
             <p-autoComplete
               styleClass="w-100 dropdown-style"
-              [(ngModel)]="selectedProduct"
+              formControlName="selectedProduct"
               [dropdown]="true"
               [forceSelection]="true"
               [suggestions]="products"
               (completeMethod)="filterProduct($event)"
               (onSelect)="onProductSelect()"
               optionLabel="name"
-              name="product"
               placeholder="Select a product"
-            />
-            <!-- <p-dropdown
-              styleClass="w-100"
-              [(ngModel)]="selectedProduct"
-              name="product"
-              [options]="products"
-              optionLabel="name"
-              placeholder="Select a Product"
-              required
-            ></p-dropdown> -->
+            ></p-autoComplete>
+            <div
+              *ngIf="
+                form.get('selectedProduct')?.invalid &&
+                (form.get('selectedProduct')?.dirty ||
+                  form.get('selectedProduct')?.touched)
+              "
+              class="error"
+            >
+              Product is required.
+            </div>
           </div>
         </div>
         <div class="col-lg-6">
@@ -44,11 +44,18 @@
             <input
               matInput
               type="number"
-              name="quantity"
-              [(ngModel)]="createOrEditReceiveStocks.quantity"
+              formControlName="quantity"
               placeholder="Quantity..."
-              required
             />
+            <div
+              *ngIf="
+                form.get('quantity')?.invalid &&
+                (form.get('quantity')?.dirty || form.get('quantity')?.touched)
+              "
+              class="error"
+            >
+              Quantity is required.
+            </div>
           </mat-form-field>
         </div>
         <div class="col-lg-6">
@@ -56,14 +63,46 @@
           <div class="card flex justify-content-center">
             <p-dropdown
               styleClass="w-100"
-              [(ngModel)]="selectedStorageLocation"
-              name="storageLocation"
+              formControlName="selectedStorageLocation"
               [options]="storageLocations"
               optionLabel="name"
               placeholder="Select a Storage Location"
               [appendTo]="'body'"
-              required
             ></p-dropdown>
+            <div
+              *ngIf="
+                form.get('selectedStorageLocation')?.invalid &&
+                (form.get('selectedStorageLocation')?.dirty ||
+                  form.get('selectedStorageLocation')?.touched)
+              "
+              class="error"
+            >
+              Storage Location is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Machine</mat-label>
+          <div class="card flex justify-content-center">
+            <p-dropdown
+              styleClass="w-100"
+              formControlName="selectedMachine"
+              [options]="machines"
+              optionLabel="description"
+              placeholder="Select a Machine"
+              [appendTo]="'body'"
+            ></p-dropdown>
+            <div
+              *ngIf="
+                form.get('selectedMachine')?.invalid &&
+                (form.get('selectedMachine')?.dirty ||
+                  form.get('selectedMachine')?.touched)
+              "
+              class="error"
+            >
+              Machine is required.
+            </div>
           </div>
         </div>
       </div>
@@ -72,7 +111,7 @@
         mat-flat-button
         color="primary"
         class="m-t-4"
-        [disabled]="!createStocksReceiving.valid"
+        [disabled]="form.invalid"
       >
         Submit
       </button>

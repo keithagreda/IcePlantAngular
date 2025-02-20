@@ -18,6 +18,17 @@ import {
 } from 'src/app/services/nswag/nswag.service';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
+import { ChartModule } from 'primeng/chart';
+import {
+  ApexChart,
+  ApexDataLabels,
+  ApexLegend,
+  ApexNonAxisChartSeries,
+  ApexResponsive,
+  ChartComponent,
+  NgApexchartsModule,
+} from 'ng-apexcharts';
+import { MonthlySalesChart } from 'src/app/components/monthly-sales-chart/monthly-sales-chart.component';
 
 @Component({
   selector: 'app-test-component',
@@ -28,6 +39,7 @@ import Swal from 'sweetalert2';
     FormsModule,
     DialogModule,
     SidebarModule,
+    NgApexchartsModule,
   ],
   templateUrl: './test-component.component.html',
   styleUrl: './test-component.component.scss',
@@ -45,6 +57,39 @@ export class TestComponentComponent implements OnInit {
   filterText = '';
   isMobile = false;
   viewSalesHeaderDto: ViewSalesHeaderDto[] = [];
+  public totalincomeChart!: Partial<MonthlySalesChart> | any;
+
+  series: ApexNonAxisChartSeries = [44, 55]; // Data values
+  chart: ApexChart = {
+    type: 'pie',
+    width: 380,
+  };
+  labels = ['Good', 'Bad']; // Labels for each slice
+  responsive: ApexResponsive[] = [
+    {
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 300,
+        },
+        legend: {
+          position: 'bottom',
+        },
+      },
+    },
+  ];
+  legend: ApexLegend = {
+    position: 'right',
+  };
+
+  dataLabels: ApexDataLabels = {
+    style: {
+      colors: ['#FFFFFF'], // Change data label colors inside the pie chart
+    },
+  };
+  data: any;
+
+  options: any;
   constructor(
     private _productService: ProductService,
     private _cartService: CartService,
@@ -53,6 +98,10 @@ export class TestComponentComponent implements OnInit {
     private _entityHistoryService: EntityHistoryService
   ) {}
   ngOnInit(): void {
+    this.constructChart();
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
+
     // this.getEntityHistory();
     this.viewSales();
     this.checkScreenSize();
@@ -94,5 +143,35 @@ export class TestComponentComponent implements OnInit {
       },
       error: (err) => {},
     });
+  }
+
+  constructChart() {
+    this.totalincomeChart = {
+      series: [
+        {
+          name: 'Income',
+          color: '#3cb043',
+          data: [50, 50],
+        },
+      ],
+      chart: {
+        type: 'donut',
+        height: 350,
+        fontFamily: 'inherit',
+        foreColor: '#adb0bb',
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+      },
+
+      tooltip: {
+        theme: 'dark',
+        fixed: {
+          enabled: true,
+          position: 'right',
+        },
+      },
+    };
   }
 }
