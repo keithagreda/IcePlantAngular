@@ -1,0 +1,22 @@
+// .chart-container {
+//   width: 100%; // Ensure the parent container takes the full width of its parent
+//   display: flex;
+//   justify-content: center; // Center the chart within the parent container
+// }
+
+// #chart {
+//   width: 80%; // Set the width of the chart to 80% of its parent container
+//   max-width: 600px; // Optionally, set a maximum width for the chart
+// }
+
+// @media (max-width: 768px) {
+//   #chart {
+//     width: 100%; // On smaller screens, make the chart take the full width of its parent container
+//   }
+// }
+
+.chart-container {
+  .title {
+    text-align: center;
+  }
+}

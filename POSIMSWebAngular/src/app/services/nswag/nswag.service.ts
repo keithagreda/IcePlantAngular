@@ -652,7 +652,7 @@ export class MachineProductionService {
         this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
-    getAllMachineGeneration(minCreationTime: Date | null | undefined, maxCreationTime: Date | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfGetMachineGenerationDto> {
+    getAllMachineGeneration(minCreationTime: Date | null | undefined, maxCreationTime: Date | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfGetMachineGenerationWTotal> {
         let url_ = this.baseUrl + "/api/MachineProduction/GetAllMachineGeneration?";
         if (minCreationTime !== undefined && minCreationTime !== null)
             url_ += "MinCreationTime=" + encodeURIComponent(minCreationTime ? "" + minCreationTime.toISOString() : "") + "&";
@@ -681,14 +681,14 @@ export class MachineProductionService {
                 try {
                     return this.processGetAllMachineGeneration(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ApiResponseOfPaginatedResultOfGetMachineGenerationDto>;
+                    return _observableThrow(e) as any as Observable<ApiResponseOfGetMachineGenerationWTotal>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ApiResponseOfPaginatedResultOfGetMachineGenerationDto>;
+                return _observableThrow(response_) as any as Observable<ApiResponseOfGetMachineGenerationWTotal>;
         }));
     }
 
-    protected processGetAllMachineGeneration(response: HttpResponseBase): Observable<ApiResponseOfPaginatedResultOfGetMachineGenerationDto> {
+    protected processGetAllMachineGeneration(response: HttpResponseBase): Observable<ApiResponseOfGetMachineGenerationWTotal> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -699,7 +699,7 @@ export class MachineProductionService {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ApiResponseOfPaginatedResultOfGetMachineGenerationDto.fromJS(resultData200);
+            result200 = ApiResponseOfGetMachineGenerationWTotal.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3507,13 +3507,13 @@ export interface IGetMachineForDropDown {
     description?: string;
 }
 
-export class ApiResponseOfPaginatedResultOfGetMachineGenerationDto implements IApiResponseOfPaginatedResultOfGetMachineGenerationDto {
-    data!: PaginatedResultOfGetMachineGenerationDto;
+export class ApiResponseOfGetMachineGenerationWTotal implements IApiResponseOfGetMachineGenerationWTotal {
+    data!: GetMachineGenerationWTotal;
     message?: string;
     isSuccess?: boolean;
     errors?: string[];
 
-    constructor(data?: IApiResponseOfPaginatedResultOfGetMachineGenerationDto) {
+    constructor(data?: IApiResponseOfGetMachineGenerationWTotal) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3521,13 +3521,13 @@ export class ApiResponseOfPaginatedResultOfGetMachineGenerationDto implements IA
             }
         }
         if (!data) {
-            this.data = new PaginatedResultOfGetMachineGenerationDto();
+            this.data = new GetMachineGenerationWTotal();
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            this.data = _data["data"] ? PaginatedResultOfGetMachineGenerationDto.fromJS(_data["data"]) : new PaginatedResultOfGetMachineGenerationDto();
+            this.data = _data["data"] ? GetMachineGenerationWTotal.fromJS(_data["data"]) : new GetMachineGenerationWTotal();
             this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
             this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
             if (Array.isArray(_data["errors"])) {
@@ -3541,9 +3541,9 @@ export class ApiResponseOfPaginatedResultOfGetMachineGenerationDto implements IA
         }
     }
 
-    static fromJS(data: any): ApiResponseOfPaginatedResultOfGetMachineGenerationDto {
+    static fromJS(data: any): ApiResponseOfGetMachineGenerationWTotal {
         data = typeof data === 'object' ? data : {};
-        let result = new ApiResponseOfPaginatedResultOfGetMachineGenerationDto();
+        let result = new ApiResponseOfGetMachineGenerationWTotal();
         result.init(data);
         return result;
     }
@@ -3562,21 +3562,19 @@ export class ApiResponseOfPaginatedResultOfGetMachineGenerationDto implements IA
     }
 }
 
-export interface IApiResponseOfPaginatedResultOfGetMachineGenerationDto {
-    data: PaginatedResultOfGetMachineGenerationDto;
+export interface IApiResponseOfGetMachineGenerationWTotal {
+    data: GetMachineGenerationWTotal;
     message?: string;
     isSuccess?: boolean;
     errors?: string[];
 }
 
-export class PaginatedResultOfGetMachineGenerationDto implements IPaginatedResultOfGetMachineGenerationDto {
-    items?: GetMachineGenerationDto[];
-    totalCount?: number;
-    totalPages?: number;
-    currentPage?: number;
-    pageSize?: number;
+export class GetMachineGenerationWTotal implements IGetMachineGenerationWTotal {
+    totalGood?: number;
+    totalGoodPercentage?: number;
+    getMachineGenerationV1Dtos?: GetMachineGenerationV1Dto[];
 
-    constructor(data?: IPaginatedResultOfGetMachineGenerationDto) {
+    constructor(data?: IGetMachineGenerationWTotal) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3587,58 +3585,51 @@ export class PaginatedResultOfGetMachineGenerationDto implements IPaginatedResul
 
     init(_data?: any) {
         if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(GetMachineGenerationDto.fromJS(item));
+            this.totalGood = _data["totalGood"] !== undefined ? _data["totalGood"] : <any>null;
+            this.totalGoodPercentage = _data["totalGoodPercentage"] !== undefined ? _data["totalGoodPercentage"] : <any>null;
+            if (Array.isArray(_data["getMachineGenerationV1Dtos"])) {
+                this.getMachineGenerationV1Dtos = [] as any;
+                for (let item of _data["getMachineGenerationV1Dtos"])
+                    this.getMachineGenerationV1Dtos!.push(GetMachineGenerationV1Dto.fromJS(item));
             }
             else {
-                this.items = <any>null;
+                this.getMachineGenerationV1Dtos = <any>null;
             }
-            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
-            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
-            this.currentPage = _data["currentPage"] !== undefined ? _data["currentPage"] : <any>null;
-            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
         }
     }
 
-    static fromJS(data: any): PaginatedResultOfGetMachineGenerationDto {
+    static fromJS(data: any): GetMachineGenerationWTotal {
         data = typeof data === 'object' ? data : {};
-        let result = new PaginatedResultOfGetMachineGenerationDto();
+        let result = new GetMachineGenerationWTotal();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
+        data["totalGood"] = this.totalGood !== undefined ? this.totalGood : <any>null;
+        data["totalGoodPercentage"] = this.totalGoodPercentage !== undefined ? this.totalGoodPercentage : <any>null;
+        if (Array.isArray(this.getMachineGenerationV1Dtos)) {
+            data["getMachineGenerationV1Dtos"] = [];
+            for (let item of this.getMachineGenerationV1Dtos)
+                data["getMachineGenerationV1Dtos"].push(item.toJSON());
         }
-        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
-        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
-        data["currentPage"] = this.currentPage !== undefined ? this.currentPage : <any>null;
-        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
         return data;
     }
 }
 
-export interface IPaginatedResultOfGetMachineGenerationDto {
-    items?: GetMachineGenerationDto[];
-    totalCount?: number;
-    totalPages?: number;
-    currentPage?: number;
-    pageSize?: number;
+export interface IGetMachineGenerationWTotal {
+    totalGood?: number;
+    totalGoodPercentage?: number;
+    getMachineGenerationV1Dtos?: GetMachineGenerationV1Dto[];
 }
 
-export class GetMachineGenerationDto implements IGetMachineGenerationDto {
-    id?: number;
+export class GetMachineGenerationV1Dto implements IGetMachineGenerationV1Dto {
     machineName?: string;
-    productName?: string;
-    quantity?: number;
+    good?: number;
+    bad?: number;
 
-    constructor(data?: IGetMachineGenerationDto) {
+    constructor(data?: IGetMachineGenerationV1Dto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -3649,35 +3640,32 @@ export class GetMachineGenerationDto implements IGetMachineGenerationDto {
 
     init(_data?: any) {
         if (_data) {
-            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.machineName = _data["machineName"] !== undefined ? _data["machineName"] : <any>null;
-            this.productName = _data["productName"] !== undefined ? _data["productName"] : <any>null;
-            this.quantity = _data["quantity"] !== undefined ? _data["quantity"] : <any>null;
+            this.good = _data["good"] !== undefined ? _data["good"] : <any>null;
+            this.bad = _data["bad"] !== undefined ? _data["bad"] : <any>null;
         }
     }
 
-    static fromJS(data: any): GetMachineGenerationDto {
+    static fromJS(data: any): GetMachineGenerationV1Dto {
         data = typeof data === 'object' ? data : {};
-        let result = new GetMachineGenerationDto();
+        let result = new GetMachineGenerationV1Dto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["id"] = this.id !== undefined ? this.id : <any>null;
         data["machineName"] = this.machineName !== undefined ? this.machineName : <any>null;
-        data["productName"] = this.productName !== undefined ? this.productName : <any>null;
-        data["quantity"] = this.quantity !== undefined ? this.quantity : <any>null;
+        data["good"] = this.good !== undefined ? this.good : <any>null;
+        data["bad"] = this.bad !== undefined ? this.bad : <any>null;
         return data;
     }
 }
 
-export interface IGetMachineGenerationDto {
-    id?: number;
+export interface IGetMachineGenerationV1Dto {
     machineName?: string;
-    productName?: string;
-    quantity?: number;
+    good?: number;
+    bad?: number;
 }
 
 export class ApiResponseOfIListOfProductCategoryDto implements IApiResponseOfIListOfProductCategoryDto {

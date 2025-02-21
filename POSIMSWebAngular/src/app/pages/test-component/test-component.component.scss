@@ -69,4 +69,53 @@
 
   .sales-item {
   }
+
+  //
+}
+///graph
+.graph-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+// @media (max-width: 425px) {
+//   // Mobile L breakpoint
+//   .graph-container {
+//     flex-direction: column;
+//   }
+//   .card-container {
+//     width: 100%;
+//   }
+// }
+
+.card-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+}
+.legend-color {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.chart-details {
+  display: flex;
+  justify-content: center;
+  th {
+    text-align: left;
+  }
 }

@@ -33,6 +33,7 @@ import {
   CustomerService,
   EntityHistoryService,
   InventoryService,
+  MachineProductionService,
   MachineService,
   ProductCategoryService,
   ProductService,
@@ -59,6 +60,7 @@ export const appConfig: ApplicationConfig = {
     EntityHistoryService,
     CustomerService,
     MachineService,
+    MachineProductionService,
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,

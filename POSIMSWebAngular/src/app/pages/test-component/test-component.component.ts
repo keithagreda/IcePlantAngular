@@ -29,6 +29,8 @@ import {
   NgApexchartsModule,
 } from 'ng-apexcharts';
 import { MonthlySalesChart } from 'src/app/components/monthly-sales-chart/monthly-sales-chart.component';
+import { MachineProductionComponent } from 'src/app/components/machine-production/machine-production.component';
+import { COLORS } from 'src/assets/color';
 
 @Component({
   selector: 'app-test-component',
@@ -40,6 +42,7 @@ import { MonthlySalesChart } from 'src/app/components/monthly-sales-chart/monthl
     DialogModule,
     SidebarModule,
     NgApexchartsModule,
+    MachineProductionComponent,
   ],
   templateUrl: './test-component.component.html',
   styleUrl: './test-component.component.scss',
@@ -57,36 +60,12 @@ export class TestComponentComponent implements OnInit {
   filterText = '';
   isMobile = false;
   viewSalesHeaderDto: ViewSalesHeaderDto[] = [];
+  colors = COLORS;
   public totalincomeChart!: Partial<MonthlySalesChart> | any;
 
-  series: ApexNonAxisChartSeries = [44, 55]; // Data values
-  chart: ApexChart = {
-    type: 'pie',
-    width: 380,
-  };
-  labels = ['Good', 'Bad']; // Labels for each slice
-  responsive: ApexResponsive[] = [
-    {
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 300,
-        },
-        legend: {
-          position: 'bottom',
-        },
-      },
-    },
-  ];
-  legend: ApexLegend = {
-    position: 'right',
-  };
+  data1: ApexNonAxisChartSeries = [20, 80];
+  data2: ApexNonAxisChartSeries = [60, 40];
 
-  dataLabels: ApexDataLabels = {
-    style: {
-      colors: ['#FFFFFF'], // Change data label colors inside the pie chart
-    },
-  };
   data: any;
 
   options: any;
@@ -97,81 +76,5 @@ export class TestComponentComponent implements OnInit {
     private _salesService: SalesService,
     private _entityHistoryService: EntityHistoryService
   ) {}
-  ngOnInit(): void {
-    this.constructChart();
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
-
-    // this.getEntityHistory();
-    this.viewSales();
-    this.checkScreenSize();
-  }
-
-  getEntityHistory() {
-    this._entityHistoryService
-      .getAllEntityHistory(this.filterText, null, null)
-      .subscribe({
-        next: (res) => {
-          if (res.isSuccess) {
-            this.dataSource = res.data.items ?? [];
-            console.log(this.dataSource);
-          }
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
-  }
-
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
-    this.checkScreenSize(); // Check screen size on resize
-  }
-
-  checkScreenSize(): void {
-    this.isMobile = window.matchMedia('(max-width: 410px)').matches;
-    console.log(this.isMobile);
-  }
-
-  viewSales() {
-    this._salesService.viewSales(null, this.filterText, null, null).subscribe({
-      next: (res) => {
-        if (res.isSuccess) {
-          console.log(res.data);
-          this.viewSalesHeaderDto = res.data.items ?? [];
-        }
-      },
-      error: (err) => {},
-    });
-  }
-
-  constructChart() {
-    this.totalincomeChart = {
-      series: [
-        {
-          name: 'Income',
-          color: '#3cb043',
-          data: [50, 50],
-        },
-      ],
-      chart: {
-        type: 'donut',
-        height: 350,
-        fontFamily: 'inherit',
-        foreColor: '#adb0bb',
-      },
-      legend: {
-        show: true,
-        position: 'bottom',
-      },
-
-      tooltip: {
-        theme: 'dark',
-        fixed: {
-          enabled: true,
-          position: 'right',
-        },
-      },
-    };
-  }
+  ngOnInit(): void {}
 }
