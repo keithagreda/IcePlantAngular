@@ -1745,8 +1745,12 @@ export class SalesService {
         return _observableOf(null as any);
     }
 
-    viewSales(salesHeaderId: string | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfViewSalesHeaderDto> {
+    viewSales(thisInventory: boolean | undefined, salesHeaderId: string | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfViewSalesHeaderDto> {
         let url_ = this.baseUrl + "/api/Sales/ViewSales?";
+        if (thisInventory === null)
+            throw new Error("The parameter 'thisInventory' cannot be null.");
+        else if (thisInventory !== undefined)
+            url_ += "ThisInventory=" + encodeURIComponent("" + thisInventory) + "&";
         if (salesHeaderId !== undefined && salesHeaderId !== null)
             url_ += "SalesHeaderId=" + encodeURIComponent("" + salesHeaderId) + "&";
         if (filterText !== undefined && filterText !== null)
