@@ -268,6 +268,68 @@ export class InventoryService {
         return _observableOf(null as any);
     }
 
+    getStockCard(productName: string | null | undefined, minCreationTime: Date | null | undefined, maxCreationTime: Date | null | undefined, minClosedTime: Date | null | undefined, maxClosedTime: Date | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfGetStockCardDayDto> {
+        let url_ = this.baseUrl + "/api/Inventory/GetStockCard?";
+        if (productName !== undefined && productName !== null)
+            url_ += "ProductName=" + encodeURIComponent("" + productName) + "&";
+        if (minCreationTime !== undefined && minCreationTime !== null)
+            url_ += "MinCreationTime=" + encodeURIComponent(minCreationTime ? "" + minCreationTime.toISOString() : "") + "&";
+        if (maxCreationTime !== undefined && maxCreationTime !== null)
+            url_ += "MaxCreationTime=" + encodeURIComponent(maxCreationTime ? "" + maxCreationTime.toISOString() : "") + "&";
+        if (minClosedTime !== undefined && minClosedTime !== null)
+            url_ += "MinClosedTime=" + encodeURIComponent(minClosedTime ? "" + minClosedTime.toISOString() : "") + "&";
+        if (maxClosedTime !== undefined && maxClosedTime !== null)
+            url_ += "MaxClosedTime=" + encodeURIComponent(maxClosedTime ? "" + maxClosedTime.toISOString() : "") + "&";
+        if (pageNumber !== undefined && pageNumber !== null)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetStockCard(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetStockCard(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfPaginatedResultOfGetStockCardDayDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfPaginatedResultOfGetStockCardDayDto>;
+        }));
+    }
+
+    protected processGetStockCard(response: HttpResponseBase): Observable<ApiResponseOfPaginatedResultOfGetStockCardDayDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfPaginatedResultOfGetStockCardDayDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     beginningEntry(input: CreateBeginningEntryDto): Observable<FileResponse> {
         let url_ = this.baseUrl + "/api/Inventory/BeginningEntry";
         url_ = url_.replace(/[?&]$/, "");
@@ -3034,6 +3096,199 @@ export interface IGetInventoryDto {
     salesQty?: number;
     inventoryBegTime?: Date | null;
     inventoryEndTime?: Date | null;
+}
+
+export class ApiResponseOfPaginatedResultOfGetStockCardDayDto implements IApiResponseOfPaginatedResultOfGetStockCardDayDto {
+    data!: PaginatedResultOfGetStockCardDayDto;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+
+    constructor(data?: IApiResponseOfPaginatedResultOfGetStockCardDayDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.data = new PaginatedResultOfGetStockCardDayDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? PaginatedResultOfGetStockCardDayDto.fromJS(_data["data"]) : new PaginatedResultOfGetStockCardDayDto();
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+            else {
+                this.errors = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ApiResponseOfPaginatedResultOfGetStockCardDayDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseOfPaginatedResultOfGetStockCardDayDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IApiResponseOfPaginatedResultOfGetStockCardDayDto {
+    data: PaginatedResultOfGetStockCardDayDto;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+}
+
+export class PaginatedResultOfGetStockCardDayDto implements IPaginatedResultOfGetStockCardDayDto {
+    items?: GetStockCardDayDto[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+
+    constructor(data?: IPaginatedResultOfGetStockCardDayDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(GetStockCardDayDto.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+            this.currentPage = _data["currentPage"] !== undefined ? _data["currentPage"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaginatedResultOfGetStockCardDayDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedResultOfGetStockCardDayDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        data["currentPage"] = this.currentPage !== undefined ? this.currentPage : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        return data;
+    }
+}
+
+export interface IPaginatedResultOfGetStockCardDayDto {
+    items?: GetStockCardDayDto[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+}
+
+export class GetStockCardDayDto implements IGetStockCardDayDto {
+    inventoryId?: string;
+    dateTime?: Date;
+    day?: string;
+    begG?: number;
+    begB?: number;
+    receivingG?: number;
+    receivingB?: number;
+    salesG?: number;
+    salesB?: number;
+
+    constructor(data?: IGetStockCardDayDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.inventoryId = _data["inventoryId"] !== undefined ? _data["inventoryId"] : <any>null;
+            this.dateTime = _data["dateTime"] ? new Date(_data["dateTime"].toString()) : <any>null;
+            this.day = _data["day"] !== undefined ? _data["day"] : <any>null;
+            this.begG = _data["begG"] !== undefined ? _data["begG"] : <any>null;
+            this.begB = _data["begB"] !== undefined ? _data["begB"] : <any>null;
+            this.receivingG = _data["receivingG"] !== undefined ? _data["receivingG"] : <any>null;
+            this.receivingB = _data["receivingB"] !== undefined ? _data["receivingB"] : <any>null;
+            this.salesG = _data["salesG"] !== undefined ? _data["salesG"] : <any>null;
+            this.salesB = _data["salesB"] !== undefined ? _data["salesB"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): GetStockCardDayDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetStockCardDayDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["inventoryId"] = this.inventoryId !== undefined ? this.inventoryId : <any>null;
+        data["dateTime"] = this.dateTime ? this.dateTime.toISOString() : <any>null;
+        data["day"] = this.day !== undefined ? this.day : <any>null;
+        data["begG"] = this.begG !== undefined ? this.begG : <any>null;
+        data["begB"] = this.begB !== undefined ? this.begB : <any>null;
+        data["receivingG"] = this.receivingG !== undefined ? this.receivingG : <any>null;
+        data["receivingB"] = this.receivingB !== undefined ? this.receivingB : <any>null;
+        data["salesG"] = this.salesG !== undefined ? this.salesG : <any>null;
+        data["salesB"] = this.salesB !== undefined ? this.salesB : <any>null;
+        return data;
+    }
+}
+
+export interface IGetStockCardDayDto {
+    inventoryId?: string;
+    dateTime?: Date;
+    day?: string;
+    begG?: number;
+    begB?: number;
+    receivingG?: number;
+    receivingB?: number;
+    salesG?: number;
+    salesB?: number;
 }
 
 export class CreateBeginningEntryDto implements ICreateBeginningEntryDto {

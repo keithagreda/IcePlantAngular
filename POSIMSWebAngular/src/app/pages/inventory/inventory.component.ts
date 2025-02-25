@@ -4,6 +4,7 @@ import { CreateOrEditStocksReceivingModalComponent } from 'src/app/components/cr
 import { CreateStocksReconciliationComponent } from 'src/app/components/create-stocks-reconciliation/create-stocks-reconciliation.component';
 import { CurrentStocksComponent } from 'src/app/components/current-stocks/current-stocks.component';
 import { InventoryLogsComponent } from 'src/app/components/inventory-logs/inventory-logs.component';
+import { StockCardComponent } from 'src/app/components/stock-card/stock-card.component';
 import { MaterialModule } from 'src/app/material.module';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { InventoryService } from 'src/app/services/nswag/nswag.service';
@@ -19,6 +20,7 @@ import Swal from 'sweetalert2';
     InventoryLogsComponent,
     CommonModule,
     CreateStocksReconciliationComponent,
+    StockCardComponent
   ],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',

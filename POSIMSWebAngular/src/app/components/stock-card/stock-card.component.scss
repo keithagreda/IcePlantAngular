@@ -1,0 +1,23 @@
+@import "src/assets/scss/_variables.scss";
+.good{
+    background-color: $light-primary;
+}
+
+.bad{
+    background-color: $light-error;
+}
+
+.wrapper {
+    display: flex;
+    width: 100%;
+  }
+  
+  .wrapper .good,
+  .wrapper .bad {
+    flex: 1; /* Each takes 50% of the width */
+    text-align: center; /* Center the text inside */
+    padding: 4px; /* Add some spacing */
+    font-weight: 600;
+    font-size: 14px;
+  }
+
