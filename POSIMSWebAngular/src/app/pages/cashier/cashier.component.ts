@@ -78,9 +78,8 @@ export class CashierComponent implements OnInit {
             this._toastr.error(res.message);
           }
         },
-        error: (err: ApiException) =>{
-          console.log(err.message);
-          
+        error: (err) =>{
+          this._toastr.error(err);
         }
       });
   }
