@@ -46,6 +46,8 @@ export class SalesSummaryComponent {
     'soldBy',
   ];
   totalRecords = 0;
+  totalSales = 0;
+  dailySales = 0;
 
   constructor(
     private _toastr: ToastrService,
@@ -71,7 +73,14 @@ export class SalesSummaryComponent {
         next: (res) => {
           console.log(res.data.items);
           if (res.isSuccess) {
-            this.dataSource.data = res.data.items ?? [];
+            this.dailySales =
+              res.data.items != null ? res.data.items[0].dailySales || 0 : 0;
+            this.totalSales =
+              res.data.items != null ? res.data.items[0].totalSales || 0 : 0;
+            this.dataSource.data =
+              res.data.items != null
+                ? res.data.items[0].salesSummaryDtos || []
+                : [];
             this.totalRecords = res.data.totalCount ?? 0;
           }
         },

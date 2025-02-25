@@ -69,7 +69,7 @@ export class ViewSalesDetailsComponent implements OnInit {
     const currentPage = event?.pageIndex ?? 0;
     const pageSize = event?.pageSize ?? 5;
     this._salesService
-      .viewSales(null, this.filterText, currentPage + 1, pageSize)
+      .viewSales(true, null, this.filterText, currentPage + 1, pageSize)
       .subscribe({
         next: (res) => {
           if (res.isSuccess) {

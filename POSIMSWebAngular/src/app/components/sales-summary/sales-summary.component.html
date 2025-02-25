@@ -2,6 +2,11 @@
   <mat-card-content>
     <div class="k-header">
       <mat-card-title>Sales Summary</mat-card-title>
+      <div class="summaries">
+        <div class="mat-body-1">Total Sales: {{ totalSales }}</div>
+        <div class="mat-body-1">Daily Sales: {{ dailySales }}</div>
+      </div>
+
       <!-- <button
           (click)="showCreateModal()"
           mat-flat-button
@@ -132,6 +137,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
       </table>
       <mat-paginator
+        [pageSize]="10"
         [pageSizeOptions]="[5, 10, 20]"
         [length]="totalRecords"
         (page)="getSales($event)"

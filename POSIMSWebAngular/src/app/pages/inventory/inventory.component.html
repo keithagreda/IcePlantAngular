@@ -15,6 +15,15 @@
         Receive Stocks
       </button>
       <button
+        (click)="showCorEStocksReceivingModal()"
+        type="button"
+        mat-flat-button
+        color="primary"
+        class="m-t-4"
+      >
+        Reconcile Stocks
+      </button>
+      <button
         (click)="closeInventory()"
         type="button"
         mat-flat-button
@@ -32,3 +41,4 @@
 </mat-card>
 
 <app-inventory-logs></app-inventory-logs>
+<app-create-stocks-reconciliation></app-create-stocks-reconciliation>

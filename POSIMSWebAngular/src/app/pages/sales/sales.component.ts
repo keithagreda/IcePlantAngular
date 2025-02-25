@@ -89,7 +89,7 @@ export class SalesComponent implements OnInit {
     this.visible = true;
     this._loadingService.show();
     let viewSalesHeaderDto: ViewSalesHeaderDto = new ViewSalesHeaderDto();
-    this._salesService.viewSales(headerId, null, null, null).subscribe({
+    this._salesService.viewSales(false, headerId, null, null, null).subscribe({
       next: (res) => {
         this._loadingService.hide();
         if (

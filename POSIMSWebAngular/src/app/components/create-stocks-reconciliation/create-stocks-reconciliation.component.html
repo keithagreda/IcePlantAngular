@@ -1,0 +1,120 @@
+<!-- <p-dialog
+  header="Create Stocks Receiving"
+  [(visible)]="active"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+  (onHide)="closeForm()"
+>
+  <div class="sm:container sm:mt-5">
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <div class="row">
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Product</mat-label>
+          <div class="card flex justify-content-center">
+            <p-autoComplete
+              styleClass="w-100 dropdown-style"
+              formControlName="selectedProduct"
+              [dropdown]="true"
+              [forceSelection]="true"
+              [suggestions]="products"
+              (completeMethod)="filterProduct($event)"
+              (onSelect)="onProductSelect()"
+              optionLabel="name"
+              placeholder="Select a product"
+            ></p-autoComplete>
+            <div
+              *ngIf="
+                form.get('selectedProduct')?.invalid &&
+                (form.get('selectedProduct')?.dirty ||
+                  form.get('selectedProduct')?.touched)
+              "
+              class="error"
+            >
+              Product is required.
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Quantity</mat-label>
+          <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input
+              matInput
+              type="number"
+              formControlName="quantity"
+              placeholder="Quantity..."
+            />
+            <div
+              *ngIf="
+                form.get('quantity')?.invalid &&
+                (form.get('quantity')?.dirty || form.get('quantity')?.touched)
+              "
+              class="error"
+            >
+              Quantity is required.
+            </div>
+          </mat-form-field>
+        </div>
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Storage Location</mat-label>
+          <div class="card flex justify-content-center">
+            <p-dropdown
+              styleClass="w-100"
+              formControlName="selectedStorageLocation"
+              [options]="storageLocations"
+              optionLabel="name"
+              placeholder="Select a Storage Location"
+              [appendTo]="'body'"
+            ></p-dropdown>
+            <div
+              *ngIf="
+                form.get('selectedStorageLocation')?.invalid &&
+                (form.get('selectedStorageLocation')?.dirty ||
+                  form.get('selectedStorageLocation')?.touched)
+              "
+              class="error"
+            >
+              Storage Location is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Machine</mat-label>
+          <div class="card flex justify-content-center">
+            <p-dropdown
+              styleClass="w-100"
+              formControlName="selectedMachine"
+              [options]="machines"
+              optionLabel="description"
+              placeholder="Select a Machine"
+              [appendTo]="'body'"
+            ></p-dropdown>
+            <div
+              *ngIf="
+                form.get('selectedMachine')?.invalid &&
+                (form.get('selectedMachine')?.dirty ||
+                  form.get('selectedMachine')?.touched)
+              "
+              class="error"
+            >
+              Machine is required.
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        type="submit"
+        mat-flat-button
+        color="primary"
+        class="m-t-4"
+        [disabled]="form.invalid"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+</p-dialog> -->
