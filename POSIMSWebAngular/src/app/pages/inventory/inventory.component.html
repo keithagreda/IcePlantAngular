@@ -6,7 +6,7 @@
     <mat-card-title>Actions</mat-card-title>
     <div class="actions">
       <button
-        (click)="showCorEStocksReceivingModal()"
+        (click)="openAuthentication()"
         type="button"
         mat-flat-button
         color="primary"
@@ -14,7 +14,7 @@
       >
         Receive Stocks
       </button>
-      <button
+      <!-- <button
         (click)="showCorEStocksReceivingModal()"
         type="button"
         mat-flat-button
@@ -22,7 +22,7 @@
         class="m-t-4"
       >
         Reconcile Stocks
-      </button>
+      </button> -->
       <button
         (click)="closeInventory()"
         type="button"
@@ -43,3 +43,7 @@
 <app-inventory-logs></app-inventory-logs>
 <app-create-stocks-reconciliation></app-create-stocks-reconciliation>
 <app-stock-card></app-stock-card>
+
+<app-authenticate-user
+  (isAuthenticated)="showCorEStocksReceivingModal($event)"
+></app-authenticate-user>

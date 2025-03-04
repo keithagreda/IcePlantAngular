@@ -3,7 +3,7 @@
     <div class="k-header">
       <mat-card-title>Stocks Receiving</mat-card-title>
       <button
-        (click)="showCreateOrEditModal()"
+        (click)="openAuthentication()"
         mat-flat-button
         color="primary"
         class="m-r-8"
@@ -132,6 +132,10 @@
     </div>
   </mat-card-content>
 </mat-card>
+<!-- (isAuthenticated)="insertCustomer($event)" -->
+<app-authenticate-user
+  (isAuthenticated)="showCreateOrEditModal($event)"
+></app-authenticate-user>
 <app-create-or-edit-stocks-receiving-modal
   (modalSave)="getAllStocksReceiving()"
 ></app-create-or-edit-stocks-receiving-modal>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   FormGroup,
   FormControl,
@@ -9,9 +9,12 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { MaterialModule } from '../../../material.module';
 import { MatButtonModule } from '@angular/material/button';
-import { UserAuthService } from 'src/app/services/nswag/nswag.service';
+import { LoginUserDto, UserAuthService } from 'src/app/services/nswag/nswag.service';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import { LoadingService } from 'src/app/services/loading.service';
+import { IconTruckReturn } from 'angular-tabler-icons/icons';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-side-login',
@@ -22,16 +25,21 @@ import { AuthService } from 'src/app/services/auth/auth.service';
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
+    CommonModule
   ],
   templateUrl: './side-login.component.html',
 })
-export class AppSideLoginComponent {
+export class AppSideLoginComponent implements OnInit{
+  @Input() authentication = false;
+  userName = '';
   saving = false;
+  loginCounter = 0;
   constructor(
     private router: Router,
     private userAuth: UserAuthService,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private _loading: LoadingService
   ) {}
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
@@ -40,6 +48,44 @@ export class AppSideLoginComponent {
 
   get f() {
     return this.form.controls;
+  }
+
+  ngOnInit(): void {
+    if(this.authentication){
+      this.form.patchValue({uname: localStorage.getItem('userName') ?? ''});
+      console.log(this.form.value);
+      this.form.get('uname')?.disable();
+    }
+  }
+
+  authenticate(){
+    const MAX_TRIES = 5;
+    this._loading.show();
+    console.log(this.form.value);
+    const logInDto = new LoginUserDto({
+      userName: this.form.value.uname ?? '',
+      password: this.form.value.password ?? ''
+    });
+    this.userAuth.authenticateUser(logInDto).subscribe({
+      next: (res) => {
+        this._loading.hide();
+        if(!res.isSuccess){
+          this.loginCounter++;
+          this.toastr.error('You have ' + (MAX_TRIES - this.loginCounter) + ' attempts left', 'Error! ' + res.message);
+          if(this.loginCounter >= MAX_TRIES){
+            this.toastr.error('Maximum attempts reached. You are about to be logged out!', 'Error! ' + res.message);
+            this.authService.onlogout();
+          }
+          return 
+        }
+        this.toastr.success('User Authenticated Successfully');
+        return;
+      },
+      error: (err) => {
+        this._loading.hide();
+        this.toastr.error('Error! ' + err);
+      }
+    })
   }
 
   login() {
@@ -52,6 +98,7 @@ export class AppSideLoginComponent {
           this.saving = false;
           if (res.isSuccess) {
             localStorage.setItem('token', res.data.userToken ?? '');
+            localStorage.setItem('userName', res.data.userName ?? '');
             const userRoles = this.authService.getUserRoles();
             if (userRoles.includes('Admin')) {
               this.router.navigate(['/dashboard']);

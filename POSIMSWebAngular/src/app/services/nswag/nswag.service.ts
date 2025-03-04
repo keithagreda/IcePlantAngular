@@ -1537,6 +1537,70 @@ export class ProductCostService {
 }
 
 @Injectable()
+export class ReportService {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
+    }
+
+    generateReport(date: Date | undefined): Observable<ApiResponseOfViewGeneratedReportDto> {
+        let url_ = this.baseUrl + "/api/Report/GenerateReport?";
+        if (date === null)
+            throw new Error("The parameter 'date' cannot be null.");
+        else if (date !== undefined)
+            url_ += "date=" + encodeURIComponent(date ? "" + date.toISOString() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGenerateReport(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGenerateReport(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfViewGeneratedReportDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfViewGeneratedReportDto>;
+        }));
+    }
+
+    protected processGenerateReport(response: HttpResponseBase): Observable<ApiResponseOfViewGeneratedReportDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfViewGeneratedReportDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
 export class SalesService {
     private http: HttpClient;
     private baseUrl: string;
@@ -2420,6 +2484,58 @@ export class UserAuthService {
     }
 
     protected processRegisterUser(response: HttpResponseBase): Observable<ApiResponseOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    authenticateUser(login: LoginUserDto): Observable<ApiResponseOfString> {
+        let url_ = this.baseUrl + "/api/UserAuth/AuthenticateUser";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(login);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAuthenticateUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAuthenticateUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfString>;
+        }));
+    }
+
+    protected processAuthenticateUser(response: HttpResponseBase): Observable<ApiResponseOfString> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -5504,6 +5620,354 @@ export interface ICreateOrEditProductCostDto {
     productId?: number;
 }
 
+export class ApiResponseOfViewGeneratedReportDto implements IApiResponseOfViewGeneratedReportDto {
+    data!: ViewGeneratedReportDto;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+
+    constructor(data?: IApiResponseOfViewGeneratedReportDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.data = new ViewGeneratedReportDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? ViewGeneratedReportDto.fromJS(_data["data"]) : new ViewGeneratedReportDto();
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+            else {
+                this.errors = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ApiResponseOfViewGeneratedReportDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseOfViewGeneratedReportDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IApiResponseOfViewGeneratedReportDto {
+    data: ViewGeneratedReportDto;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+}
+
+export class ViewGeneratedReportDto implements IViewGeneratedReportDto {
+    dateGenerated?: Date;
+    totalSales?: number;
+    totalExpenses?: number;
+    totalEstimatedCost?: number;
+    viewProductGeneratedReportDtos?: ViewProductGeneratedReportDto[];
+
+    constructor(data?: IViewGeneratedReportDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.dateGenerated = _data["dateGenerated"] ? new Date(_data["dateGenerated"].toString()) : <any>null;
+            this.totalSales = _data["totalSales"] !== undefined ? _data["totalSales"] : <any>null;
+            this.totalExpenses = _data["totalExpenses"] !== undefined ? _data["totalExpenses"] : <any>null;
+            this.totalEstimatedCost = _data["totalEstimatedCost"] !== undefined ? _data["totalEstimatedCost"] : <any>null;
+            if (Array.isArray(_data["viewProductGeneratedReportDtos"])) {
+                this.viewProductGeneratedReportDtos = [] as any;
+                for (let item of _data["viewProductGeneratedReportDtos"])
+                    this.viewProductGeneratedReportDtos!.push(ViewProductGeneratedReportDto.fromJS(item));
+            }
+            else {
+                this.viewProductGeneratedReportDtos = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ViewGeneratedReportDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ViewGeneratedReportDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["dateGenerated"] = this.dateGenerated ? this.dateGenerated.toISOString() : <any>null;
+        data["totalSales"] = this.totalSales !== undefined ? this.totalSales : <any>null;
+        data["totalExpenses"] = this.totalExpenses !== undefined ? this.totalExpenses : <any>null;
+        data["totalEstimatedCost"] = this.totalEstimatedCost !== undefined ? this.totalEstimatedCost : <any>null;
+        if (Array.isArray(this.viewProductGeneratedReportDtos)) {
+            data["viewProductGeneratedReportDtos"] = [];
+            for (let item of this.viewProductGeneratedReportDtos)
+                data["viewProductGeneratedReportDtos"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IViewGeneratedReportDto {
+    dateGenerated?: Date;
+    totalSales?: number;
+    totalExpenses?: number;
+    totalEstimatedCost?: number;
+    viewProductGeneratedReportDtos?: ViewProductGeneratedReportDto[];
+}
+
+export class ViewProductGeneratedReportDto implements IViewProductGeneratedReportDto {
+    productId?: number;
+    productName?: string;
+    sales?: ViewProdGenSales | null;
+    generation?: ViewProdGenRecv | null;
+    estCosting?: ViewProdEstCosting | null;
+
+    constructor(data?: IViewProductGeneratedReportDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.productId = _data["productId"] !== undefined ? _data["productId"] : <any>null;
+            this.productName = _data["productName"] !== undefined ? _data["productName"] : <any>null;
+            this.sales = _data["sales"] ? ViewProdGenSales.fromJS(_data["sales"]) : <any>null;
+            this.generation = _data["generation"] ? ViewProdGenRecv.fromJS(_data["generation"]) : <any>null;
+            this.estCosting = _data["estCosting"] ? ViewProdEstCosting.fromJS(_data["estCosting"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ViewProductGeneratedReportDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ViewProductGeneratedReportDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["productId"] = this.productId !== undefined ? this.productId : <any>null;
+        data["productName"] = this.productName !== undefined ? this.productName : <any>null;
+        data["sales"] = this.sales ? this.sales.toJSON() : <any>null;
+        data["generation"] = this.generation ? this.generation.toJSON() : <any>null;
+        data["estCosting"] = this.estCosting ? this.estCosting.toJSON() : <any>null;
+        return data;
+    }
+}
+
+export interface IViewProductGeneratedReportDto {
+    productId?: number;
+    productName?: string;
+    sales?: ViewProdGenSales | null;
+    generation?: ViewProdGenRecv | null;
+    estCosting?: ViewProdEstCosting | null;
+}
+
+export class ViewProdGenSales implements IViewProdGenSales {
+    totalQtySold?: number;
+    totalSales?: number;
+
+    constructor(data?: IViewProdGenSales) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalQtySold = _data["totalQtySold"] !== undefined ? _data["totalQtySold"] : <any>null;
+            this.totalSales = _data["totalSales"] !== undefined ? _data["totalSales"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ViewProdGenSales {
+        data = typeof data === 'object' ? data : {};
+        let result = new ViewProdGenSales();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalQtySold"] = this.totalQtySold !== undefined ? this.totalQtySold : <any>null;
+        data["totalSales"] = this.totalSales !== undefined ? this.totalSales : <any>null;
+        return data;
+    }
+}
+
+export interface IViewProdGenSales {
+    totalQtySold?: number;
+    totalSales?: number;
+}
+
+export class ViewProdGenRecv implements IViewProdGenRecv {
+    totalQtyGenerated?: number;
+    averageGeneration?: number;
+
+    constructor(data?: IViewProdGenRecv) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalQtyGenerated = _data["totalQtyGenerated"] !== undefined ? _data["totalQtyGenerated"] : <any>null;
+            this.averageGeneration = _data["averageGeneration"] !== undefined ? _data["averageGeneration"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ViewProdGenRecv {
+        data = typeof data === 'object' ? data : {};
+        let result = new ViewProdGenRecv();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalQtyGenerated"] = this.totalQtyGenerated !== undefined ? this.totalQtyGenerated : <any>null;
+        data["averageGeneration"] = this.averageGeneration !== undefined ? this.averageGeneration : <any>null;
+        return data;
+    }
+}
+
+export interface IViewProdGenRecv {
+    totalQtyGenerated?: number;
+    averageGeneration?: number;
+}
+
+export class ViewProdEstCosting implements IViewProdEstCosting {
+    overallTotalCost?: number;
+    viewProdEstCostingDetails?: ViewProdEstCostingDetails[];
+
+    constructor(data?: IViewProdEstCosting) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.overallTotalCost = _data["overallTotalCost"] !== undefined ? _data["overallTotalCost"] : <any>null;
+            if (Array.isArray(_data["viewProdEstCostingDetails"])) {
+                this.viewProdEstCostingDetails = [] as any;
+                for (let item of _data["viewProdEstCostingDetails"])
+                    this.viewProdEstCostingDetails!.push(ViewProdEstCostingDetails.fromJS(item));
+            }
+            else {
+                this.viewProdEstCostingDetails = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ViewProdEstCosting {
+        data = typeof data === 'object' ? data : {};
+        let result = new ViewProdEstCosting();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["overallTotalCost"] = this.overallTotalCost !== undefined ? this.overallTotalCost : <any>null;
+        if (Array.isArray(this.viewProdEstCostingDetails)) {
+            data["viewProdEstCostingDetails"] = [];
+            for (let item of this.viewProdEstCostingDetails)
+                data["viewProdEstCostingDetails"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IViewProdEstCosting {
+    overallTotalCost?: number;
+    viewProdEstCostingDetails?: ViewProdEstCostingDetails[];
+}
+
+export class ViewProdEstCostingDetails implements IViewProdEstCostingDetails {
+    costName?: string;
+    totalCost?: number;
+
+    constructor(data?: IViewProdEstCostingDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.costName = _data["costName"] !== undefined ? _data["costName"] : <any>null;
+            this.totalCost = _data["totalCost"] !== undefined ? _data["totalCost"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ViewProdEstCostingDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new ViewProdEstCostingDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["costName"] = this.costName !== undefined ? this.costName : <any>null;
+        data["totalCost"] = this.totalCost !== undefined ? this.totalCost : <any>null;
+        return data;
+    }
+}
+
+export interface IViewProdEstCostingDetails {
+    costName?: string;
+    totalCost?: number;
+}
+
 export class ApiResponseOfPaginatedResultOfSalesHeaderDto implements IApiResponseOfPaginatedResultOfSalesHeaderDto {
     data!: PaginatedResultOfSalesHeaderDto;
     message?: string;
@@ -7352,6 +7816,46 @@ export enum UserRoleEnum {
     Cashier = 1,
     Inventory = 2,
     Owner = 3,
+}
+
+export class LoginUserDto implements ILoginUserDto {
+    userName?: string;
+    password?: string;
+
+    constructor(data?: ILoginUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"] !== undefined ? _data["userName"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): LoginUserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginUserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName !== undefined ? this.userName : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data;
+    }
+}
+
+export interface ILoginUserDto {
+    userName?: string;
+    password?: string;
 }
 
 export interface FileResponse {

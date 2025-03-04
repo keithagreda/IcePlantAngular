@@ -157,7 +157,7 @@
       *ngIf="cartItem.length > 0"
       mat-flat-button
       color="primary"
-      (click)="insertCustomer()"
+      (click)="openAuthentication()"
     >
       Save Transaction
     </button>
@@ -210,3 +210,7 @@
     Save Transaction
   </button>
 </p-dialog>
+
+<app-authenticate-user
+  (isAuthenticated)="insertCustomer($event)"
+></app-authenticate-user>

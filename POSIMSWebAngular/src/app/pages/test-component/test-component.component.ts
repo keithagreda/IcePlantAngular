@@ -31,6 +31,7 @@ import {
 import { MonthlySalesChart } from 'src/app/components/monthly-sales-chart/monthly-sales-chart.component';
 import { MachineProductionComponent } from 'src/app/components/machine-production/machine-production.component';
 import { COLORS } from 'src/assets/color';
+import { AppSideLoginComponent } from '../authentication/side-login/side-login.component';
 
 @Component({
   selector: 'app-test-component',
@@ -43,6 +44,7 @@ import { COLORS } from 'src/assets/color';
     SidebarModule,
     NgApexchartsModule,
     MachineProductionComponent,
+    AppSideLoginComponent
   ],
   templateUrl: './test-component.component.html',
   styleUrl: './test-component.component.scss',

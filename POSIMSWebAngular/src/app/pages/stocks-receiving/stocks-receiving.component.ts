@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { AuthenticateUserComponent } from 'src/app/components/authenticate-user/authenticate-user.component';
 import { CreateOrEditStocksReceivingModalComponent } from 'src/app/components/create-or-edit-stocks-receiving-modal/create-or-edit-stocks-receiving-modal.component';
 import { MaterialModule } from 'src/app/material.module';
 import {
@@ -13,6 +14,7 @@ import {
     MaterialModule,
     CommonModule,
     CreateOrEditStocksReceivingModalComponent,
+    AuthenticateUserComponent
   ],
   templateUrl: './stocks-receiving.component.html',
   styleUrl: './stocks-receiving.component.scss',
@@ -20,6 +22,8 @@ import {
 export class StocksReceivingComponent implements OnInit {
   @ViewChild(CreateOrEditStocksReceivingModalComponent)
   createOrEditStocksReceivingModalComponent!: CreateOrEditStocksReceivingModalComponent;
+  @ViewChild(AuthenticateUserComponent)
+    authenticateUserComponent!: AuthenticateUserComponent;
   stocksReceivings: GetAllStocksReceivingDto[] = [];
   displayedColumns1: string[] = [
     'transNum',
@@ -48,7 +52,11 @@ export class StocksReceivingComponent implements OnInit {
     });
   }
 
-  showCreateOrEditModal(id?: string) {
+  openAuthentication(){
+    this.authenticateUserComponent.visible = true;
+
+  }
+  showCreateOrEditModal(event: boolean, id?: string) {
     this.createOrEditStocksReceivingModalComponent.show();
   }
 }

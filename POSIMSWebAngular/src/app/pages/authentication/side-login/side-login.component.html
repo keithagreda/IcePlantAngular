@@ -1,11 +1,19 @@
 <div
-  class="blank-layout-container justify-content-center align-items-center bg-light"
+  [ngClass]="
+    !authentication
+      ? 'blank-layout-container justify-content-center align-items-center bg-light'
+      : ''
+  "
 >
   <div
-    class="position-relative row w-100 h-100 bg-gredient justify-content-center"
+    [ngClass]="
+      !authentication
+        ? 'position-relative row w-100 h-100 bg-gredient justify-content-center'
+        : ''
+    "
   >
     <div class="col-lg-4 d-flex align-items-center">
-      <mat-card class="cardWithShadow boxed-auth">
+      <mat-card [ngClass]="!authentication ? 'cardWithShadow boxed-auth' : ''">
         <mat-card-content class="p-32">
           <!-- <div class="text-center">
             <a [routerLink]="['/dashboard']">
@@ -32,7 +40,10 @@
               <input matInput type="password" formControlName="password" />
             </mat-form-field>
 
-            <div class="d-flex align-items-center m-b-12">
+            <div
+              class="d-flex align-items-center m-b-12"
+              *ngIf="!authentication"
+            >
               <!-- <mat-checkbox color="primary">Remember this Device</mat-checkbox> -->
               <a
                 [routerLink]="['/']"
@@ -40,15 +51,29 @@
                 >Forgot Password ?</a
               >
             </div>
-            <a
-              (click)="login()"
-              mat-flat-button
-              color="primary"
-              class="w-100"
-              [disabled]="saving"
-            >
-              Sign In
-            </a>
+            <ng-container *ngIf="authentication">
+              <a
+                (click)="authenticate()"
+                mat-flat-button
+                color="primary"
+                class="w-100"
+                [disabled]="saving"
+              >
+                Authenticate
+              </a>
+            </ng-container>
+            <ng-container *ngIf="!authentication">
+              <a
+                (click)="login()"
+                mat-flat-button
+                color="primary"
+                class="w-100"
+                [disabled]="saving"
+              >
+                Sign In
+              </a>
+            </ng-container>
+
             <!-- input -->
           </form>
         </mat-card-content>

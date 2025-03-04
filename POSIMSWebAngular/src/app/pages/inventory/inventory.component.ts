@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
+import { AuthenticateUserComponent } from 'src/app/components/authenticate-user/authenticate-user.component';
 import { CreateOrEditStocksReceivingModalComponent } from 'src/app/components/create-or-edit-stocks-receiving-modal/create-or-edit-stocks-receiving-modal.component';
 import { CreateStocksReconciliationComponent } from 'src/app/components/create-stocks-reconciliation/create-stocks-reconciliation.component';
 import { CurrentStocksComponent } from 'src/app/components/current-stocks/current-stocks.component';
@@ -20,7 +21,8 @@ import Swal from 'sweetalert2';
     InventoryLogsComponent,
     CommonModule,
     CreateStocksReconciliationComponent,
-    StockCardComponent
+    StockCardComponent,
+    AuthenticateUserComponent
   ],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',
@@ -28,6 +30,8 @@ import Swal from 'sweetalert2';
 export class InventoryComponent {
   @ViewChild(CurrentStocksComponent)
   currentStocksComponent!: CurrentStocksComponent;
+  @ViewChild(AuthenticateUserComponent)
+    authenticateUserComponent!: AuthenticateUserComponent;
 
   @ViewChild(CreateOrEditStocksReceivingModalComponent)
   createOrEditStocksReceivingModalComponent!: CreateOrEditStocksReceivingModalComponent;
@@ -86,11 +90,16 @@ export class InventoryComponent {
     this.currentStocksComponent.getCurrentStocks();
   }
 
-  showCorEStocksReceivingModal() {
+  showCorEStocksReceivingModal(event: boolean) {
     this.createOrEditStocksReceivingModalComponent.show();
   }
 
   showCorEStocksReconciliationModal() {
     this.createStocksReconciliationComponent.show();
+  }
+
+  openAuthentication(){
+    this.authenticateUserComponent.visible = true;
+
   }
 }

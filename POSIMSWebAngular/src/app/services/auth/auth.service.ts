@@ -56,6 +56,7 @@ export class AuthService {
 
   onlogout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('userName');
     this.userRolesSubject.next([]); // Clear roles on logout
     this.router.navigate(['authentication/login']);
   }

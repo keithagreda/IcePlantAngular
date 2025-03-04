@@ -22,6 +22,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ViewSalesDetailsComponent } from 'src/app/components/view-sales-details/view-sales-details.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthenticateUserComponent } from "../../components/authenticate-user/authenticate-user.component";
 
 @Component({
   selector: 'app-cashier',
@@ -34,13 +35,16 @@ import { HttpErrorResponse } from '@angular/common/http';
     SidebarModule,
     AutoCompleteModule,
     ViewSalesDetailsComponent,
-  ],
+    AuthenticateUserComponent
+],
   templateUrl: './cashier.component.html',
   styleUrl: './cashier.component.scss',
 })
 export class CashierComponent implements OnInit {
   @ViewChild(ViewSalesDetailsComponent)
   viewSalesDetailsComponent!: ViewSalesDetailsComponent;
+  @ViewChild(AuthenticateUserComponent)
+  authenticateUserComponent!: AuthenticateUserComponent;
   sideBarVisible2 = false;
   saving = false;
   items: GetProductDropDownTableV1Dto[] = [];
@@ -194,9 +198,16 @@ export class CashierComponent implements OnInit {
     });
   }
 
-  insertCustomer() {
+
+
+  openAuthentication(){
+    this.authenticateUserComponent.visible = true;
+
+  }
+  insertCustomer(event: boolean) {
     this.visible = true;
   }
+
 
   getCartItem() {
     this.cartItem = this._cartService.getCart();
