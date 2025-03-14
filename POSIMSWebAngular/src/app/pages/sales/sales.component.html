@@ -83,7 +83,7 @@
               'table-row-odd': i % 2 !== 0
             }"
           >
-            ${{ element.totalAmount }}
+            {{ element.totalAmount | currency:'PHP'  }}
           </td>
         </ng-container>
 

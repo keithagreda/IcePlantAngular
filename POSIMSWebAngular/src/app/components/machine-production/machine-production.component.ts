@@ -22,7 +22,7 @@ export class MachineProductionComponent implements OnInit {
   @Input() num = 0;
   series: ApexNonAxisChartSeries = [0.1, 0.1]; // Data values
   chart: ApexChart;
-  labels = ['Good', 'Bad'];
+  labels = ['Good', 'Reject'];
   colors = ['#3cb043', '#ff6692'];
   responsive: ApexResponsive[] = [];
 
