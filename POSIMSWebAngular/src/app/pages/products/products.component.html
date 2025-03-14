@@ -19,8 +19,15 @@
           <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">
             Price
           </th>
-
-          <td mat-cell *matCellDef="let element" class="mat-body-1">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            class="mat-body-1"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
             <h6 class="mat-body-1 f-s-16 m-b-4">
               <span class="text-dark f-w-600 text-capitalize"
                 >₱{{ element.price }}
@@ -38,7 +45,15 @@
           >
             Code
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            class="mat-body-1"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
             <span class="rounded f-w-600 p-6 p-y-4 uc">
               {{ element.prodCode | titlecase }}
             </span>
@@ -53,7 +68,15 @@
           >
             Name
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            class="mat-body-1"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
             <div class="m-l-16">
               <h6 class="mat-subtitle-1 f-s-14 f-w-600">
                 {{ element.name }}
@@ -66,7 +89,15 @@
           <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">
             Days Till Expiration
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            class="mat-body-1"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
             <span class="f-w-600 p-6 p-y-4">
               {{ element.daysTillExpiration }}
             </span>
@@ -81,7 +112,15 @@
           >
             Category
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            class="mat-body-1"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
             <span class="f-w-600 f-s-14">
               <ng-container *ngFor="let item of element.productCategoriesDto">
                 {{ item.name }}
@@ -99,7 +138,15 @@
           >
             Action
           </th>
-          <td mat-cell *matCellDef="let element" class="mat-body-1">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            class="mat-body-1"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
             <button
               mat-icon-button
               [matMenuTriggerFor]="menu"

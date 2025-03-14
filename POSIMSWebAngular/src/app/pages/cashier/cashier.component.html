@@ -32,8 +32,8 @@
               <mat-card-content>
                 <div class="item-control" *ngIf="item.showControl">
                   <div class="item-quantity">
-                    <button class="btn-qty" (click)="addQuantity(item)">
-                      +
+                    <button class="btn-qty" (click)="minusQuantity(item)">
+                      -
                     </button>
                     <input
                       matInput
@@ -42,8 +42,8 @@
                       name="quantity"
                       [(ngModel)]="selectedProduct.quantity"
                     />
-                    <button class="btn-qty" (click)="minusQuantity(item)">
-                      -
+                    <button class="btn-qty" (click)="addQuantity(item)">
+                      +
                     </button>
                   </div>
                   <button
@@ -119,7 +119,7 @@
             <span
               ><strong>Price:</strong> {{ item.productPrice | currency }}</span
             >
-            <mat-label class="f-w-600 m-b-8 d-block"
+            <!-- <mat-label class="f-w-600 m-b-8 d-block"
               >Actual selling price</mat-label
             >
             <mat-form-field appearance="outline" class="w-100" color="primary">
@@ -132,20 +132,20 @@
                 placeholder="Actual Selling Price"
                 type="number"
               />
-            </mat-form-field>
+            </mat-form-field> -->
             <div class="atc-item-control">
               <div class="atc-item-quantity">
-                <button
-                  class="btn-qty"
-                  (click)="cartQuantityHandler(item.productId, 1)"
-                >
-                  +
-                </button>
                 <button
                   class="btn-qty"
                   (click)="cartQuantityHandler(item.productId, -1)"
                 >
                   -
+                </button>
+                <button
+                  class="btn-qty"
+                  (click)="cartQuantityHandler(item.productId, 1)"
+                >
+                  +
                 </button>
               </div>
             </div>

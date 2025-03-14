@@ -43,3 +43,11 @@ body {
 .loading {
   margin: 0px auto;
 }
+
+.table-row-even {
+  background-color: #f9f9f9; /* Light gray for odd rows */
+}
+
+.table-row-odd {
+  background-color: #ffffff; /* White for even rows */
+}
