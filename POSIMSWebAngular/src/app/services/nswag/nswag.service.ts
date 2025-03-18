@@ -945,6 +945,58 @@ export class NotificationService {
         }
         return _observableOf(null as any);
     }
+
+    testMessage(message: string | undefined): Observable<ApiResponseOfString> {
+        let url_ = this.baseUrl + "/api/Notification/TestMessage?";
+        if (message === null)
+            throw new Error("The parameter 'message' cannot be null.");
+        else if (message !== undefined)
+            url_ += "message=" + encodeURIComponent("" + message) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processTestMessage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processTestMessage(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfString>;
+        }));
+    }
+
+    protected processTestMessage(response: HttpResponseBase): Observable<ApiResponseOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -2339,8 +2391,16 @@ export class StocksService {
         return _observableOf(null as any);
     }
 
-    getReceiveStocks(): Observable<ApiResponseOfListOfGetAllStocksReceivingDto> {
-        let url_ = this.baseUrl + "/api/Stocks/GetReceivingStocks";
+    getReceiveStocks(date: Date | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfGetAllStocksReceivingDto> {
+        let url_ = this.baseUrl + "/api/Stocks/GetReceivingStocks?";
+        if (date !== undefined && date !== null)
+            url_ += "Date=" + encodeURIComponent(date ? "" + date.toISOString() : "") + "&";
+        if (filterText !== undefined && filterText !== null)
+            url_ += "FilterText=" + encodeURIComponent("" + filterText) + "&";
+        if (pageNumber !== undefined && pageNumber !== null)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -2358,14 +2418,14 @@ export class StocksService {
                 try {
                     return this.processGetReceiveStocks(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ApiResponseOfListOfGetAllStocksReceivingDto>;
+                    return _observableThrow(e) as any as Observable<ApiResponseOfPaginatedResultOfGetAllStocksReceivingDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ApiResponseOfListOfGetAllStocksReceivingDto>;
+                return _observableThrow(response_) as any as Observable<ApiResponseOfPaginatedResultOfGetAllStocksReceivingDto>;
         }));
     }
 
-    protected processGetReceiveStocks(response: HttpResponseBase): Observable<ApiResponseOfListOfGetAllStocksReceivingDto> {
+    protected processGetReceiveStocks(response: HttpResponseBase): Observable<ApiResponseOfPaginatedResultOfGetAllStocksReceivingDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2376,7 +2436,7 @@ export class StocksService {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ApiResponseOfListOfGetAllStocksReceivingDto.fromJS(resultData200);
+            result200 = ApiResponseOfPaginatedResultOfGetAllStocksReceivingDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2743,18 +2803,20 @@ export class VoidRequestService {
         this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
-    getVoidRequest(input: GetVoidRequestInput): Observable<ApiResponseOfPaginatedResultOfGetVoidRequest> {
-        let url_ = this.baseUrl + "/api/VoidRequest/GetVoidRequest";
+    getVoidRequest(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfGetVoidRequest> {
+        let url_ = this.baseUrl + "/api/VoidRequest/GetVoidRequest?";
+        if (filterText !== undefined && filterText !== null)
+            url_ += "FilterText=" + encodeURIComponent("" + filterText) + "&";
+        if (pageNumber !== undefined && pageNumber !== null)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
-        const content_ = JSON.stringify(input);
-
         let options_ : any = {
-            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
@@ -4510,6 +4572,7 @@ export interface IGetMachineGenerationV1Dto {
 export class CreateNotificationDto implements ICreateNotificationDto {
     title?: string;
     desc?: string;
+    redirectTo?: string | null;
 
     constructor(data?: ICreateNotificationDto) {
         if (data) {
@@ -4524,6 +4587,7 @@ export class CreateNotificationDto implements ICreateNotificationDto {
         if (_data) {
             this.title = _data["title"] !== undefined ? _data["title"] : <any>null;
             this.desc = _data["desc"] !== undefined ? _data["desc"] : <any>null;
+            this.redirectTo = _data["redirectTo"] !== undefined ? _data["redirectTo"] : <any>null;
         }
     }
 
@@ -4538,6 +4602,7 @@ export class CreateNotificationDto implements ICreateNotificationDto {
         data = typeof data === 'object' ? data : {};
         data["title"] = this.title !== undefined ? this.title : <any>null;
         data["desc"] = this.desc !== undefined ? this.desc : <any>null;
+        data["redirectTo"] = this.redirectTo !== undefined ? this.redirectTo : <any>null;
         return data;
     }
 }
@@ -4545,6 +4610,7 @@ export class CreateNotificationDto implements ICreateNotificationDto {
 export interface ICreateNotificationDto {
     title?: string;
     desc?: string;
+    redirectTo?: string | null;
 }
 
 export class ApiResponseOfPaginatedResultOfGetNotificationDto implements IApiResponseOfPaginatedResultOfGetNotificationDto {
@@ -7875,13 +7941,13 @@ export interface ICreateStocksReceivingDto {
     machineId: number;
 }
 
-export class ApiResponseOfListOfGetAllStocksReceivingDto implements IApiResponseOfListOfGetAllStocksReceivingDto {
-    data!: GetAllStocksReceivingDto[];
+export class ApiResponseOfPaginatedResultOfGetAllStocksReceivingDto implements IApiResponseOfPaginatedResultOfGetAllStocksReceivingDto {
+    data!: PaginatedResultOfGetAllStocksReceivingDto;
     message?: string;
     isSuccess?: boolean;
     errors?: string[];
 
-    constructor(data?: IApiResponseOfListOfGetAllStocksReceivingDto) {
+    constructor(data?: IApiResponseOfPaginatedResultOfGetAllStocksReceivingDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -7889,20 +7955,13 @@ export class ApiResponseOfListOfGetAllStocksReceivingDto implements IApiResponse
             }
         }
         if (!data) {
-            this.data = [];
+            this.data = new PaginatedResultOfGetAllStocksReceivingDto();
         }
     }
 
     init(_data?: any) {
         if (_data) {
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data!.push(GetAllStocksReceivingDto.fromJS(item));
-            }
-            else {
-                this.data = <any>null;
-            }
+            this.data = _data["data"] ? PaginatedResultOfGetAllStocksReceivingDto.fromJS(_data["data"]) : new PaginatedResultOfGetAllStocksReceivingDto();
             this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
             this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
             if (Array.isArray(_data["errors"])) {
@@ -7916,20 +7975,16 @@ export class ApiResponseOfListOfGetAllStocksReceivingDto implements IApiResponse
         }
     }
 
-    static fromJS(data: any): ApiResponseOfListOfGetAllStocksReceivingDto {
+    static fromJS(data: any): ApiResponseOfPaginatedResultOfGetAllStocksReceivingDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ApiResponseOfListOfGetAllStocksReceivingDto();
+        let result = new ApiResponseOfPaginatedResultOfGetAllStocksReceivingDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item.toJSON());
-        }
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
         data["message"] = this.message !== undefined ? this.message : <any>null;
         data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
         if (Array.isArray(this.errors)) {
@@ -7941,11 +7996,74 @@ export class ApiResponseOfListOfGetAllStocksReceivingDto implements IApiResponse
     }
 }
 
-export interface IApiResponseOfListOfGetAllStocksReceivingDto {
-    data: GetAllStocksReceivingDto[];
+export interface IApiResponseOfPaginatedResultOfGetAllStocksReceivingDto {
+    data: PaginatedResultOfGetAllStocksReceivingDto;
     message?: string;
     isSuccess?: boolean;
     errors?: string[];
+}
+
+export class PaginatedResultOfGetAllStocksReceivingDto implements IPaginatedResultOfGetAllStocksReceivingDto {
+    items?: GetAllStocksReceivingDto[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+
+    constructor(data?: IPaginatedResultOfGetAllStocksReceivingDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(GetAllStocksReceivingDto.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+            this.currentPage = _data["currentPage"] !== undefined ? _data["currentPage"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaginatedResultOfGetAllStocksReceivingDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedResultOfGetAllStocksReceivingDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        data["currentPage"] = this.currentPage !== undefined ? this.currentPage : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        return data;
+    }
+}
+
+export interface IPaginatedResultOfGetAllStocksReceivingDto {
+    items?: GetAllStocksReceivingDto[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
 }
 
 export class GetAllStocksReceivingDto implements IGetAllStocksReceivingDto {
@@ -8587,50 +8705,6 @@ export interface IPaginatedResultOfGetVoidRequest {
     pageSize?: number;
 }
 
-export class GetVoidRequest implements IGetVoidRequest {
-    transNum?: string;
-    approverName?: string;
-    voidRequestDto?: VoidRequestDto;
-
-    constructor(data?: IGetVoidRequest) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.transNum = _data["transNum"] !== undefined ? _data["transNum"] : <any>null;
-            this.approverName = _data["approverName"] !== undefined ? _data["approverName"] : <any>null;
-            this.voidRequestDto = _data["voidRequestDto"] ? VoidRequestDto.fromJS(_data["voidRequestDto"]) : <any>null;
-        }
-    }
-
-    static fromJS(data: any): GetVoidRequest {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetVoidRequest();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["transNum"] = this.transNum !== undefined ? this.transNum : <any>null;
-        data["approverName"] = this.approverName !== undefined ? this.approverName : <any>null;
-        data["voidRequestDto"] = this.voidRequestDto ? this.voidRequestDto.toJSON() : <any>null;
-        return data;
-    }
-}
-
-export interface IGetVoidRequest {
-    transNum?: string;
-    approverName?: string;
-    voidRequestDto?: VoidRequestDto;
-}
-
 export class VoidRequestDto implements IVoidRequestDto {
     id?: string;
     status?: VoidRequestStatus;
@@ -8679,111 +8753,64 @@ export interface IVoidRequestDto {
     approverId?: string | null;
 }
 
+export class GetVoidRequest extends VoidRequestDto implements IGetVoidRequest {
+    transNum?: string;
+    approverName?: string;
+    requesterName?: string;
+    dateRequested?: string;
+    strStatus?: string;
+    createdBy?: string;
+
+    constructor(data?: IGetVoidRequest) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.transNum = _data["transNum"] !== undefined ? _data["transNum"] : <any>null;
+            this.approverName = _data["approverName"] !== undefined ? _data["approverName"] : <any>null;
+            this.requesterName = _data["requesterName"] !== undefined ? _data["requesterName"] : <any>null;
+            this.dateRequested = _data["dateRequested"] !== undefined ? _data["dateRequested"] : <any>null;
+            this.strStatus = _data["strStatus"] !== undefined ? _data["strStatus"] : <any>null;
+            this.createdBy = _data["createdBy"] !== undefined ? _data["createdBy"] : <any>null;
+        }
+    }
+
+    static override fromJS(data: any): GetVoidRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetVoidRequest();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["transNum"] = this.transNum !== undefined ? this.transNum : <any>null;
+        data["approverName"] = this.approverName !== undefined ? this.approverName : <any>null;
+        data["requesterName"] = this.requesterName !== undefined ? this.requesterName : <any>null;
+        data["dateRequested"] = this.dateRequested !== undefined ? this.dateRequested : <any>null;
+        data["strStatus"] = this.strStatus !== undefined ? this.strStatus : <any>null;
+        data["createdBy"] = this.createdBy !== undefined ? this.createdBy : <any>null;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IGetVoidRequest extends IVoidRequestDto {
+    transNum?: string;
+    approverName?: string;
+    requesterName?: string;
+    dateRequested?: string;
+    strStatus?: string;
+    createdBy?: string;
+}
+
 export enum VoidRequestStatus {
     Pending = 0,
     Inprogress = 1,
     Accepted = 2,
     Declined = 3,
-}
-
-export class PaginationParams implements IPaginationParams {
-    pageNumber?: number | null;
-    pageSize?: number | null;
-
-    constructor(data?: IPaginationParams) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.pageNumber = _data["pageNumber"] !== undefined ? _data["pageNumber"] : <any>null;
-            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): PaginationParams {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaginationParams();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["pageNumber"] = this.pageNumber !== undefined ? this.pageNumber : <any>null;
-        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
-        return data;
-    }
-}
-
-export interface IPaginationParams {
-    pageNumber?: number | null;
-    pageSize?: number | null;
-}
-
-export class GenericSearchParams extends PaginationParams implements IGenericSearchParams {
-    filterText?: string | null;
-
-    constructor(data?: IGenericSearchParams) {
-        super(data);
-    }
-
-    override init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            this.filterText = _data["filterText"] !== undefined ? _data["filterText"] : <any>null;
-        }
-    }
-
-    static override fromJS(data: any): GenericSearchParams {
-        data = typeof data === 'object' ? data : {};
-        let result = new GenericSearchParams();
-        result.init(data);
-        return result;
-    }
-
-    override toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["filterText"] = this.filterText !== undefined ? this.filterText : <any>null;
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IGenericSearchParams extends IPaginationParams {
-    filterText?: string | null;
-}
-
-export class GetVoidRequestInput extends GenericSearchParams implements IGetVoidRequestInput {
-
-    constructor(data?: IGetVoidRequestInput) {
-        super(data);
-    }
-
-    override init(_data?: any) {
-        super.init(_data);
-    }
-
-    static override fromJS(data: any): GetVoidRequestInput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetVoidRequestInput();
-        result.init(data);
-        return result;
-    }
-
-    override toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
-        return data;
-    }
-}
-
-export interface IGetVoidRequestInput extends IGenericSearchParams {
 }
 
 export interface FileResponse {

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { AuthenticateUserComponent } from 'src/app/components/authenticate-user/authenticate-user.component';
 import { CreateOrEditStocksReceivingModalComponent } from 'src/app/components/create-or-edit-stocks-receiving-modal/create-or-edit-stocks-receiving-modal.component';
 import { MaterialModule } from 'src/app/material.module';
@@ -33,16 +34,24 @@ export class StocksReceivingComponent implements OnInit {
     'dateReceived',
     'action',
   ];
+  totalRecords = 0;
   constructor(private _stocksReceivingService: StocksService) {}
   ngOnInit(): void {
     this.getAllStocksReceiving();
   }
 
-  getAllStocksReceiving() {
-    this._stocksReceivingService.getReceiveStocks().subscribe({
+  getAllStocksReceiving(event?: PageEvent) {
+    const currentPage = event?.pageIndex ?? 0;
+      const pageSize = event?.pageSize ?? 5;
+    this._stocksReceivingService.getReceiveStocks(
+      undefined,
+      undefined,
+      currentPage + 1, pageSize
+    ).subscribe({
       next: (res) => {
         if (res.isSuccess) {
-          this.stocksReceivings = res.data;
+          this.stocksReceivings = res.data.items ?? [];
+          this.totalRecords = res.data.totalCount ?? 0;
           console.log(res.data);
         }
       },
@@ -51,6 +60,8 @@ export class StocksReceivingComponent implements OnInit {
       },
     });
   }
+
+  
 
   openAuthentication(){
     this.authenticateUserComponent.visible = true;

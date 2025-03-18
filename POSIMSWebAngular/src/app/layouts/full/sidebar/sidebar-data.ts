@@ -57,6 +57,12 @@ export const navItems: NavItem[] = [
     roles: ['Admin', 'Inventory', 'Owner'],
   },
   {
+    displayName: 'Void Requests',
+    iconName: 'solar:widget-add-line-duotone',
+    route: '/void-request',
+    roles: ['Admin'],
+  },
+  {
     displayName: 'Test',
     iconName: 'solar:widget-add-line-duotone',
     route: '/test',

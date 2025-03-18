@@ -13,11 +13,13 @@ import {
   SalesHeaderDto,
   SalesService,
   ViewSalesHeaderDto,
+  VoidRequestService,
 } from 'src/app/services/nswag/nswag.service';
 import { ViewSalesDetailsV1Component } from 'src/app/components/view-sales-details-v1/view-sales-details-v1.component';
 import { LoadingService } from 'src/app/services/loading.service';
 import { SalesSummaryComponent } from 'src/app/components/sales-summary/sales-summary.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-sales',
@@ -56,6 +58,7 @@ export class SalesComponent implements OnInit {
     private _toastr: ToastrService,
     private _salesService: SalesService,
     private _loadingService: LoadingService,
+    private _voidRequest: VoidRequestService,
     public authService: AuthService
   ) {}
 
@@ -83,6 +86,37 @@ export class SalesComponent implements OnInit {
           console.error(err);
         },
       });
+  }
+
+  requestForVoid(headerId: string) {
+    Swal.fire({
+          title: 'Are you sure?',
+          text: "You are about to request a void for this transaction",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#635bff',
+          cancelButtonColor: '#ff6692',
+          confirmButtonText: 'Confirm',
+          customClass: {
+            popup: 'custom-swal-popup',
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this._voidRequest.createVoidRequest(headerId).subscribe({
+              next: (res) =>{
+                if(res.isSuccess){
+                  this._toastr.success(res.message);
+                  return;
+                }
+                this._toastr.error(res.message);
+                return;
+              },
+              error: (err) => {
+                this._toastr.error(err);
+              }
+            })
+          }
+        });
   }
 
   showSalesDetails(headerId: string) {

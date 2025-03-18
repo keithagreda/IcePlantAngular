@@ -20,7 +20,13 @@ export const routes: Routes = [
             (m) => m.EntityHistoryRoutes
           ),
       },
-
+      {
+        path: 'void-request',
+        loadChildren: () =>
+          import('./pages/void-request/void-request.routes').then(
+            (m) => m.VoidRequestRoutes
+          ),
+      },
       {
         path: 'test',
         loadChildren: () =>

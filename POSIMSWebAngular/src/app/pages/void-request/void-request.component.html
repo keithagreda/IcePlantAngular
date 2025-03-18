@@ -1,12 +1,9 @@
-<mat-card
-  class="cardWithShadow"
-  *ngIf="authService.hasRole('Cashier') || authService.hasRole('Admin')"
->
+<mat-card class="cardWithShadow">
   <mat-card-content>
     <div class="k-header">
-      <mat-card-title>Sales Table</mat-card-title>
+      <mat-card-title>Void Request</mat-card-title>
       <!-- <button
-        (click)="showCreateModal()"
+        (click)="openAuthentication()"
         mat-flat-button
         color="primary"
         class="m-r-8"
@@ -15,15 +12,16 @@
       </button> -->
     </div>
     <div class="table-responsive">
-      <table mat-table [dataSource]="dataSource" class="w-100">
-        <!-- Transaction Number -->
+      <table mat-table [dataSource]="voidRequest" class="w-100">
+        <!-- Position Column -->
+        <!-- Name Column -->
         <ng-container matColumnDef="transNum">
           <th
             mat-header-cell
             *matHeaderCellDef
             class="f-w-600 mat-subtitle-1 f-s-14"
           >
-            Transaction #
+            Transaction Number
           </th>
 
           <td
@@ -37,101 +35,104 @@
           >
             <h6 class="mat-body-1 f-s-16 m-b-4">
               <span class="text-dark f-w-600 text-capitalize"
-                >{{ element.transNum | titlecase }}
+                >{{ element.transNum }}
               </span>
             </h6>
           </td>
         </ng-container>
 
-        <!-- Customer Name -->
-        <ng-container matColumnDef="customerName">
+        <!-- Weight Column -->
+        <ng-container matColumnDef="requestedBy">
           <th
             mat-header-cell
             *matHeaderCellDef
             class="f-w-600 mat-subtitle-1 f-s-14"
           >
-            Customer Name
+            Requested By
           </th>
           <td
             mat-cell
             *matCellDef="let element; let i = index"
-            class="mat-body-1"
             [ngClass]="{
               'table-row-even': i % 2 === 0,
               'table-row-odd': i % 2 !== 0
             }"
           >
-            {{ element.customerName }}
+            <span class="f-w-600 f-s-14">
+              {{ element.requesterName | titlecase }}
+            </span>
           </td>
         </ng-container>
 
-        <!-- Total Amount -->
-        <ng-container matColumnDef="totalAmount">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            class="f-w-600 mat-subtitle-1 f-s-14 text-capitalize"
-          >
-            Total Amount
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element; let i = index"
-            class="mat-body-1"
-            [ngClass]="{
-              'table-row-even': i % 2 === 0,
-              'table-row-odd': i % 2 !== 0
-            }"
-          >
-            {{ element.totalAmount | currency : "PHP" }}
-          </td>
-        </ng-container>
-
-        <!-- Transaction Date -->
-        <ng-container matColumnDef="transactionDate">
+        <ng-container matColumnDef="status">
           <th
             mat-header-cell
             *matHeaderCellDef
             class="f-w-600 mat-subtitle-1 f-s-14"
           >
-            Transaction Date
+            Status
           </th>
           <td
             mat-cell
             *matCellDef="let element; let i = index"
-            class="mat-body-1"
             [ngClass]="{
               'table-row-even': i % 2 === 0,
               'table-row-odd': i % 2 !== 0
             }"
           >
-            {{ element.transactionDate | date : "medium" }}
+            <div class="m-l-16">
+              <h6 class="f-w-600 f-s-14">
+                {{ element.strStatus }}
+              </h6>
+            </div>
           </td>
         </ng-container>
 
-        <!-- Sold By -->
-        <ng-container matColumnDef="soldBy">
+        <ng-container matColumnDef="approver">
           <th
             mat-header-cell
             *matHeaderCellDef
             class="f-w-600 mat-subtitle-1 f-s-14"
           >
-            Sold By
+            Approver
           </th>
           <td
             mat-cell
             *matCellDef="let element; let i = index"
-            class="mat-body-1"
             [ngClass]="{
               'table-row-even': i % 2 === 0,
               'table-row-odd': i % 2 !== 0
             }"
           >
-            {{ element.soldBy }}
+            <span>
+              {{ element.approverName }}
+            </span>
           </td>
         </ng-container>
 
-        <!-- Action -->
+        <ng-container matColumnDef="dateRequested">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14"
+          >
+            Date Requested
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
+            <span>
+              {{ element.dateRequested }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Symbol Column -->
         <ng-container matColumnDef="action">
           <th
             mat-header-cell
@@ -152,57 +153,52 @@
             <button
               mat-icon-button
               [matMenuTriggerFor]="menu"
-              aria-label="Actions"
+              aria-label="Example icon-button with a menu"
             >
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="showSalesDetails(element.id)">
-                <mat-icon> more_horiz</mat-icon>
-                <span>View More</span>
-              </button>
-              <button mat-menu-item (click)="requestForVoid(element.id)">
-                <mat-icon> remove_shopping_cart</mat-icon>
-                <span>Void</span>
-              </button>
-              <!-- <button mat-menu-item (click)="editTransaction(element.id)">
+              <!-- <button (click)="showCreateModal(element.id)" mat-menu-item>
                   <mat-icon>edit</mat-icon>
                   <span>Edit</span>
-                </button>
-                <button mat-menu-item (click)="deleteTransaction(element.id)">
-                  <mat-icon>delete</mat-icon>
-                  <span>Delete</span>
                 </button> -->
+              <button
+                mat-menu-item
+                (click)="updateVoidRequest(element.id, status.Accepted)"
+              >
+                <mat-icon>check</mat-icon>
+                <span>Accept</span>
+              </button>
+              <button
+                mat-menu-item
+                (click)="updateVoidRequest(element.id, status.Declined)"
+              >
+                <mat-icon>cancel</mat-icon>
+                <span>Reject</span>
+              </button>
             </mat-menu>
           </td>
         </ng-container>
 
-        <!-- Table Rows -->
         <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
       </table>
       <mat-paginator
         [pageSizeOptions]="[5, 10, 20]"
         [length]="totalRecords"
-        (page)="getSales($event)"
+        (page)="getVoidRequest($event)"
         showFirstLastButtons
       ></mat-paginator>
     </div>
   </mat-card-content>
 </mat-card>
-
-<p-dialog
-  header="View Sales Details"
-  [(visible)]="visible"
-  [modal]="true"
-  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
-  [style]="{ width: '50vw' }"
-  [draggable]="false"
-  [resizable]="false"
-  [appendTo]="'body'"
-  (onHide)="closeForm()"
->
-  <app-view-sales-details-v1></app-view-sales-details-v1>
-</p-dialog>
-
-<app-sales-summary></app-sales-summary>
+<!-- (isAuthenticated)="insertCustomer($event)" -->
+<!-- <app-authenticate-user
+  (isAuthenticated)="showCreateOrEditModal($event)"
+></app-authenticate-user>
+<app-create-or-edit-stocks-receiving-modal
+  (modalSave)="getAllStocksReceiving()"
+></app-create-or-edit-stocks-receiving-modal> -->
+<!-- <app-create-or-edit-product
+    (modalSave)="getProducts()"
+  ></app-create-or-edit-product> -->
