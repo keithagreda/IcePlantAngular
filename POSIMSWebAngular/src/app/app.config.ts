@@ -30,21 +30,26 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
 import {
+  API_BASE_URL,
   CustomerService,
   EntityHistoryService,
   InventoryService,
   MachineProductionService,
   MachineService,
+  NotificationService,
   ProductCategoryService,
   ProductService,
   SalesService,
   StocksService,
   StorageLocationService,
   UserAuthService,
+  VoidRequestService,
 } from './services/nswag/nswag.service';
 import { CartService } from './services/cart.service';
 import { LoadingService } from './services/loading.service';
 import { CustomInterceptor } from './services/interceptor/auth-interceptor.interceptor';
+import { environment } from './services/environments/environment';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -61,6 +66,12 @@ export const appConfig: ApplicationConfig = {
     CustomerService,
     MachineService,
     MachineProductionService,
+    NotificationService,
+    VoidRequestService,
+    {
+      provide: API_BASE_URL,
+      useValue: environment.apiBaseUrl,  // <-- Provide the base URL from environment.ts
+    },
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(
       routes,
