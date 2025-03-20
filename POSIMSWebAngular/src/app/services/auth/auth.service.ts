@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +27,14 @@ export class AuthService {
     }
   }
 
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token'); 
+  }
+
+  getToken(): string {
+    return localStorage.getItem('token') || '';
+  }
+
   getUserRoles(): string[] {
     this.token = localStorage.getItem('token');
     if (this.token) {
@@ -50,8 +58,31 @@ export class AuthService {
     }
   }
 
+  getUserRolesObservable(): Observable<string[]> {
+    return this.userRolesSubject.asObservable();
+  }
+
   hasRole(role: string): boolean {
     return this.userRolesSubject.value?.includes(role) ?? false;
+  }
+
+  getMainRouteForUser(): string {
+    const roles = this.getUserRoles();
+
+    if (roles.includes('Admin')) {
+      return '/dashboard';
+    }
+    if (roles.includes('Cashier')) {
+      return '/cashier';
+    }
+    if (roles.includes('Inventory')) {
+      return '/inventory';
+    }
+    if (roles.includes('Owner')) {
+      return '/dashboard';
+    }
+
+    return '/authentication/login'; // Default route if no roles match
   }
 
   onlogout() {

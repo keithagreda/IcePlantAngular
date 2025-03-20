@@ -29,6 +29,9 @@ export class RoleGuard implements CanActivate {
       );
     }
 
+    if (state.url === '/') {
+      return this.router.parseUrl(this.authService.getMainRouteForUser());
+    }
     return true;
   }
 }

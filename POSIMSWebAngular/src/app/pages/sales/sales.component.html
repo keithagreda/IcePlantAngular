@@ -161,7 +161,11 @@
                 <mat-icon> more_horiz</mat-icon>
                 <span>View More</span>
               </button>
-              <button mat-menu-item (click)="requestForVoid(element.id)">
+              <button
+                mat-menu-item
+                *ngIf="!element.isInventoryClosed"
+                (click)="requestForVoid(element.id)"
+              >
                 <mat-icon> remove_shopping_cart</mat-icon>
                 <span>Void</span>
               </button>

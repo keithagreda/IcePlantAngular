@@ -6771,6 +6771,7 @@ export class SalesHeaderDto implements ISalesHeaderDto {
     soldBy?: string;
     customerName?: string;
     salesDetailsDto?: SalesDetailDto[];
+    isInventoryClosed?: boolean | null;
 
     constructor(data?: ISalesHeaderDto) {
         if (data) {
@@ -6797,6 +6798,7 @@ export class SalesHeaderDto implements ISalesHeaderDto {
             else {
                 this.salesDetailsDto = <any>null;
             }
+            this.isInventoryClosed = _data["isInventoryClosed"] !== undefined ? _data["isInventoryClosed"] : <any>null;
         }
     }
 
@@ -6820,6 +6822,7 @@ export class SalesHeaderDto implements ISalesHeaderDto {
             for (let item of this.salesDetailsDto)
                 data["salesDetailsDto"].push(item.toJSON());
         }
+        data["isInventoryClosed"] = this.isInventoryClosed !== undefined ? this.isInventoryClosed : <any>null;
         return data;
     }
 }
@@ -6832,6 +6835,7 @@ export interface ISalesHeaderDto {
     soldBy?: string;
     customerName?: string;
     salesDetailsDto?: SalesDetailDto[];
+    isInventoryClosed?: boolean | null;
 }
 
 export class SalesDetailDto implements ISalesDetailDto {
@@ -8760,6 +8764,7 @@ export class GetVoidRequest extends VoidRequestDto implements IGetVoidRequest {
     dateRequested?: string;
     strStatus?: string;
     createdBy?: string;
+    creationTime?: Date;
 
     constructor(data?: IGetVoidRequest) {
         super(data);
@@ -8774,6 +8779,7 @@ export class GetVoidRequest extends VoidRequestDto implements IGetVoidRequest {
             this.dateRequested = _data["dateRequested"] !== undefined ? _data["dateRequested"] : <any>null;
             this.strStatus = _data["strStatus"] !== undefined ? _data["strStatus"] : <any>null;
             this.createdBy = _data["createdBy"] !== undefined ? _data["createdBy"] : <any>null;
+            this.creationTime = _data["creationTime"] ? new Date(_data["creationTime"].toString()) : <any>null;
         }
     }
 
@@ -8792,6 +8798,7 @@ export class GetVoidRequest extends VoidRequestDto implements IGetVoidRequest {
         data["dateRequested"] = this.dateRequested !== undefined ? this.dateRequested : <any>null;
         data["strStatus"] = this.strStatus !== undefined ? this.strStatus : <any>null;
         data["createdBy"] = this.createdBy !== undefined ? this.createdBy : <any>null;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>null;
         super.toJSON(data);
         return data;
     }
@@ -8804,6 +8811,7 @@ export interface IGetVoidRequest extends IVoidRequestDto {
     dateRequested?: string;
     strStatus?: string;
     createdBy?: string;
+    creationTime?: Date;
 }
 
 export enum VoidRequestStatus {

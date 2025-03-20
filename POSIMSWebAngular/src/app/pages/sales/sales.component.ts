@@ -10,6 +10,8 @@ import {
 } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import {
+  CreateNotificationDto,
+  NotificationService,
   SalesHeaderDto,
   SalesService,
   ViewSalesHeaderDto,
@@ -55,6 +57,7 @@ export class SalesComponent implements OnInit {
   totalRecords = 0;
 
   constructor(
+    private _notificationService: NotificationService,
     private _toastr: ToastrService,
     private _salesService: SalesService,
     private _loadingService: LoadingService,
@@ -105,10 +108,20 @@ export class SalesComponent implements OnInit {
             this._voidRequest.createVoidRequest(headerId).subscribe({
               next: (res) =>{
                 if(res.isSuccess){
-                  this._toastr.success(res.message);
+                  this._toastr.success(res.data);
+                  let notificationDto = new CreateNotificationDto();
+                      notificationDto.title = "Void Request";
+                      notificationDto.desc = "You have received a void request";
+                      this._notificationService.createNotification(notificationDto).subscribe({
+                        next: (res) => {
+                          console.info("Notification sent");
+                        }, error: (err) => {
+                          console.error("Something went wrong while sending notification ", err);
+                        }
+                      });
                   return;
                 }
-                this._toastr.error(res.message);
+                this._toastr.error(res.data);
                 return;
               },
               error: (err) => {

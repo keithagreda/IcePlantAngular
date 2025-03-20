@@ -2,13 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ToastrService } from 'ngx-toastr';
-import { AuthenticateUserComponent } from 'src/app/components/authenticate-user/authenticate-user.component';
-import { CreateOrEditStocksReceivingModalComponent } from 'src/app/components/create-or-edit-stocks-receiving-modal/create-or-edit-stocks-receiving-modal.component';
 import { MaterialModule } from 'src/app/material.module';
 import {
-  GetAllStocksReceivingDto,
   GetVoidRequest,
-  StocksService,
+  NotificationService,
   VoidRequestService,
   VoidRequestStatus,
 } from 'src/app/services/nswag/nswag.service';
@@ -42,7 +39,7 @@ export class VoidRequestComponent implements OnInit {
   totalRecords = 0;
   status = VoidRequestStatus;
   constructor(private _voidRequestService: VoidRequestService,
-    private _toastr: ToastrService
+    private _toastr: ToastrService,
   ) {}
   ngOnInit(): void {
     this.getVoidRequest();

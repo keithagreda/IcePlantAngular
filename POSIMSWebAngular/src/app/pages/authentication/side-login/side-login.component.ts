@@ -90,29 +90,32 @@ export class AppSideLoginComponent implements OnInit{
 
   login() {
     this.saving = true;
-    // console.log(this.form.value);
+  
     this.userAuth
       .login(this.form.value.uname ?? '', this.form.value.password ?? '')
       .subscribe({
         next: (res) => {
           this.saving = false;
+  
           if (res.isSuccess) {
+            // Store user data in localStorage
             localStorage.setItem('token', res.data.userToken ?? '');
             localStorage.setItem('userName', res.data.userName ?? '');
+  
+            // Get user roles and determine main route
             const userRoles = this.authService.getUserRoles();
-            if (userRoles.includes('Admin')) {
-              this.router.navigate(['/dashboard']);
-            } else if (userRoles.includes('Owner')) {
-              this.router.navigate(['/dashboard']);
-            } else if (userRoles.includes('Cashier')) {
-              this.router.navigate(['/cashier']);
-            } else if (userRoles.includes('Inventory')) {
-              this.router.navigate(['/inventory']);
+  
+            if (userRoles.length === 0) {
+              this.toastr.error('No roles assigned to the user.');
+              this.router.navigate(['/authentication/login']);
+              return;
             }
-            // this.router.navigate(['/dashboard']);
+  
+            const redirectUrl = this.authService.getMainRouteForUser();
+            this.router.navigateByUrl(redirectUrl);
+  
             this.toastr.success('Login Successful');
-          }
-          if (!res.isSuccess) {
+          } else {
             this.toastr.error('Error! ' + res.message);
           }
         },
@@ -121,6 +124,5 @@ export class AppSideLoginComponent implements OnInit{
           this.saving = false;
         },
       });
-    // this.router.navigate(['/']);
   }
 }

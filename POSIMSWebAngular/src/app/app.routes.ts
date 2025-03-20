@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { RoleGuard } from './services/auth/authguard/roleguard';
+import { AuthGuard } from './services/auth/authguard/authguard';
 
 export const routes: Routes = [
   {
@@ -147,6 +148,7 @@ export const routes: Routes = [
   {
     path: '',
     component: BlankComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'authentication',
