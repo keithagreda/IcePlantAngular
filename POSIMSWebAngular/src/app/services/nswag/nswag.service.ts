@@ -487,6 +487,122 @@ export class InventoryService {
 }
 
 @Injectable()
+export class InventoryReconcillationService {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
+    }
+
+    createInvenReconcillation(input: CreateInventoryReconcillationDto): Observable<ApiResponseOfString> {
+        let url_ = this.baseUrl + "/api/InventoryReconcillation/CreateInvenReconcillation";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateInvenReconcillation(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateInvenReconcillation(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfString>;
+        }));
+    }
+
+    protected processCreateInvenReconcillation(response: HttpResponseBase): Observable<ApiResponseOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getAllInvenReconcillation(input: GetInventoryReconcillationInput): Observable<ApiResponseOfPaginatedResultOfGetInventoryReconcillation> {
+        let url_ = this.baseUrl + "/api/InventoryReconcillation/GetAllInvenReconcillation";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllInvenReconcillation(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllInvenReconcillation(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfPaginatedResultOfGetInventoryReconcillation>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfPaginatedResultOfGetInventoryReconcillation>;
+        }));
+    }
+
+    protected processGetAllInvenReconcillation(response: HttpResponseBase): Observable<ApiResponseOfPaginatedResultOfGetInventoryReconcillation> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfPaginatedResultOfGetInventoryReconcillation.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
 export class MachineService {
     private http: HttpClient;
     private baseUrl: string;
@@ -3386,7 +3502,9 @@ export class CurrentInventoryDto implements ICurrentInventoryDto {
     receivedQty?: number;
     salesQty?: number;
     begQty?: number;
+    reconciliationQty?: number;
     currentStocks?: number;
+    productId?: number;
 
     constructor(data?: ICurrentInventoryDto) {
         if (data) {
@@ -3403,7 +3521,9 @@ export class CurrentInventoryDto implements ICurrentInventoryDto {
             this.receivedQty = _data["receivedQty"] !== undefined ? _data["receivedQty"] : <any>null;
             this.salesQty = _data["salesQty"] !== undefined ? _data["salesQty"] : <any>null;
             this.begQty = _data["begQty"] !== undefined ? _data["begQty"] : <any>null;
+            this.reconciliationQty = _data["reconciliationQty"] !== undefined ? _data["reconciliationQty"] : <any>null;
             this.currentStocks = _data["currentStocks"] !== undefined ? _data["currentStocks"] : <any>null;
+            this.productId = _data["productId"] !== undefined ? _data["productId"] : <any>null;
         }
     }
 
@@ -3420,7 +3540,9 @@ export class CurrentInventoryDto implements ICurrentInventoryDto {
         data["receivedQty"] = this.receivedQty !== undefined ? this.receivedQty : <any>null;
         data["salesQty"] = this.salesQty !== undefined ? this.salesQty : <any>null;
         data["begQty"] = this.begQty !== undefined ? this.begQty : <any>null;
+        data["reconciliationQty"] = this.reconciliationQty !== undefined ? this.reconciliationQty : <any>null;
         data["currentStocks"] = this.currentStocks !== undefined ? this.currentStocks : <any>null;
+        data["productId"] = this.productId !== undefined ? this.productId : <any>null;
         return data;
     }
 }
@@ -3430,7 +3552,9 @@ export interface ICurrentInventoryDto {
     receivedQty?: number;
     salesQty?: number;
     begQty?: number;
+    reconciliationQty?: number;
     currentStocks?: number;
+    productId?: number;
 }
 
 export class ApiResponseOfPaginatedResultOfGetInventoryDto implements IApiResponseOfPaginatedResultOfGetInventoryDto {
@@ -3564,6 +3688,7 @@ export class GetInventoryDto implements IGetInventoryDto {
     productName?: string | null;
     begQty?: number;
     receivedQty?: number;
+    reconcilliationQty?: number;
     salesQty?: number;
     inventoryBegTime?: Date | null;
     inventoryEndTime?: Date | null;
@@ -3584,6 +3709,7 @@ export class GetInventoryDto implements IGetInventoryDto {
             this.productName = _data["productName"] !== undefined ? _data["productName"] : <any>null;
             this.begQty = _data["begQty"] !== undefined ? _data["begQty"] : <any>null;
             this.receivedQty = _data["receivedQty"] !== undefined ? _data["receivedQty"] : <any>null;
+            this.reconcilliationQty = _data["reconcilliationQty"] !== undefined ? _data["reconcilliationQty"] : <any>null;
             this.salesQty = _data["salesQty"] !== undefined ? _data["salesQty"] : <any>null;
             this.inventoryBegTime = _data["inventoryBegTime"] ? new Date(_data["inventoryBegTime"].toString()) : <any>null;
             this.inventoryEndTime = _data["inventoryEndTime"] ? new Date(_data["inventoryEndTime"].toString()) : <any>null;
@@ -3604,6 +3730,7 @@ export class GetInventoryDto implements IGetInventoryDto {
         data["productName"] = this.productName !== undefined ? this.productName : <any>null;
         data["begQty"] = this.begQty !== undefined ? this.begQty : <any>null;
         data["receivedQty"] = this.receivedQty !== undefined ? this.receivedQty : <any>null;
+        data["reconcilliationQty"] = this.reconcilliationQty !== undefined ? this.reconcilliationQty : <any>null;
         data["salesQty"] = this.salesQty !== undefined ? this.salesQty : <any>null;
         data["inventoryBegTime"] = this.inventoryBegTime ? this.inventoryBegTime.toISOString() : <any>null;
         data["inventoryEndTime"] = this.inventoryEndTime ? this.inventoryEndTime.toISOString() : <any>null;
@@ -3617,6 +3744,7 @@ export interface IGetInventoryDto {
     productName?: string | null;
     begQty?: number;
     receivedQty?: number;
+    reconcilliationQty?: number;
     salesQty?: number;
     inventoryBegTime?: Date | null;
     inventoryEndTime?: Date | null;
@@ -4026,6 +4154,319 @@ export interface ICurrentInventoryV1Dto {
     salesQty?: number;
     begQty?: number;
     currentStocks?: number;
+}
+
+export class CreateInventoryReconcillationDto implements ICreateInventoryReconcillationDto {
+    quantity?: number;
+    productId?: number;
+
+    constructor(data?: ICreateInventoryReconcillationDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.quantity = _data["quantity"] !== undefined ? _data["quantity"] : <any>null;
+            this.productId = _data["productId"] !== undefined ? _data["productId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CreateInventoryReconcillationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateInventoryReconcillationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["quantity"] = this.quantity !== undefined ? this.quantity : <any>null;
+        data["productId"] = this.productId !== undefined ? this.productId : <any>null;
+        return data;
+    }
+}
+
+export interface ICreateInventoryReconcillationDto {
+    quantity?: number;
+    productId?: number;
+}
+
+export class ApiResponseOfPaginatedResultOfGetInventoryReconcillation implements IApiResponseOfPaginatedResultOfGetInventoryReconcillation {
+    data!: PaginatedResultOfGetInventoryReconcillation;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+
+    constructor(data?: IApiResponseOfPaginatedResultOfGetInventoryReconcillation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.data = new PaginatedResultOfGetInventoryReconcillation();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? PaginatedResultOfGetInventoryReconcillation.fromJS(_data["data"]) : new PaginatedResultOfGetInventoryReconcillation();
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+            else {
+                this.errors = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ApiResponseOfPaginatedResultOfGetInventoryReconcillation {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseOfPaginatedResultOfGetInventoryReconcillation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IApiResponseOfPaginatedResultOfGetInventoryReconcillation {
+    data: PaginatedResultOfGetInventoryReconcillation;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+}
+
+export class PaginatedResultOfGetInventoryReconcillation implements IPaginatedResultOfGetInventoryReconcillation {
+    items?: GetInventoryReconcillation[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+
+    constructor(data?: IPaginatedResultOfGetInventoryReconcillation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(GetInventoryReconcillation.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+            this.currentPage = _data["currentPage"] !== undefined ? _data["currentPage"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaginatedResultOfGetInventoryReconcillation {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedResultOfGetInventoryReconcillation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        data["currentPage"] = this.currentPage !== undefined ? this.currentPage : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        return data;
+    }
+}
+
+export interface IPaginatedResultOfGetInventoryReconcillation {
+    items?: GetInventoryReconcillation[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+}
+
+export class GetInventoryReconcillation implements IGetInventoryReconcillation {
+    productName?: string;
+    quantity?: number;
+    remarks?: string;
+    isInventoryOpen?: boolean;
+
+    constructor(data?: IGetInventoryReconcillation) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.productName = _data["productName"] !== undefined ? _data["productName"] : <any>null;
+            this.quantity = _data["quantity"] !== undefined ? _data["quantity"] : <any>null;
+            this.remarks = _data["remarks"] !== undefined ? _data["remarks"] : <any>null;
+            this.isInventoryOpen = _data["isInventoryOpen"] !== undefined ? _data["isInventoryOpen"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): GetInventoryReconcillation {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetInventoryReconcillation();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["productName"] = this.productName !== undefined ? this.productName : <any>null;
+        data["quantity"] = this.quantity !== undefined ? this.quantity : <any>null;
+        data["remarks"] = this.remarks !== undefined ? this.remarks : <any>null;
+        data["isInventoryOpen"] = this.isInventoryOpen !== undefined ? this.isInventoryOpen : <any>null;
+        return data;
+    }
+}
+
+export interface IGetInventoryReconcillation {
+    productName?: string;
+    quantity?: number;
+    remarks?: string;
+    isInventoryOpen?: boolean;
+}
+
+export class PaginationParams implements IPaginationParams {
+    pageNumber?: number | null;
+    pageSize?: number | null;
+
+    constructor(data?: IPaginationParams) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.pageNumber = _data["pageNumber"] !== undefined ? _data["pageNumber"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaginationParams {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginationParams();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["pageNumber"] = this.pageNumber !== undefined ? this.pageNumber : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        return data;
+    }
+}
+
+export interface IPaginationParams {
+    pageNumber?: number | null;
+    pageSize?: number | null;
+}
+
+export class GenericSearchParams extends PaginationParams implements IGenericSearchParams {
+    filterText?: string | null;
+
+    constructor(data?: IGenericSearchParams) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.filterText = _data["filterText"] !== undefined ? _data["filterText"] : <any>null;
+        }
+    }
+
+    static override fromJS(data: any): GenericSearchParams {
+        data = typeof data === 'object' ? data : {};
+        let result = new GenericSearchParams();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["filterText"] = this.filterText !== undefined ? this.filterText : <any>null;
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IGenericSearchParams extends IPaginationParams {
+    filterText?: string | null;
+}
+
+export class GetInventoryReconcillationInput extends GenericSearchParams implements IGetInventoryReconcillationInput {
+
+    constructor(data?: IGetInventoryReconcillationInput) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+    }
+
+    static override fromJS(data: any): GetInventoryReconcillationInput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetInventoryReconcillationInput();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface IGetInventoryReconcillationInput extends IGenericSearchParams {
 }
 
 export class ApiResponseOfListOfMachineDto implements IApiResponseOfListOfMachineDto {

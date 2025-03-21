@@ -46,6 +46,7 @@ export class InventoryLogsComponent implements OnInit {
     'productName',
     'begQty',
     'received',
+    'reconcilliation',
     'sales',
     'invBegTime',
     'invEndTime',

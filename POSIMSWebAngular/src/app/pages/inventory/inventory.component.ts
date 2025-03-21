@@ -30,8 +30,15 @@ import Swal from 'sweetalert2';
 export class InventoryComponent {
   @ViewChild(CurrentStocksComponent)
   currentStocksComponent!: CurrentStocksComponent;
+
+  @ViewChild(InventoryLogsComponent)
+  inventoryLogs!: InventoryLogsComponent;
+
   @ViewChild(AuthenticateUserComponent)
     authenticateUserComponent!: AuthenticateUserComponent;
+
+  @ViewChild(StockCardComponent)
+  stockCardComponent!: StockCardComponent;
 
   @ViewChild(CreateOrEditStocksReceivingModalComponent)
   createOrEditStocksReceivingModalComponent!: CreateOrEditStocksReceivingModalComponent;
@@ -63,6 +70,8 @@ export class InventoryComponent {
                 'success'
               );
               this.currentStocksComponent.getCurrentStocks();
+              this.inventoryLogs.getAllInventory();
+              this.stockCardComponent.getStockCard();
               return;
             }
             Swal.fire(

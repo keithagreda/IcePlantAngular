@@ -33,6 +33,7 @@ import {
   API_BASE_URL,
   CustomerService,
   EntityHistoryService,
+  InventoryReconcillationService,
   InventoryService,
   MachineProductionService,
   MachineService,
@@ -68,6 +69,7 @@ export const appConfig: ApplicationConfig = {
     MachineProductionService,
     NotificationService,
     VoidRequestService,
+    InventoryReconcillationService,
     {
       provide: API_BASE_URL,
       useValue: environment.apiBaseUrl,  // <-- Provide the base URL from environment.ts

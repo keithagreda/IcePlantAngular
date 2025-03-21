@@ -29,20 +29,70 @@
       <i class="iconify icon-20 d-flex" data-icon="solar:bell-line-duotone"></i>
     </span>
   </button>
+  <style>
+    .notification-menu {
+      width: 320px; /* Ensures a good width */
+      max-height: 400px; /* Fixed height */
+      overflow: hidden;
+      padding: 10px 0;
+    }
 
+    .notification-list {
+      max-height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notification-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .notification-list::-webkit-scrollbar-thumb {
+      background: #bbb;
+      border-radius: 4px;
+    }
+
+    .notification-list::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    .notification {
+      display: flex;
+      flex-direction: column;
+      justify-content: start;
+      padding: 10px 0px;
+    }
+
+    .notification-time {
+      font-size: 10px;
+    }
+
+    .notification-menu {
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
+  </style>
   <!-- Add a dropdown or a container for notifications -->
-  <mat-menu #notificationMenu="matMenu" class="topbar-dd cardWithShadow">
+  <mat-menu
+    #notificationMenu="matMenu"
+    class="topbar-dd cardWithShadow notification-menu"
+  >
     <ng-container *ngIf="notifications.length > 0; else noNotifications">
-      <ng-container *ngFor="let notification of notifications">
-        <button mat-menu-item class="notification-item">
-          <div class="notification">
-            {{ notification.title }} {{ notification.description }}
-          </div>
-          <div class="notification-time text-muted">
-            {{ notification.strCreationTime }}
-          </div>
-        </button>
-      </ng-container>
+      <div class="notification-list">
+        <div class="notification-list-items">
+          <ng-container *ngFor="let notification of notifications">
+            <button mat-menu-item class="notification-item">
+              <div class="notification">
+                <strong class="text-primary">{{ notification.title }}</strong>
+                <span class="text-muted">{{ notification.description }}</span>
+                <div class="notification-time text-muted">
+                  {{ notification.strCreationTime }}
+                </div>
+              </div>
+            </button>
+          </ng-container>
+        </div>
+      </div>
     </ng-container>
     <ng-template #noNotifications>
       <button mat-menu-item disabled>No notifications</button>
