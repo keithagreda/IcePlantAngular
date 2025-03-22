@@ -2,36 +2,57 @@ import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { environment } from '../environments/environment';
 import { AuthService } from '../auth/auth.service';
-
+import { BehaviorSubject } from 'rxjs';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root', // Ensures this service is a singleton
 })
-export class SignalrService {
-
+export class SignalRService {
   private hubConnection!: signalR.HubConnection;
-  private apiUrl = environment.apiBaseUrl;
+  private notificationSubject = new BehaviorSubject<string | null>(null);
+  public notification$ = this.notificationSubject.asObservable();
+  private isConnected = false; // Prevent multiple connections
 
-  constructor(
-    private authService: AuthService
-  ) {}
+  constructor(private authService: AuthService) {
+    this.startConnection(); // Automatically start connection when the service is created
+  }
 
-  startConnection() {
-    const token = this.authService.getToken(); // 🔥 Retrieve JWT token
+  public startConnection() {
+    if (this.isConnected) return; // Prevent multiple connections
+
+    const token = this.authService.getToken();
 
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl('https://localhost:7050/notificationHub', {
-        accessTokenFactory: () => token  // ✅ Pass token when connecting
+        accessTokenFactory: () => token,
       })
       .withAutomaticReconnect()
       .build();
 
     this.hubConnection
       .start()
-      .then(() => console.log('Connected to SignalR'))
-      .catch(err => console.log('SignalR Connection Error: ', err));
+      .then(() => {
+        console.log('✅ Connected to SignalR');
+        this.isConnected = true;
+      })
+      .catch((err) => {
+        console.error('❌ SignalR Connection Error:', err);
+      });
+
+    this.hubConnection.on('AdminNotification', (message: string) => {
+      this.notificationSubject.next(message);
+    });
   }
-  onAdminNotificationReceived(callback: (message: string) => void) {
+
+  public onAdminNotificationReceived(callback: (message: string) => void) {
     this.hubConnection.on('AdminNotification', callback);
   }
-  
+
+  public stopConnection() {
+    if (this.hubConnection && this.isConnected) {
+      this.hubConnection.stop().then(() => {
+        console.log('🛑 SignalR Disconnected');
+        this.isConnected = false;
+      });
+    }
+  }
 }

@@ -58,25 +58,9 @@
                     Add To Cart
                   </button>
                 </div>
-
-                <!-- <button
-                    mat-flat-button
-                    color="primary"
-                    matTooltip="Info about the action"
-                  >
-                    Button
-                  </button> -->
               </mat-card-content>
             </mat-card>
           </div>
-
-          <!-- <button
-              mat-flat-button
-              [ngStyle]="{ height: '150px', width: '150px' }"
-              color="primary"
-              class="m-r-8 flex-item"
-              (click)="addToCart(item)"
-            ></button> -->
         </ng-container>
       </div>
     </div>
@@ -117,22 +101,9 @@
           <mat-card-content class="d-flex">
             <span><strong>Quantity:</strong> {{ item.quantity }}</span>
             <span
-              ><strong>Price:</strong> {{ item.productPrice | currency:'PHP' }}</span
+              ><strong>Price:</strong>
+              {{ item.productPrice | currency : "PHP" }}</span
             >
-            <!-- <mat-label class="f-w-600 m-b-8 d-block"
-              >Actual selling price</mat-label
-            >
-            <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input
-                matInput
-                name="price"
-                id="price"
-                [(ngModel)]="item.actualSellingPrice"
-                (ngModelChange)="actualSellingPriceHandler(item)"
-                placeholder="Actual Selling Price"
-                type="number"
-              />
-            </mat-form-field> -->
             <div class="atc-item-control">
               <div class="atc-item-quantity">
                 <button
@@ -153,9 +124,13 @@
         </mat-card>
       </div>
     </ng-container>
+    <div class="total-amount">
+      <strong>Total Amount:</strong> {{ totalAmount | currency : "PHP" }}
+    </div>
     <button
       *ngIf="cartItem.length > 0"
       mat-flat-button
+      class="mt-2"
       color="primary"
       (click)="openAuthentication()"
     >
@@ -189,17 +164,6 @@
     name="customerName"
     placeholder="Customer Name"
   />
-  <!-- <mat-form-field appearance="outline" class="w-100" color="primary">
-    
-    <input
-      matInput
-      name="customerName"
-      id="customerName"
-      [(ngModel)]="customerName"
-      placeholder="CustomerName"
-      type="text"
-    />
-  </mat-form-field> -->
   <button
     *ngIf="cartItem.length > 0"
     mat-flat-button

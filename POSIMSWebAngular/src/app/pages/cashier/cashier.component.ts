@@ -13,6 +13,7 @@ import {
   CustomerDropDownDto,
   CustomerService,
   GetProductDropDownTableV1Dto,
+  NotificationService,
   ProductService,
   SalesService,
 } from 'src/app/services/nswag/nswag.service';
@@ -22,7 +23,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ViewSalesDetailsComponent } from 'src/app/components/view-sales-details/view-sales-details.component';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AuthenticateUserComponent } from "../../components/authenticate-user/authenticate-user.component";
+import { AuthenticateUserComponent } from '../../components/authenticate-user/authenticate-user.component';
 
 @Component({
   selector: 'app-cashier',
@@ -35,8 +36,8 @@ import { AuthenticateUserComponent } from "../../components/authenticate-user/au
     SidebarModule,
     AutoCompleteModule,
     ViewSalesDetailsComponent,
-    AuthenticateUserComponent
-],
+    AuthenticateUserComponent,
+  ],
   templateUrl: './cashier.component.html',
   styleUrl: './cashier.component.scss',
 })
@@ -56,14 +57,18 @@ export class CashierComponent implements OnInit {
   customerName = '';
   customerNames: string[] = [];
   filterCustomerName: string = '';
+  totalAmount: number = 0; // Add a property to store the total amount
+
   constructor(
     private _productService: ProductService,
     private _cartService: CartService,
     private _customerService: CustomerService,
     private _toastr: ToastrService,
     private _salesService: SalesService,
+    private _notificationService: NotificationService,
     public authService: AuthService
   ) {}
+
   ngOnInit(): void {
     this.getProducts();
     this.getCartItem();
@@ -71,21 +76,19 @@ export class CashierComponent implements OnInit {
   }
 
   getProducts() {
-    this._productService
-      .getProductDropDownTableV1(null, null, null)
-      .subscribe({
-        next: (res) => {
-          if (res.isSuccess) {
-            this.items = res.data.items ?? [];
-          }
-          if(!res.isSuccess){
-            this._toastr.error(res.message);
-          }
-        },
-        error: (err) =>{
-          this._toastr.error(err);
+    this._productService.getProductDropDownTableV1(null, null, null).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.items = res.data.items ?? [];
         }
-      });
+        if (!res.isSuccess) {
+          this._toastr.error(res.message);
+        }
+      },
+      error: (err) => {
+        this._toastr.error(err);
+      },
+    });
   }
 
   getCustomerNames() {
@@ -167,6 +170,16 @@ export class CashierComponent implements OnInit {
           });
           this._cartService.clearCart();
           this.getProducts();
+          this._notificationService
+            .sendMessageToAdmin('A new sale has been made.')
+            .subscribe({
+              next: (res) => {
+                console.log(res);
+              },
+              error: (err) => {
+                console.error(err);
+              },
+            });
           this.viewSalesDetailsComponent.initialize();
         }
       },
@@ -198,16 +211,13 @@ export class CashierComponent implements OnInit {
     });
   }
 
-
-
-  openAuthentication(){
+  openAuthentication() {
     this.authenticateUserComponent.visible = true;
-
   }
+
   insertCustomer(event: boolean) {
     this.visible = true;
   }
-
 
   getCartItem() {
     this.cartItem = this._cartService.getCart();
@@ -215,6 +225,7 @@ export class CashierComponent implements OnInit {
     if (this.cartItem.length > 0) {
       this.updateCartPrices();
     }
+    this.calculateTotalAmount(); // Calculate the total amount whenever the cart items are fetched
   }
 
   updateCartPrices() {
@@ -222,12 +233,19 @@ export class CashierComponent implements OnInit {
       next: (res) => {
         if (res.isSuccess) {
           this.cartItem = res.data;
+          this.calculateTotalAmount(); // Recalculate the total amount after updating cart prices
         }
       },
       error: (err) => {
         console.error(err);
       },
     });
+  }
+
+  calculateTotalAmount() {
+    this.totalAmount = this.cartItem.reduce((total, item) => {
+      return total + (item.productPrice ?? 0);
+    }, 0);
   }
 
   showControl(

@@ -8,7 +8,10 @@ import { InventoryLogsComponent } from 'src/app/components/inventory-logs/invent
 import { StockCardComponent } from 'src/app/components/stock-card/stock-card.component';
 import { MaterialModule } from 'src/app/material.module';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { InventoryService } from 'src/app/services/nswag/nswag.service';
+import {
+  InventoryService,
+  NotificationService,
+} from 'src/app/services/nswag/nswag.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -22,7 +25,7 @@ import Swal from 'sweetalert2';
     CommonModule,
     CreateStocksReconciliationComponent,
     StockCardComponent,
-    AuthenticateUserComponent
+    AuthenticateUserComponent,
   ],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',
@@ -35,7 +38,7 @@ export class InventoryComponent {
   inventoryLogs!: InventoryLogsComponent;
 
   @ViewChild(AuthenticateUserComponent)
-    authenticateUserComponent!: AuthenticateUserComponent;
+  authenticateUserComponent!: AuthenticateUserComponent;
 
   @ViewChild(StockCardComponent)
   stockCardComponent!: StockCardComponent;
@@ -74,11 +77,7 @@ export class InventoryComponent {
               this.stockCardComponent.getStockCard();
               return;
             }
-            Swal.fire(
-              'Error!',
-              'An error occurred while processing your request.',
-              'error'
-            );
+            Swal.fire('Error!', res.message, 'error');
           },
           error: (err) => {
             Swal.fire(
@@ -107,8 +106,7 @@ export class InventoryComponent {
     this.createStocksReconciliationComponent.show();
   }
 
-  openAuthentication(){
+  openAuthentication() {
     this.authenticateUserComponent.visible = true;
-
   }
 }

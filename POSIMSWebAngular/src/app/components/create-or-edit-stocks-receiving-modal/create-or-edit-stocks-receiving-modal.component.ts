@@ -16,6 +16,7 @@ import {
   GetProductDropDownTableDto,
   GetStorageLocationForDropDownDto,
   MachineService,
+  NotificationService,
   ProductService,
   StocksService,
   StorageLocationService,
@@ -62,7 +63,8 @@ export class CreateOrEditStocksReceivingModalComponent implements OnInit {
     private _productService: ProductService,
     private _storageLocationService: StorageLocationService,
     private _machineService: MachineService,
-    private _lodingService: LoadingService
+    private _lodingService: LoadingService,
+    private _notificationService: NotificationService
   ) {
     this.form = this.fb.group({
       selectedProduct: [null, Validators.required],
@@ -172,6 +174,16 @@ export class CreateOrEditStocksReceivingModalComponent implements OnInit {
             this._toastr.success('Stocks receiving created successfully');
             this.saving = false;
             this.closeForm();
+            this._notificationService
+              .sendMessageToAdmin('A harvest has been successfully recorded.')
+              .subscribe({
+                next: (res) => {
+                  console.log(res);
+                },
+                error: (err) => {
+                  console.error(err);
+                },
+              });
             this.modalSave.emit(null);
           }
         },
