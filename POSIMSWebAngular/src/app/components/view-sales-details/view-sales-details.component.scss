@@ -23,6 +23,12 @@
 
 }
 
+.order-actions{
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
 
 
 
@@ -34,6 +40,7 @@
   justify-content: space-between;
   border-radius: 7px 7px 0px 0px;
   padding: 1rem 0.5rem;
+  gap: .5rem;
 }
 
 .order-details{

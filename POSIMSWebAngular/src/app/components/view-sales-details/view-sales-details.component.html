@@ -22,14 +22,25 @@
                   </h3>
                 </div>
 
-                <button
-                  mat-flat-button
-                  color="muted"
-                  class="m-r-8 no-print"
-                  (click)="printDiv('printDiv-' + i)"
-                >
-                  <mat-icon style="margin: 0 auto">print</mat-icon>
-                </button>
+                <div class="order-actions">
+                  <button
+                    mat-flat-button
+                    color="muted"
+                    class="m-r-8 no-print"
+                    (click)="printDiv('printDiv-' + i, item.transNum)"
+                  >
+                    <mat-icon style="margin: 0 auto">print</mat-icon>
+                  </button>
+
+                  <button
+                    mat-flat-button
+                    color="muted"
+                    class="m-r-8 no-print"
+                    (click)="checkPrintLogsHistory(item.transNum)"
+                  >
+                    <mat-icon style="margin: 0 auto">history</mat-icon>
+                  </button>
+                </div>
               </div>
               <!-- Print Button -->
 

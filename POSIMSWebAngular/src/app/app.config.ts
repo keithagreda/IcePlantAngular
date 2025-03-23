@@ -38,6 +38,7 @@ import {
   MachineProductionService,
   MachineService,
   NotificationService,
+  PrinterLogsService,
   ProductCategoryService,
   ProductService,
   SalesService,
@@ -70,6 +71,7 @@ export const appConfig: ApplicationConfig = {
     NotificationService,
     VoidRequestService,
     InventoryReconcillationService,
+    PrinterLogsService,
     {
       provide: API_BASE_URL,
       useValue: environment.apiBaseUrl,  // <-- Provide the base URL from environment.ts

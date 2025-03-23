@@ -11,9 +11,11 @@ import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { MaterialModule } from 'src/app/material.module';
 import {
+  PrinterLogsService,
   SalesService,
   ViewSalesHeaderDto,
 } from 'src/app/services/nswag/nswag.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-view-sales-details',
@@ -43,8 +45,15 @@ export class ViewSalesDetailsComponent implements OnInit {
   totalRecords = 0;
   pageSize = 5;
   currentPage = 0;
+  printTransNum = '';
 
-  constructor(private _salesService: SalesService) {}
+  constructor(private _salesService: SalesService, 
+    private _printLogService: PrinterLogsService) {}
+
+  @HostListener('window:afterprint', ['$event'])
+  onAfterPrint(event: Event) {
+    this.logPrint();
+  }
 
   ngOnInit(): void {
     this.initialize();
@@ -55,6 +64,20 @@ export class ViewSalesDetailsComponent implements OnInit {
     this.viewSales();
   }
 
+  logPrint() {
+    if(this.printTransNum == '') return;
+    this._printLogService.createPrinterLogs(this.printTransNum).subscribe({
+      next: (res) => {
+        console.log(res);
+        window.location.reload();
+
+      },
+      error: (err) => {
+        console.error(err);
+        window.location.reload();
+      },
+    })
+  }
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     this.checkScreenSize(); // Check screen size on resize
@@ -83,15 +106,43 @@ export class ViewSalesDetailsComponent implements OnInit {
       });
   }
 
+  checkPrintLogsHistory(transNum?: string) {
+    if (!transNum) return;
+
+    this._printLogService.getPrinterLogs(transNum).subscribe({
+      next: (res) => {
+        const printCount = res.data; // Assuming res.data contains the print count
+        Swal.fire({
+          title: 'Print Count',
+          text: `This item has been printed ${printCount} times.`,
+          icon: 'info',
+          confirmButtonText: 'OK',
+        });
+      },
+      error: (err) => {
+        console.error(err);
+        Swal.fire({
+          title: 'Error',
+          text: 'Failed to fetch print count.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      },
+    });
+  }
+
   show() {
     this.visible = true;
   }
 
-  closeForm() {
+  closeForm() { 
     this.visible = false;
   }
 
-  printDiv(divId: string) {
+  printDiv(divId: string, transNum?: string) {
+    if(transNum == undefined) return;
+    if(transNum == '') return;
+    this.printTransNum = transNum;
     const printElement = document.getElementById(divId);
     if (!printElement) {
       console.log('Element with id: ' + divId + ' not found');
@@ -124,6 +175,5 @@ export class ViewSalesDetailsComponent implements OnInit {
     window.print();
     this.isPrint = false;
     document.body.innerHTML = originalContents;
-    window.location.reload();
   }
 }
