@@ -22,7 +22,7 @@ export class SignalRService {
     const token = this.authService.getToken();
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('https://localhost:7050/notificationHub', {
+      .withUrl('http://192.168.1.67:8081/notificationHub', {
         accessTokenFactory: () => token,
       })
       .withAutomaticReconnect()

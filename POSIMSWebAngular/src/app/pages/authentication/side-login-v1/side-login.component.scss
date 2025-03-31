@@ -1,0 +1,31 @@
+.login-container{
+    display: flex;
+    width: 100%;
+    background-color: white;
+    border-radius: 13px;
+}
+
+.login-item{
+    width: 50%;
+}
+
+.logo-container{
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.logo-image{
+    width: 100%;
+    
+}
+
+.bg-green{
+    background: linear-gradient(120deg, #3cb043 30%, #20a172 70%);
+}
+
+.login-form{
+    background-color: #f2f6fa;
+    border-top-right-radius: 13px;
+    border-bottom-right-radius: 13px;
+}
