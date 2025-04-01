@@ -36,7 +36,8 @@ import { AuthenticateUserComponent } from '../authenticate-user/authenticate-use
 })
 export class CurrentStocksComponent implements OnInit {
   @ViewChild(AuthenticateUserComponent)
-      authenticateUserComponent!: AuthenticateUserComponent;
+  authenticateUserComponent!: AuthenticateUserComponent;
+
   displayedColumns: string[] = [
     'productName',
     'begQty',
@@ -44,21 +45,30 @@ export class CurrentStocksComponent implements OnInit {
     'reconcillation',
     'sales',
     'currentStock',
-    'action'
   ];
+
   dataSource: CurrentInventoryDto[] = [];
   loading = false;
   reconcileQty = 0;
   displayDialog = false;
   selectedProduct: CurrentInventoryDto | null = null;
 
-  constructor(private _inventoryService: InventoryService,
+  constructor(
+    private _inventoryService: InventoryService,
     private _reconcileService: InventoryReconcillationService,
     private _toastr: ToastrService,
     public authService: AuthService
   ) {}
+
   ngOnInit(): void {
+    this.updateDisplayedColumns();
     this.getCurrentStocks();
+  }
+
+  updateDisplayedColumns() {
+    if (this.authService.hasRole('Admin') || this.authService.hasRole('Inventory')) {
+      this.displayedColumns.push('action');
+    }
   }
 
   getCurrentStocks() {
@@ -79,12 +89,9 @@ export class CurrentStocksComponent implements OnInit {
   openReconcileDialog(product: CurrentInventoryDto) {
     this.selectedProduct = product;
     this.reconcileQty = 0;
-    //authenticate first
+    // Authenticate first
     this.authenticateUserComponent.visible = true;
-    
   }
-
-
 
   openDialog(event: any) {
     this.displayDialog = true;
@@ -92,24 +99,23 @@ export class CurrentStocksComponent implements OnInit {
 
   reconcile() {
     if (this.selectedProduct && this.reconcileQty !== 0) {
-      // Implement your reconcile logic here
       let param = new CreateInventoryReconcillationDto();
       param.productId = this.selectedProduct.productId;
       param.quantity = this.reconcileQty;
       this._reconcileService.createInvenReconcillation(param).subscribe({
-        next: (res) =>{
-          if(res.isSuccess){
+        next: (res) => {
+          if (res.isSuccess) {
             this._toastr.success(res.data);
             this.getCurrentStocks();
           }
-          if(!res.isSuccess){
+          if (!res.isSuccess) {
             this._toastr.error(res.data);
           }
         },
         error: (err) => {
           this._toastr.error(err);
-        }
-      })
+        },
+      });
       this.displayDialog = false;
     }
   }

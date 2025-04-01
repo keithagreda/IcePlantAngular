@@ -52,7 +52,6 @@ export class SalesComponent implements OnInit {
     'totalAmount',
     'transactionDate',
     'soldBy',
-    'action',
   ];
   totalRecords = 0;
 
@@ -67,6 +66,12 @@ export class SalesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getSales();
+  }
+
+  updateDisplayedColumns() {
+    if (this.authService.hasRole('Admin') || this.authService.hasRole('Inventory')) {
+      this.displayedColumns1.push('action');
+    }
   }
 
   closeForm() {

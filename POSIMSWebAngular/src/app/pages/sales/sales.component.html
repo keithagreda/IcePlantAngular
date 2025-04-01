@@ -1,6 +1,6 @@
 <mat-card
   class="cardWithShadow"
-  *ngIf="authService.hasRole('Cashier') || authService.hasRole('Admin')"
+  *ngIf="authService.hasRole('Cashier') || authService.hasRole('Admin') || authService.hasRole('Owner')"
 >
   <mat-card-content>
     <div class="k-header">
@@ -105,7 +105,7 @@
               'table-row-odd': i % 2 !== 0
             }"
           >
-            {{ element.transactionDate | date : "medium" }}
+            {{ element.transactionDate | date : "MMM d, y, h:mm a" }}
           </td>
         </ng-container>
 
@@ -132,7 +132,9 @@
         </ng-container>
 
         <!-- Action -->
-        <ng-container matColumnDef="action">
+        <ng-container matColumnDef="action" *ngIf="
+        authService.hasRole('Admin') || authService.hasRole('Inventory')
+      ">
           <th
             mat-header-cell
             *matHeaderCellDef
