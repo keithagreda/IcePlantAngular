@@ -23,7 +23,7 @@ export class CustomerService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     customerDropDown(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfCustomerDropDownDto> {
@@ -89,7 +89,7 @@ export class EntityHistoryService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     getAllEntityHistory(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfEntityHistoryDto> {
@@ -155,7 +155,7 @@ export class InventoryService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     getCurrentStocks(): Observable<ApiResponseOfListOfCurrentInventoryDto> {
@@ -494,7 +494,7 @@ export class InventoryReconcillationService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     createInvenReconcillation(input: CreateInventoryReconcillationDto): Observable<ApiResponseOfString> {
@@ -610,7 +610,7 @@ export class MachineService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     getAllMachine(): Observable<ApiResponseOfListOfMachineDto> {
@@ -827,7 +827,7 @@ export class MachineProductionService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     getAllMachineGeneration(minCreationTime: Date | null | undefined, maxCreationTime: Date | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfGetMachineGenerationWTotal> {
@@ -897,7 +897,7 @@ export class NotificationService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     createNotification(input: CreateNotificationDto): Observable<ApiResponseOfString> {
@@ -1175,7 +1175,7 @@ export class PrinterLogsService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     createPrinterLogs(transNum: string | undefined): Observable<ApiResponseOfBoolean> {
@@ -1291,7 +1291,7 @@ export class ProductCategoryService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     getProductCategory(): Observable<ApiResponseOfIListOfProductCategoryDto> {
@@ -1403,7 +1403,7 @@ export class ProductService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     createOrEditProduct(input: CreateProductV1Dto): Observable<ApiResponseOfString> {
@@ -1880,7 +1880,7 @@ export class ProductCostService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     getAll(isActive: boolean | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfProductCostDto> {
@@ -2054,7 +2054,7 @@ export class ReportService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     generateReport(date: Date | undefined): Observable<ApiResponseOfViewGeneratedReportDto> {
@@ -2118,7 +2118,7 @@ export class SalesService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     getSales(transNum: string | null | undefined, minTransDate: Date | null | undefined, maxTransDate: Date | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfSalesHeaderDto> {
@@ -2556,7 +2556,7 @@ export class StockReconciliationService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     createOrEditStocksReconciliation(input: CreateOrEditStocksReconciliationDto): Observable<ApiResponseOfString> {
@@ -2620,7 +2620,7 @@ export class StocksService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     receiveStocks(input: CreateStocksReceivingDto): Observable<ApiResponseOfString> {
@@ -2792,7 +2792,7 @@ export class StorageLocationService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     createStorageLocation(input: CreateOrEditStorageLocationDto): Observable<ApiResponseOfString> {
@@ -2904,7 +2904,7 @@ export class UserAuthService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     login(userName: string | undefined, password: string | undefined): Observable<ApiResponseOfUserLoginDto> {
@@ -3084,7 +3084,7 @@ export class VoidRequestService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "http://192.168.1.67:8081";
+        this.baseUrl = baseUrl ?? "https://localhost:7050/";
     }
 
     getVoidRequest(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfGetVoidRequest> {

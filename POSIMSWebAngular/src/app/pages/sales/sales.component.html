@@ -133,7 +133,7 @@
 
         <!-- Action -->
         <ng-container matColumnDef="action" *ngIf="
-        authService.hasRole('Admin') || authService.hasRole('Inventory')
+        authService.hasRole('Admin') || authService.hasRole('Cashier')
       ">
           <th
             mat-header-cell
@@ -211,4 +211,4 @@
   <app-view-sales-details-v1></app-view-sales-details-v1>
 </p-dialog>
 
-<app-sales-summary></app-sales-summary>
+<app-sales-summary *ngIf="authService.hasRole('Admin')"></app-sales-summary>

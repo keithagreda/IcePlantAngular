@@ -89,7 +89,13 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(),
     provideAnimationsAsync(),
     provideAnimations(), // required animations providers
-    provideToastr(), // Toastr providers
+    provideToastr({
+      timeOut: 3000, // Auto dismiss after 3 seconds
+      positionClass: 'toast-top-right', // Position of the toast
+      newestOnTop: false, // Ensures only one notification at a time
+      maxOpened: 1, // Limit to 1 active toast
+      preventDuplicates: true, // Prevent duplicate notifications
+    }),
     importProvidersFrom(
       FormsModule,
       ReactiveFormsModule,

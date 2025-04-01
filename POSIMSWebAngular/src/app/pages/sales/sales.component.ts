@@ -66,10 +66,11 @@ export class SalesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getSales();
+    this.updateDisplayedColumns();
   }
 
   updateDisplayedColumns() {
-    if (this.authService.hasRole('Admin') || this.authService.hasRole('Inventory')) {
+    if (this.authService.hasRole('Admin') || this.authService.hasRole('Cashier')) {
       this.displayedColumns1.push('action');
     }
   }
