@@ -1,0 +1,198 @@
+<div class="print-container">
+  
+    <div class="k-header">
+        <h2>Sales Report</h2>
+
+        <div class="summaries">
+          <!-- <div class="mat-body-1">Total Sales: {{ totalSales }}</div> -->
+          <!-- <div class="mat-body-1">Daily Sales: {{ dailySales }}</div> -->
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="w-100">
+          <!-- Transaction Number -->
+          <ng-container matColumnDef="transNum">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="f-w-600 mat-subtitle-1 f-s-14"
+            >
+              Transaction #
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="mat-body-1"
+              [ngClass]="{
+                'table-row-even': i % 2 === 0,
+                'table-row-odd': i % 2 !== 0
+              }"
+            >
+              <h6 class="mat-body-1 f-s-16 m-b-4">
+                <span class="text-dark f-w-600 text-capitalize">{{
+                  element.transNum | titlecase
+                }}</span>
+              </h6>
+            </td>
+          </ng-container>
+  
+          <!-- Customer Name -->
+          <ng-container matColumnDef="customerName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="f-w-600 mat-subtitle-1 f-s-14"
+            >
+              Customer Name
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="mat-body-1"
+              [ngClass]="{
+                'table-row-even': i % 2 === 0,
+                'table-row-odd': i % 2 !== 0
+              }"
+            >
+              {{ element.customerName }}
+            </td>
+          </ng-container>
+  
+          <!-- Total Amount -->
+          <ng-container matColumnDef="totalAmount">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="f-w-600 mat-subtitle-1 f-s-14 text-capitalize"
+            >
+              Total Amount
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="mat-body-1"
+              [ngClass]="{
+                'table-row-even': i % 2 === 0,
+                'table-row-odd': i % 2 !== 0
+              }"
+            >
+              ₱{{ element.totalPrice | number : "1.0-0" }}
+            </td>
+          </ng-container>
+  
+          <!-- Transaction Date -->
+          <ng-container matColumnDef="dateTime">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="f-w-600 mat-subtitle-1 f-s-14"
+            >
+              Transaction Date
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="mat-body-1"
+              [ngClass]="{
+                'table-row-even': i % 2 === 0,
+                'table-row-odd': i % 2 !== 0
+              }"
+            >
+              {{ element.dateTime | date : "MMM d, y, h:mm a" }}
+            </td>
+          </ng-container>
+  
+          <!-- Sold By -->
+          <ng-container matColumnDef="soldBy">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="f-w-600 mat-subtitle-1 f-s-14"
+            >
+              Sold By
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="mat-body-1"
+              [ngClass]="{
+                'table-row-even': i % 2 === 0,
+                'table-row-odd': i % 2 !== 0
+              }"
+            >
+              {{ element.soldBy }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="productName">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="f-w-600 mat-subtitle-1 f-s-14"
+            >
+              ITEM
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="mat-body-1"
+              [ngClass]="{
+                'table-row-even': i % 2 === 0,
+                'table-row-odd': i % 2 !== 0
+              }"
+            >
+              {{ element.productName }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="quantity">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="f-w-600 mat-subtitle-1 f-s-14"
+            >
+              Qty
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="mat-body-1"
+              [ngClass]="{
+                'table-row-even': i % 2 === 0,
+                'table-row-odd': i % 2 !== 0
+              }"
+            >
+              {{ element.quantity }}
+            </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="rate">
+            <th
+              mat-header-cell
+              *matHeaderCellDef
+              class="f-w-600 mat-subtitle-1 f-s-14"
+            >
+              Rate
+            </th>
+            <td
+              mat-cell
+              *matCellDef="let element; let i = index"
+              class="mat-body-1"
+              [ngClass]="{
+                'table-row-even': i % 2 === 0,
+                'table-row-odd': i % 2 !== 0
+              }"
+            >
+              ₱{{ element.rate | number : "1.0-0" }}
+            </td>
+          </ng-container>
+  
+          <!-- Table Rows -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
+        </table>
+      
+  
+    <!-- Print Button (Hidden in Print Mode) -->
+    <!-- <button class="no-print" (click)="print()">Print Report</button> -->
+  </div>

@@ -3,9 +3,11 @@ import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { RoleGuard } from './services/auth/authguard/roleguard';
 import { AuthGuard } from './services/auth/authguard/authguard';
+import { PrintableSalesReportComponent } from './components/printable-sales-report/printable-sales-report.component';
 
 export const routes: Routes = [
   {
+    
     path: '',
     component: FullComponent,
     children: [
@@ -50,6 +52,14 @@ export const routes: Routes = [
       },
     ],
     canActivate: [RoleGuard],
+    data: {
+      roles: ['Admin'],
+    },
+  },
+  {
+      path: 'printable-sales-report',
+      component: PrintableSalesReportComponent,
+      canActivate: [RoleGuard],
     data: {
       roles: ['Admin'],
     },
@@ -145,6 +155,7 @@ export const routes: Routes = [
       roles: ['Admin', 'Inventory', 'Owner'],
     },
   },
+  
   {
     path: '',
     component: BlankComponent,
