@@ -50,20 +50,24 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
       },
+      {
+        path: 'printable-sales-report',
+        component: PrintableSalesReportComponent,
+      }
     ],
     canActivate: [RoleGuard],
     data: {
       roles: ['Admin'],
     },
   },
-  {
-      path: 'printable-sales-report',
-      component: PrintableSalesReportComponent,
-      canActivate: [RoleGuard],
-    data: {
-      roles: ['Admin'],
-    },
-  },
+  // {
+  //     path: 'printable-sales-report',
+  //     component: PrintableSalesReportComponent,
+  //     canActivate: [RoleGuard],
+  //   data: {
+  //     roles: ['Admin'],
+  //   },
+  // },
   {
     path: '',
     component: FullComponent,

@@ -23,7 +23,7 @@ export class CustomerService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     customerDropDown(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfCustomerDropDownDto> {
@@ -89,7 +89,7 @@ export class EntityHistoryService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     getAllEntityHistory(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfEntityHistoryDto> {
@@ -155,7 +155,7 @@ export class InventoryService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     getCurrentStocks(): Observable<ApiResponseOfListOfCurrentInventoryDto> {
@@ -494,7 +494,7 @@ export class InventoryReconcillationService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     createInvenReconcillation(input: CreateInventoryReconcillationDto): Observable<ApiResponseOfString> {
@@ -610,7 +610,7 @@ export class MachineService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     getAllMachine(): Observable<ApiResponseOfListOfMachineDto> {
@@ -827,7 +827,7 @@ export class MachineProductionService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     getAllMachineGeneration(minCreationTime: Date | null | undefined, maxCreationTime: Date | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfGetMachineGenerationWTotal> {
@@ -897,7 +897,7 @@ export class NotificationService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     createNotification(input: CreateNotificationDto): Observable<ApiResponseOfString> {
@@ -1175,7 +1175,7 @@ export class PrinterLogsService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     createPrinterLogs(transNum: string | undefined): Observable<ApiResponseOfBoolean> {
@@ -1291,7 +1291,7 @@ export class ProductCategoryService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     getProductCategory(): Observable<ApiResponseOfIListOfProductCategoryDto> {
@@ -1403,7 +1403,7 @@ export class ProductService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     createOrEditProduct(input: CreateProductV1Dto): Observable<ApiResponseOfString> {
@@ -1880,7 +1880,7 @@ export class ProductCostService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     getAll(isActive: boolean | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfProductCostDto> {
@@ -2054,7 +2054,7 @@ export class ReportService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     generateReport(date: Date | undefined): Observable<ApiResponseOfViewGeneratedReportDto> {
@@ -2118,7 +2118,7 @@ export class SalesService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     getSales(transNum: string | null | undefined, minTransDate: Date | null | undefined, maxTransDate: Date | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfSalesHeaderDto> {
@@ -2381,6 +2381,64 @@ export class SalesService {
         return _observableOf(null as any);
     }
 
+    getSalesSummaryForReports(dateFrom: Date | null | undefined, dateTo: Date | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfSalesSummaryWithEst> {
+        let url_ = this.baseUrl + "/api/Sales/GetSalesSummaryForReports?";
+        if (dateFrom !== undefined && dateFrom !== null)
+            url_ += "DateFrom=" + encodeURIComponent(dateFrom ? "" + dateFrom.toISOString() : "") + "&";
+        if (dateTo !== undefined && dateTo !== null)
+            url_ += "DateTo=" + encodeURIComponent(dateTo ? "" + dateTo.toISOString() : "") + "&";
+        if (filterText !== undefined && filterText !== null)
+            url_ += "FilterText=" + encodeURIComponent("" + filterText) + "&";
+        if (pageNumber !== undefined && pageNumber !== null)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSalesSummaryForReports(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSalesSummaryForReports(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfSalesSummaryWithEst>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfSalesSummaryWithEst>;
+        }));
+    }
+
+    protected processGetSalesSummaryForReports(response: HttpResponseBase): Observable<ApiResponseOfSalesSummaryWithEst> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfSalesSummaryWithEst.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     getSalesSummary(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfSalesSummaryWithEst> {
         let url_ = this.baseUrl + "/api/Sales/GetSalesSummary?";
         if (filterText !== undefined && filterText !== null)
@@ -2556,7 +2614,7 @@ export class StockReconciliationService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     createOrEditStocksReconciliation(input: CreateOrEditStocksReconciliationDto): Observable<ApiResponseOfString> {
@@ -2620,7 +2678,7 @@ export class StocksService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     receiveStocks(input: CreateStocksReceivingDto): Observable<ApiResponseOfString> {
@@ -2792,7 +2850,7 @@ export class StorageLocationService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     createStorageLocation(input: CreateOrEditStorageLocationDto): Observable<ApiResponseOfString> {
@@ -2904,7 +2962,7 @@ export class UserAuthService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     login(userName: string | undefined, password: string | undefined): Observable<ApiResponseOfUserLoginDto> {
@@ -3084,7 +3142,7 @@ export class VoidRequestService {
 
     constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
         this.http = http;
-        this.baseUrl = baseUrl ?? "https://localhost:7050/";
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
     getVoidRequest(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfGetVoidRequest> {
@@ -7494,7 +7552,7 @@ export class SalesHeaderDto implements ISalesHeaderDto {
     id?: string;
     totalAmount?: number;
     transNum?: string | null;
-    transactionDate?: string;
+    transactionDate?: Date;
     soldBy?: string;
     customerName?: string;
     salesDetailsDto?: SalesDetailDto[];
@@ -7514,7 +7572,7 @@ export class SalesHeaderDto implements ISalesHeaderDto {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.totalAmount = _data["totalAmount"] !== undefined ? _data["totalAmount"] : <any>null;
             this.transNum = _data["transNum"] !== undefined ? _data["transNum"] : <any>null;
-            this.transactionDate = _data["transactionDate"] !== undefined ? _data["transactionDate"] : <any>null;
+            this.transactionDate = _data["transactionDate"] ? new Date(_data["transactionDate"].toString()) : <any>null;
             this.soldBy = _data["soldBy"] !== undefined ? _data["soldBy"] : <any>null;
             this.customerName = _data["customerName"] !== undefined ? _data["customerName"] : <any>null;
             if (Array.isArray(_data["salesDetailsDto"])) {
@@ -7541,7 +7599,7 @@ export class SalesHeaderDto implements ISalesHeaderDto {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["totalAmount"] = this.totalAmount !== undefined ? this.totalAmount : <any>null;
         data["transNum"] = this.transNum !== undefined ? this.transNum : <any>null;
-        data["transactionDate"] = this.transactionDate !== undefined ? this.transactionDate : <any>null;
+        data["transactionDate"] = this.transactionDate ? this.transactionDate.toISOString() : <any>null;
         data["soldBy"] = this.soldBy !== undefined ? this.soldBy : <any>null;
         data["customerName"] = this.customerName !== undefined ? this.customerName : <any>null;
         if (Array.isArray(this.salesDetailsDto)) {
@@ -7558,7 +7616,7 @@ export interface ISalesHeaderDto {
     id?: string;
     totalAmount?: number;
     transNum?: string | null;
-    transactionDate?: string;
+    transactionDate?: Date;
     soldBy?: string;
     customerName?: string;
     salesDetailsDto?: SalesDetailDto[];
@@ -8067,6 +8125,208 @@ export interface IPerMonthSalesDto {
     totalMonthlySales?: number;
 }
 
+export class ApiResponseOfSalesSummaryWithEst implements IApiResponseOfSalesSummaryWithEst {
+    data!: SalesSummaryWithEst;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+
+    constructor(data?: IApiResponseOfSalesSummaryWithEst) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.data = new SalesSummaryWithEst();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? SalesSummaryWithEst.fromJS(_data["data"]) : new SalesSummaryWithEst();
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+            else {
+                this.errors = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ApiResponseOfSalesSummaryWithEst {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseOfSalesSummaryWithEst();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IApiResponseOfSalesSummaryWithEst {
+    data: SalesSummaryWithEst;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+}
+
+export class SalesSummaryWithEst implements ISalesSummaryWithEst {
+    totalSales?: number;
+    dailySales?: number;
+    totalEstimatedCost?: number;
+    from?: Date;
+    to?: Date;
+    salesSummaryDtos?: SalesSummaryDto[];
+
+    constructor(data?: ISalesSummaryWithEst) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalSales = _data["totalSales"] !== undefined ? _data["totalSales"] : <any>null;
+            this.dailySales = _data["dailySales"] !== undefined ? _data["dailySales"] : <any>null;
+            this.totalEstimatedCost = _data["totalEstimatedCost"] !== undefined ? _data["totalEstimatedCost"] : <any>null;
+            this.from = _data["from"] ? new Date(_data["from"].toString()) : <any>null;
+            this.to = _data["to"] ? new Date(_data["to"].toString()) : <any>null;
+            if (Array.isArray(_data["salesSummaryDtos"])) {
+                this.salesSummaryDtos = [] as any;
+                for (let item of _data["salesSummaryDtos"])
+                    this.salesSummaryDtos!.push(SalesSummaryDto.fromJS(item));
+            }
+            else {
+                this.salesSummaryDtos = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): SalesSummaryWithEst {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesSummaryWithEst();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalSales"] = this.totalSales !== undefined ? this.totalSales : <any>null;
+        data["dailySales"] = this.dailySales !== undefined ? this.dailySales : <any>null;
+        data["totalEstimatedCost"] = this.totalEstimatedCost !== undefined ? this.totalEstimatedCost : <any>null;
+        data["from"] = this.from ? this.from.toISOString() : <any>null;
+        data["to"] = this.to ? this.to.toISOString() : <any>null;
+        if (Array.isArray(this.salesSummaryDtos)) {
+            data["salesSummaryDtos"] = [];
+            for (let item of this.salesSummaryDtos)
+                data["salesSummaryDtos"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ISalesSummaryWithEst {
+    totalSales?: number;
+    dailySales?: number;
+    totalEstimatedCost?: number;
+    from?: Date;
+    to?: Date;
+    salesSummaryDtos?: SalesSummaryDto[];
+}
+
+export class SalesSummaryDto implements ISalesSummaryDto {
+    customerName?: string;
+    soldBy?: string | null;
+    transNum?: string | null;
+    dateTime?: Date;
+    productName?: string;
+    quantity?: number;
+    rate?: number;
+    totalPrice?: number;
+    currentInventory?: InventoryStatus;
+
+    constructor(data?: ISalesSummaryDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customerName = _data["customerName"] !== undefined ? _data["customerName"] : <any>null;
+            this.soldBy = _data["soldBy"] !== undefined ? _data["soldBy"] : <any>null;
+            this.transNum = _data["transNum"] !== undefined ? _data["transNum"] : <any>null;
+            this.dateTime = _data["dateTime"] ? new Date(_data["dateTime"].toString()) : <any>null;
+            this.productName = _data["productName"] !== undefined ? _data["productName"] : <any>null;
+            this.quantity = _data["quantity"] !== undefined ? _data["quantity"] : <any>null;
+            this.rate = _data["rate"] !== undefined ? _data["rate"] : <any>null;
+            this.totalPrice = _data["totalPrice"] !== undefined ? _data["totalPrice"] : <any>null;
+            this.currentInventory = _data["currentInventory"] !== undefined ? _data["currentInventory"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SalesSummaryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesSummaryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["customerName"] = this.customerName !== undefined ? this.customerName : <any>null;
+        data["soldBy"] = this.soldBy !== undefined ? this.soldBy : <any>null;
+        data["transNum"] = this.transNum !== undefined ? this.transNum : <any>null;
+        data["dateTime"] = this.dateTime ? this.dateTime.toISOString() : <any>null;
+        data["productName"] = this.productName !== undefined ? this.productName : <any>null;
+        data["quantity"] = this.quantity !== undefined ? this.quantity : <any>null;
+        data["rate"] = this.rate !== undefined ? this.rate : <any>null;
+        data["totalPrice"] = this.totalPrice !== undefined ? this.totalPrice : <any>null;
+        data["currentInventory"] = this.currentInventory !== undefined ? this.currentInventory : <any>null;
+        return data;
+    }
+}
+
+export interface ISalesSummaryDto {
+    customerName?: string;
+    soldBy?: string | null;
+    transNum?: string | null;
+    dateTime?: Date;
+    productName?: string;
+    quantity?: number;
+    rate?: number;
+    totalPrice?: number;
+    currentInventory?: InventoryStatus;
+}
+
+export enum InventoryStatus {
+    Open = 0,
+    Closed = 1,
+}
+
 export class ApiResponseOfPaginatedResultOfSalesSummaryWithEst implements IApiResponseOfPaginatedResultOfSalesSummaryWithEst {
     data!: PaginatedResultOfSalesSummaryWithEst;
     message?: string;
@@ -8190,138 +8450,6 @@ export interface IPaginatedResultOfSalesSummaryWithEst {
     totalPages?: number;
     currentPage?: number;
     pageSize?: number;
-}
-
-export class SalesSummaryWithEst implements ISalesSummaryWithEst {
-    totalSales?: number;
-    dailySales?: number;
-    totalEstimatedCost?: number;
-    salesSummaryDtos?: SalesSummaryDto[];
-
-    constructor(data?: ISalesSummaryWithEst) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.totalSales = _data["totalSales"] !== undefined ? _data["totalSales"] : <any>null;
-            this.dailySales = _data["dailySales"] !== undefined ? _data["dailySales"] : <any>null;
-            this.totalEstimatedCost = _data["totalEstimatedCost"] !== undefined ? _data["totalEstimatedCost"] : <any>null;
-            if (Array.isArray(_data["salesSummaryDtos"])) {
-                this.salesSummaryDtos = [] as any;
-                for (let item of _data["salesSummaryDtos"])
-                    this.salesSummaryDtos!.push(SalesSummaryDto.fromJS(item));
-            }
-            else {
-                this.salesSummaryDtos = <any>null;
-            }
-        }
-    }
-
-    static fromJS(data: any): SalesSummaryWithEst {
-        data = typeof data === 'object' ? data : {};
-        let result = new SalesSummaryWithEst();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["totalSales"] = this.totalSales !== undefined ? this.totalSales : <any>null;
-        data["dailySales"] = this.dailySales !== undefined ? this.dailySales : <any>null;
-        data["totalEstimatedCost"] = this.totalEstimatedCost !== undefined ? this.totalEstimatedCost : <any>null;
-        if (Array.isArray(this.salesSummaryDtos)) {
-            data["salesSummaryDtos"] = [];
-            for (let item of this.salesSummaryDtos)
-                data["salesSummaryDtos"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ISalesSummaryWithEst {
-    totalSales?: number;
-    dailySales?: number;
-    totalEstimatedCost?: number;
-    salesSummaryDtos?: SalesSummaryDto[];
-}
-
-export class SalesSummaryDto implements ISalesSummaryDto {
-    customerName?: string;
-    soldBy?: string | null;
-    transNum?: string | null;
-    dateTime?: Date;
-    productName?: string;
-    quantity?: number;
-    rate?: number;
-    totalPrice?: number;
-    currentInventory?: InventoryStatus;
-
-    constructor(data?: ISalesSummaryDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.customerName = _data["customerName"] !== undefined ? _data["customerName"] : <any>null;
-            this.soldBy = _data["soldBy"] !== undefined ? _data["soldBy"] : <any>null;
-            this.transNum = _data["transNum"] !== undefined ? _data["transNum"] : <any>null;
-            this.dateTime = _data["dateTime"] ? new Date(_data["dateTime"].toString()) : <any>null;
-            this.productName = _data["productName"] !== undefined ? _data["productName"] : <any>null;
-            this.quantity = _data["quantity"] !== undefined ? _data["quantity"] : <any>null;
-            this.rate = _data["rate"] !== undefined ? _data["rate"] : <any>null;
-            this.totalPrice = _data["totalPrice"] !== undefined ? _data["totalPrice"] : <any>null;
-            this.currentInventory = _data["currentInventory"] !== undefined ? _data["currentInventory"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): SalesSummaryDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new SalesSummaryDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["customerName"] = this.customerName !== undefined ? this.customerName : <any>null;
-        data["soldBy"] = this.soldBy !== undefined ? this.soldBy : <any>null;
-        data["transNum"] = this.transNum !== undefined ? this.transNum : <any>null;
-        data["dateTime"] = this.dateTime ? this.dateTime.toISOString() : <any>null;
-        data["productName"] = this.productName !== undefined ? this.productName : <any>null;
-        data["quantity"] = this.quantity !== undefined ? this.quantity : <any>null;
-        data["rate"] = this.rate !== undefined ? this.rate : <any>null;
-        data["totalPrice"] = this.totalPrice !== undefined ? this.totalPrice : <any>null;
-        data["currentInventory"] = this.currentInventory !== undefined ? this.currentInventory : <any>null;
-        return data;
-    }
-}
-
-export interface ISalesSummaryDto {
-    customerName?: string;
-    soldBy?: string | null;
-    transNum?: string | null;
-    dateTime?: Date;
-    productName?: string;
-    quantity?: number;
-    rate?: number;
-    totalPrice?: number;
-    currentInventory?: InventoryStatus;
-}
-
-export enum InventoryStatus {
-    Open = 0,
-    Closed = 1,
 }
 
 export class ApiResponseOfPaginatedResultOfViewSalesHeaderDto implements IApiResponseOfPaginatedResultOfViewSalesHeaderDto {

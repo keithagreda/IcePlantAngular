@@ -1,198 +1,101 @@
-<div class="print-container">
-  
-    <div class="k-header">
-        <h2>Sales Report</h2>
-
-        <div class="summaries">
-          <!-- <div class="mat-body-1">Total Sales: {{ totalSales }}</div> -->
-          <!-- <div class="mat-body-1">Daily Sales: {{ dailySales }}</div> -->
+<div class="action">
+  <div class="date-range-buttons">
+    <button mat-flat-button color="primary" (click)="setDateRange('daily')">
+      Daily
+    </button>
+    <button mat-flat-button color="primary" (click)="setDateRange('weekly')">
+      Weekly
+    </button>
+    <button mat-flat-button color="primary" (click)="setDateRange('monthly')">
+      Monthly
+    </button>
+    <button mat-flat-button color="primary" (click)="setDateRange('yearly')">
+      Yearly
+    </button>
+  </div>
+  <div class="print">
+    <button
+      mat-flat-button
+      color="primary"
+      id="printBtn"
+      class="print-button"
+      (click)="print()"
+    >
+      🖨️ Print
+    </button>
+  </div>
+</div>
+<div class="printable">
+  <div class="sales-summary-container">
+    <div class="header">
+      <div class="title">
+        <h1>Sales Summary</h1>
+      </div>
+      <div class="date-range">
+        <div class="date">
+          <strong>From:</strong> {{ dateFrom | date : "MMM d, y" }}
+        </div>
+        <div class="date">
+          <strong>To:</strong> {{ dateTo | date : "MMM d, y" }}
         </div>
       </div>
-      <div class="table-responsive">
-        <table mat-table [dataSource]="dataSource" class="w-100">
-          <!-- Transaction Number -->
-          <ng-container matColumnDef="transNum">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              class="f-w-600 mat-subtitle-1 f-s-14"
-            >
-              Transaction #
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              class="mat-body-1"
-              [ngClass]="{
-                'table-row-even': i % 2 === 0,
-                'table-row-odd': i % 2 !== 0
-              }"
-            >
-              <h6 class="mat-body-1 f-s-16 m-b-4">
-                <span class="text-dark f-w-600 text-capitalize">{{
-                  element.transNum | titlecase
-                }}</span>
-              </h6>
-            </td>
+    </div>
+
+    <!-- Add a scrollable container for the table -->
+    <div class="table-container">
+      <div class="loading" *ngIf="loading">
+        <p-progressSpinner ariaLabel="loading" />
+      </div>
+      <table class="sales-summary-table" *ngIf="!loading">
+        <thead>
+          <tr>
+            <th>Customer Name</th>
+            <th>Transaction #</th>
+            <th>Transaction Time</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th>Total Amount</th>
+            <th>Sold By</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <ng-container *ngFor="let item of dataSource">
+            <tr>
+              <td>{{ item.customerName }}</td>
+              <td>{{ item.transNum }}</td>
+              <td>{{ item.dateTime | date : "MMM d, y, h:mm a" }}</td>
+              <td>{{ item.productName }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>₱{{ item.rate | number : "1.0-0" }}</td>
+              <td>₱{{ item.totalPrice | number : "1.0-0" }}</td>
+              <td>{{ item.soldBy }}</td>
+            </tr>
           </ng-container>
-  
-          <!-- Customer Name -->
-          <ng-container matColumnDef="customerName">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              class="f-w-600 mat-subtitle-1 f-s-14"
-            >
-              Customer Name
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              class="mat-body-1"
-              [ngClass]="{
-                'table-row-even': i % 2 === 0,
-                'table-row-odd': i % 2 !== 0
-              }"
-            >
-              {{ element.customerName }}
-            </td>
-          </ng-container>
-  
-          <!-- Total Amount -->
-          <ng-container matColumnDef="totalAmount">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              class="f-w-600 mat-subtitle-1 f-s-14 text-capitalize"
-            >
-              Total Amount
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              class="mat-body-1"
-              [ngClass]="{
-                'table-row-even': i % 2 === 0,
-                'table-row-odd': i % 2 !== 0
-              }"
-            >
-              ₱{{ element.totalPrice | number : "1.0-0" }}
-            </td>
-          </ng-container>
-  
-          <!-- Transaction Date -->
-          <ng-container matColumnDef="dateTime">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              class="f-w-600 mat-subtitle-1 f-s-14"
-            >
-              Transaction Date
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              class="mat-body-1"
-              [ngClass]="{
-                'table-row-even': i % 2 === 0,
-                'table-row-odd': i % 2 !== 0
-              }"
-            >
-              {{ element.dateTime | date : "MMM d, y, h:mm a" }}
-            </td>
-          </ng-container>
-  
-          <!-- Sold By -->
-          <ng-container matColumnDef="soldBy">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              class="f-w-600 mat-subtitle-1 f-s-14"
-            >
-              Sold By
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              class="mat-body-1"
-              [ngClass]="{
-                'table-row-even': i % 2 === 0,
-                'table-row-odd': i % 2 !== 0
-              }"
-            >
-              {{ element.soldBy }}
-            </td>
-          </ng-container>
-  
-          <ng-container matColumnDef="productName">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              class="f-w-600 mat-subtitle-1 f-s-14"
-            >
-              ITEM
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              class="mat-body-1"
-              [ngClass]="{
-                'table-row-even': i % 2 === 0,
-                'table-row-odd': i % 2 !== 0
-              }"
-            >
-              {{ element.productName }}
-            </td>
-          </ng-container>
-  
-          <ng-container matColumnDef="quantity">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              class="f-w-600 mat-subtitle-1 f-s-14"
-            >
-              Qty
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              class="mat-body-1"
-              [ngClass]="{
-                'table-row-even': i % 2 === 0,
-                'table-row-odd': i % 2 !== 0
-              }"
-            >
-              {{ element.quantity }}
-            </td>
-          </ng-container>
-  
-          <ng-container matColumnDef="rate">
-            <th
-              mat-header-cell
-              *matHeaderCellDef
-              class="f-w-600 mat-subtitle-1 f-s-14"
-            >
-              Rate
-            </th>
-            <td
-              mat-cell
-              *matCellDef="let element; let i = index"
-              class="mat-body-1"
-              [ngClass]="{
-                'table-row-even': i % 2 === 0,
-                'table-row-odd': i % 2 !== 0
-              }"
-            >
-              ₱{{ element.rate | number : "1.0-0" }}
-            </td>
-          </ng-container>
-  
-          <!-- Table Rows -->
-          <tr mat-header-row *matHeaderRowDef="displayedColumns1"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns1"></tr>
-        </table>
-      
-  
-    <!-- Print Button (Hidden in Print Mode) -->
-    <!-- <button class="no-print" (click)="print()">Print Report</button> -->
+        </tbody>
+        <tr class="total-row">
+          <td colspan="4">
+            <p><strong>Prepared By:</strong> [Employee Name]</p>
+            <p><strong>Reprint Count:</strong> 1</p>
+          </td>
+          <td colspan="2" class="text-right"><strong>Total Sales:</strong></td>
+          <td>
+            <strong>₱{{ totalSales | number : "1.0-0" }}</strong>
+          </td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+    <div class="signature-container">
+      <div class="signature-item">
+        <p>[Approver Name]</p>
+        <strong>Approver</strong>
+      </div>
+      <div class="signature-item">
+        <p>[Noted By Name]</p>
+        <strong>Noted By</strong>
+      </div>
+    </div>
   </div>
+</div>

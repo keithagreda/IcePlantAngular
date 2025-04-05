@@ -23,6 +23,13 @@ export const navItems: NavItem[] = [
     route: '/sales',
     roles: ['Admin', 'Cashier', 'Owner'],
   },
+
+  {
+    displayName: 'Sales Summary Report',
+    iconName: 'solar:hand-money-bold',
+    route: '/printable-sales-report',
+    roles: ['Admin', 'Owner'],
+  },
   {
     displayName: 'Products',
     iconName: 'solar:widget-add-line-duotone',
