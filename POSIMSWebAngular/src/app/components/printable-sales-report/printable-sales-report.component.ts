@@ -31,8 +31,8 @@ import { SalesService, SalesSummaryDto } from 'src/app/services/nswag/nswag.serv
 export class PrintableSalesReportComponent implements OnInit{
   dataSource: SalesSummaryDto[] = [];
   totalSales: number = 0;
-  dateFrom: Date = new Date();
-  dateTo: Date = new Date();
+  dateFrom: Date = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()));
+  dateTo: Date = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()));
   loading = false;
   displayedColumns1: string[] = [
     'transNum',
@@ -56,19 +56,21 @@ export class PrintableSalesReportComponent implements OnInit{
     const today = new Date();
     switch (range) {
       case 'daily':
-        this.dateFrom = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        // Set UTC date to midnight UTC time (no time part)
+        this.dateFrom = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
         break;
       case 'weekly':
-        const startOfWeek = today.getDate() - today.getDay(); // Sunday as the start of the week
-        this.dateFrom = new Date(today.getFullYear(), today.getMonth(), startOfWeek);
+        const startOfWeek = today.getUTCDate() - today.getUTCDay(); // Sunday as the start of the week
+        this.dateFrom = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), startOfWeek));
         break;
       case 'monthly':
-        this.dateFrom = new Date(today.getFullYear(), today.getMonth(), 1);
+        this.dateFrom = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
         break;
       case 'yearly':
-        this.dateFrom = new Date(today.getFullYear(), 0, 1);
+        this.dateFrom = new Date(Date.UTC(today.getUTCFullYear(), 0, 1));
         break;
     }
+  
     this.getSalesReport(); // Refresh the report with the new date range
   }
 

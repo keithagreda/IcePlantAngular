@@ -28,7 +28,7 @@ export const navItems: NavItem[] = [
     displayName: 'Sales Summary Report',
     iconName: 'solar:hand-money-bold',
     route: '/printable-sales-report',
-    roles: ['Admin', 'Owner'],
+    roles: ['Admin', 'Owner', 'Cashier'],
   },
   {
     displayName: 'Products',
