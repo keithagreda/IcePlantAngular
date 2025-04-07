@@ -29,3 +29,10 @@
     border-top-right-radius: 13px;
     border-bottom-right-radius: 13px;
 }
+
+@media (max-width: 768px) {
+    .login-container{
+        max-width: 500px;
+    }
+
+}

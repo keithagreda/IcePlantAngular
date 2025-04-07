@@ -61,6 +61,10 @@ export class AppTotalIncomeComponent implements OnInit {
     });
   }
 
+  getPercentageClass(): string {
+    return this.openInvPercentage < 0 ? 'text-error f-w-600' : 'text-success f-w-600';
+  }
+
   constructChart() {
     this.totalincomeChart = {
       series: [

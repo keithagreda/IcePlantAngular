@@ -2,9 +2,9 @@
   <mat-card-content>
     <div class="hstack align-items-center">
       <div
-        class="rounded icon-48 bg-light-error d-flex align-items-center flex-shrink-0 justify-content-center"
+        class="rounded icon-48 bg-light-primary d-flex align-items-center flex-shrink-0 justify-content-center"
       >
-        <i class="iconify f-s-24 text-error" data-icon="solar:box-linear"></i>
+        <i class="iconify f-s-24 text-primary" data-icon="solar:box-linear"></i>
       </div>
       <mat-card-title class="f-s-16 f-w-500 m-b-0">Daily Sales</mat-card-title>
     </div>
@@ -14,12 +14,9 @@
         <h5 class="f-s-24 f-w-500 m-b-4 m-t-30">
           ₱{{ openInvTotalSales | number : "1.0-0" }}
         </h5>
-        <span *ngIf="openInvPercentage >= 0" class="text-success f-w-600"
-          >+{{ openInvPercentage }}%</span
-        >
-        <span *ngIf="openInvPercentage < 0" class="text-danger f-w-600"
-          >-{{ openInvPercentage }}%</span
-        >
+        <span [class]="getPercentageClass()">
+          {{ openInvPercentage >= 0 ? '+' : '' }}{{ openInvPercentage }}%
+        </span>
       </div>
       <div class="col-6 d-flex align-items-center" *ngIf="active">
         <!-- chart -->
