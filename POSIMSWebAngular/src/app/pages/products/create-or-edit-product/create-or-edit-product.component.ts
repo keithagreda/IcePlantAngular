@@ -49,6 +49,7 @@ export class CreateOrEditProductComponent implements OnInit {
   createProductForm!: FormGroup;
   selectedCategory: ProductCategoryDtoV1 = new ProductCategoryDtoV1();
   visible = false;
+  saving = false;
   constructor(
     private fb: FormBuilder,
     private _toastr: ToastrService,
@@ -141,7 +142,7 @@ export class CreateOrEditProductComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.createProductForm);
+    this.saving = true;
     this._productService
       .createOrEditProduct(this.createProductForm.value)
       .subscribe({
@@ -154,8 +155,10 @@ export class CreateOrEditProductComponent implements OnInit {
           if (!res.isSuccess) {
             this._toastr.error(res.message);
           }
+          this.saving = false;
         },
         error: (err) => {
+          this.saving = false;
           this._toastr.error('Something went wrong while creating product');
         },
       });

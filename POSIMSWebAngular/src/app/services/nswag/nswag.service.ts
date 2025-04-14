@@ -1168,6 +1168,70 @@ export class NotificationService {
 }
 
 @Injectable()
+export class PaymentService {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "https://localhost:7050";
+    }
+
+    updatePayment(input: PaymentDetailDto): Observable<ApiResponseOfString> {
+        let url_ = this.baseUrl + "/api/Payment/UpdatePayment";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(input);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdatePayment(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdatePayment(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfString>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfString>;
+        }));
+    }
+
+    protected processUpdatePayment(response: HttpResponseBase): Observable<ApiResponseOfString> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable()
 export class PrinterLogsService {
     private http: HttpClient;
     private baseUrl: string;
@@ -5498,6 +5562,46 @@ export interface IGetNotificationDto extends INotificationDto {
     strCreationTime?: string;
 }
 
+export class PaymentDetailDto implements IPaymentDetailDto {
+    amountPaid?: number;
+    paymentHeaderId?: string;
+
+    constructor(data?: IPaymentDetailDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.amountPaid = _data["amountPaid"] !== undefined ? _data["amountPaid"] : <any>null;
+            this.paymentHeaderId = _data["paymentHeaderId"] !== undefined ? _data["paymentHeaderId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaymentDetailDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaymentDetailDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amountPaid"] = this.amountPaid !== undefined ? this.amountPaid : <any>null;
+        data["paymentHeaderId"] = this.paymentHeaderId !== undefined ? this.paymentHeaderId : <any>null;
+        return data;
+    }
+}
+
+export interface IPaymentDetailDto {
+    amountPaid?: number;
+    paymentHeaderId?: string;
+}
+
 export class ApiResponseOfBoolean implements IApiResponseOfBoolean {
     data!: boolean;
     message?: string;
@@ -7836,6 +7940,7 @@ export class CreateOrEditSalesV1Dto implements ICreateOrEditSalesV1Dto {
     salesHeaderId?: string | null;
     customerName?: string;
     createSalesDetailV1Dto?: CreateSalesDetailV1Dto[];
+    salesPaymentDto?: SalesPaymentDto;
 
     constructor(data?: ICreateOrEditSalesV1Dto) {
         if (data) {
@@ -7858,6 +7963,7 @@ export class CreateOrEditSalesV1Dto implements ICreateOrEditSalesV1Dto {
             else {
                 this.createSalesDetailV1Dto = <any>null;
             }
+            this.salesPaymentDto = _data["salesPaymentDto"] ? SalesPaymentDto.fromJS(_data["salesPaymentDto"]) : <any>null;
         }
     }
 
@@ -7877,6 +7983,7 @@ export class CreateOrEditSalesV1Dto implements ICreateOrEditSalesV1Dto {
             for (let item of this.createSalesDetailV1Dto)
                 data["createSalesDetailV1Dto"].push(item.toJSON());
         }
+        data["salesPaymentDto"] = this.salesPaymentDto ? this.salesPaymentDto.toJSON() : <any>null;
         return data;
     }
 }
@@ -7885,6 +7992,60 @@ export interface ICreateOrEditSalesV1Dto {
     salesHeaderId?: string | null;
     customerName?: string;
     createSalesDetailV1Dto?: CreateSalesDetailV1Dto[];
+    salesPaymentDto?: SalesPaymentDto;
+}
+
+export class SalesPaymentDto implements ISalesPaymentDto {
+    saleType?: SaleType;
+    totalAmount?: number;
+    amountPaid?: number;
+    salesHeaderId?: string | null;
+
+    constructor(data?: ISalesPaymentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.saleType = _data["saleType"] !== undefined ? _data["saleType"] : <any>null;
+            this.totalAmount = _data["totalAmount"] !== undefined ? _data["totalAmount"] : <any>null;
+            this.amountPaid = _data["amountPaid"] !== undefined ? _data["amountPaid"] : <any>null;
+            this.salesHeaderId = _data["salesHeaderId"] !== undefined ? _data["salesHeaderId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SalesPaymentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesPaymentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["saleType"] = this.saleType !== undefined ? this.saleType : <any>null;
+        data["totalAmount"] = this.totalAmount !== undefined ? this.totalAmount : <any>null;
+        data["amountPaid"] = this.amountPaid !== undefined ? this.amountPaid : <any>null;
+        data["salesHeaderId"] = this.salesHeaderId !== undefined ? this.salesHeaderId : <any>null;
+        return data;
+    }
+}
+
+export interface ISalesPaymentDto {
+    saleType?: SaleType;
+    totalAmount?: number;
+    amountPaid?: number;
+    salesHeaderId?: string | null;
+}
+
+export enum SaleType {
+    Cash = 0,
+    Credit = 1,
 }
 
 export class ApiResponseOfGetTotalSalesDto implements IApiResponseOfGetTotalSalesDto {
@@ -8933,7 +9094,7 @@ export class GetAllStocksReceivingDto implements IGetAllStocksReceivingDto {
     storageLocation?: string;
     quantity?: number;
     storageLocationId?: number;
-    dateReceived?: string;
+    dateReceived?: Date;
 
     constructor(data?: IGetAllStocksReceivingDto) {
         if (data) {
@@ -8953,7 +9114,7 @@ export class GetAllStocksReceivingDto implements IGetAllStocksReceivingDto {
             this.storageLocation = _data["storageLocation"] !== undefined ? _data["storageLocation"] : <any>null;
             this.quantity = _data["quantity"] !== undefined ? _data["quantity"] : <any>null;
             this.storageLocationId = _data["storageLocationId"] !== undefined ? _data["storageLocationId"] : <any>null;
-            this.dateReceived = _data["dateReceived"] !== undefined ? _data["dateReceived"] : <any>null;
+            this.dateReceived = _data["dateReceived"] ? new Date(_data["dateReceived"].toString()) : <any>null;
         }
     }
 
@@ -8973,7 +9134,7 @@ export class GetAllStocksReceivingDto implements IGetAllStocksReceivingDto {
         data["storageLocation"] = this.storageLocation !== undefined ? this.storageLocation : <any>null;
         data["quantity"] = this.quantity !== undefined ? this.quantity : <any>null;
         data["storageLocationId"] = this.storageLocationId !== undefined ? this.storageLocationId : <any>null;
-        data["dateReceived"] = this.dateReceived !== undefined ? this.dateReceived : <any>null;
+        data["dateReceived"] = this.dateReceived ? this.dateReceived.toISOString() : <any>null;
         return data;
     }
 }
@@ -8986,7 +9147,7 @@ export interface IGetAllStocksReceivingDto {
     storageLocation?: string;
     quantity?: number;
     storageLocationId?: number;
-    dateReceived?: string;
+    dateReceived?: Date;
 }
 
 export class ApiResponseOfListOfGetStocksGenerationDto implements IApiResponseOfListOfGetStocksGenerationDto {

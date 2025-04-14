@@ -31,6 +31,7 @@ import { StorageLocationService } from 'src/app/services/nswag/nswag.service';
 export class CreateOrEditStorageLocComponent {
   @Output() modalSave = new EventEmitter<any>();
   visible = false;
+  saving = false;
   createStorageLoc: FormGroup;
   constructor(
     private fb: FormBuilder,
@@ -54,6 +55,7 @@ export class CreateOrEditStorageLocComponent {
   }
 
   save() {
+    this.saving = true;
     this._loadingService.show();
     this._storageLocationService
       .createStorageLocation(this.createStorageLoc.value)
@@ -67,10 +69,14 @@ export class CreateOrEditStorageLocComponent {
           }
           this._toastr.success(res.message);
           this.visible = false;
+          this.saving = false;
+
           this.modalSave.emit(null);
         },
         error: (err) => {
           this._loadingService.hide();
+          this.saving = false;
+
           this._toastr.error('Something went wrong... ' + err);
         },
       });

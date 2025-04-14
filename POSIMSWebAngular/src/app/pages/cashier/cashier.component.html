@@ -159,7 +159,7 @@
     [(ngModel)]="customerName"
     [dropdown]="true"
     [suggestions]="customerNames"
-    (completeMethod)="filterProduct($event)"
+    (completeMethod)="filterCustomer($event)"
     [appendTo]="'body'"
     name="customerName"
     placeholder="Customer Name"
@@ -168,7 +168,8 @@
     *ngIf="cartItem.length > 0"
     mat-flat-button
     color="primary"
-    (click)="saveTransaction()"
+    (click)="onCustomerSelect()"
+    [disabled]="saving"
     class="mt-2"
   >
     Save Transaction

@@ -35,6 +35,7 @@ export class CreateOrEditProductCategComponent {
   @Output() modalSave = new EventEmitter<any>();
   createProductCateg: FormGroup;
   visible = false;
+  saving = false;
   constructor(
     private fb: FormBuilder,
     private _productCategoryService: ProductCategoryService,
@@ -47,6 +48,7 @@ export class CreateOrEditProductCategComponent {
   }
   save() {
     this._loadingService.show();
+    this.saving = true;
     this._productCategoryService
       .addProductCategory(this.createProductCateg.value)
       .subscribe({
@@ -58,12 +60,14 @@ export class CreateOrEditProductCategComponent {
           }
           this._toastr.success(res.message);
           this.visible = false;
+          this.saving = false;
           this.modalSave.emit(null);
           return;
         },
         error: (err) => {
           this._loadingService.hide();
           console.error(err);
+          this.saving = false;
         },
       });
   }

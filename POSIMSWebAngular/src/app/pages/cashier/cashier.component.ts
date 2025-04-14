@@ -15,6 +15,7 @@ import {
   GetProductDropDownTableV1Dto,
   NotificationService,
   ProductService,
+  SalesPaymentDto,
   SalesService,
 } from 'src/app/services/nswag/nswag.service';
 import Swal from 'sweetalert2';
@@ -110,13 +111,48 @@ export class CashierComponent implements OnInit {
       });
   }
 
-  filterProduct(event: any) {
+  filterCustomer(event: any) {
+    this.filterCustomerName = event.query.toLowerCase();
     this.getCustomerNames();
   }
 
   onCustomerSelect() {
-    this.customerName = this.filterCustomerName ?? '';
-    console.log(this.customerName);
+    debugger;
+    // Normalize the customer names and filterCustomerName by trimming spaces and converting to lowercase
+    const normalizedCustomerNames = this.customerNames.map((name) =>
+      name.toLowerCase().trim()
+    );
+    const normalizedFilterCustomerName = this.filterCustomerName.toLowerCase().trim();
+  
+    if (normalizedCustomerNames.includes(normalizedFilterCustomerName)) {
+      // Find the original case-sensitive customer name
+      const originalCustomerName = this.customerNames.find(
+        (name) => name.toLowerCase().trim() === normalizedFilterCustomerName
+      );
+      this.customerName = originalCustomerName || this.filterCustomerName;
+      this.saveTransaction();
+    } else {
+      Swal.fire({
+        title: 'Customer not found',
+        text: 'The selected customer does not exist. Would you like to create a new customer?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, create',
+        cancelButtonText: 'No, cancel',
+        confirmButtonColor: '#635bff',
+        cancelButtonColor: '#ff6692',
+      }).then((result) => {
+        if (!result.isConfirmed) {
+          this.visible = false;
+          this.sideBarVisible2 = false;
+          this.customerName = '';
+          this.filterCustomerName = '';
+          this._toastr.error('Selected customer does not exist.');
+        } else {
+          this.saveTransaction();
+        }
+      });
+    }
   }
 
   closeForm() {
@@ -151,18 +187,25 @@ export class CashierComponent implements OnInit {
 
     console.log('sales detail', createSalesDetailV1Dto);
 
+    const payment = SalesPaymentDto.fromJS({
+      saleType: 0,
+      totalAmount: 0,
+      amountPaid: 0,
+    })
+
     const salesDto = CreateOrEditSalesV1Dto.fromJS({
       salesHeaderId: null,
       customerName: this.customerName,
       createSalesDetailV1Dto: createSalesDetailV1Dto,
+      salesPaymentDto: payment,
     });
 
     console.log('salesDtoInstance', salesDto); // Log the final DTO for debugging
 
     this._salesService.createSales(salesDto).subscribe({
       next: (res) => {
-        this.saving = false;
         if (res.isSuccess) {
+          
           Swal.fire({
             title: 'Success!',
             text: 'Sales Transaction Saved!',
@@ -182,6 +225,10 @@ export class CashierComponent implements OnInit {
             });
           this.viewSalesDetailsComponent.initialize();
         }
+        this.visible = false;
+        this.sideBarVisible2 = false;
+        this.getCustomerNames();
+        this.saving = false;
       },
       error: (err) => {
         this.saving = false;
@@ -191,8 +238,7 @@ export class CashierComponent implements OnInit {
   }
 
   saveTransaction() {
-    this.visible = false;
-    this.sideBarVisible2 = false;
+    
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -206,6 +252,7 @@ export class CashierComponent implements OnInit {
       },
     }).then((result) => {
       if (result.isConfirmed) {
+        
         this.placeOrder();
       }
     });

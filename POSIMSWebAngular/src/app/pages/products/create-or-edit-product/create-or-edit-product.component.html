@@ -171,7 +171,7 @@
         mat-flat-button
         color="primary"
         class="m-t-4"
-        [disabled]="!createProductForm.valid"
+        [disabled]="!createProductForm.valid || saving"
       >
         Submit
       </button>

@@ -172,7 +172,7 @@ export class CreateOrEditStocksReceivingModalComponent implements OnInit {
           this._lodingService.hide();
           if (res.isSuccess) {
             this._toastr.success('Stocks receiving created successfully');
-            this.saving = false;
+            
             this.closeForm();
             this._notificationService
               .sendMessageToAdmin('A harvest has been successfully recorded.')
@@ -186,6 +186,7 @@ export class CreateOrEditStocksReceivingModalComponent implements OnInit {
               });
             this.modalSave.emit(null);
           }
+          this.saving = false;
         },
         error: (err) => {
           this._lodingService.hide();

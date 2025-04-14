@@ -48,6 +48,7 @@ export class InventoryComponent {
 
   @ViewChild(CreateStocksReconciliationComponent)
   createStocksReconciliationComponent!: CreateStocksReconciliationComponent;
+  saving = false;
   constructor(
     private _inventoryService: InventoryService,
     public authService: AuthService
@@ -63,10 +64,13 @@ export class InventoryComponent {
       cancelButtonText: 'Cancel',
     }).then((result) => {
       if (result.isConfirmed) {
+        this.saving = true;
         // Handle the confirmed action here
         this._inventoryService.closeInventory().subscribe({
           next: (res) => {
+            this.saving = false;
             if (res.isSuccess) {
+              
               Swal.fire(
                 'Confirmed!',
                 'Your action has been confirmed.',
@@ -80,6 +84,7 @@ export class InventoryComponent {
             Swal.fire('Error!', res.message, 'error');
           },
           error: (err) => {
+            this.saving = false;
             Swal.fire(
               'Error!',
               'An error occurred while processing your request.',

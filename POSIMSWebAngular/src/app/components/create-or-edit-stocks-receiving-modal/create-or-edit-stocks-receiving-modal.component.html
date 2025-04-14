@@ -111,7 +111,7 @@
         mat-flat-button
         color="primary"
         class="m-t-4"
-        [disabled]="form.invalid"
+        [disabled]="form.invalid || saving"
       >
         Submit
       </button>
