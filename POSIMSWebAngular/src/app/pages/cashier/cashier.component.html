@@ -155,7 +155,7 @@
         class="trans-btn"
         color="warn"
         (click)="openAuthentication()"
-        [disabled]="!partialPayment || saving"
+        [disabled]="partialPayment == null || saving"
       >
         Partial/Purchase Order
       </button>

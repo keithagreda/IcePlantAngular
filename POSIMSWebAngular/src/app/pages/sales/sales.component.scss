@@ -20,7 +20,7 @@
 
     .item {
       flex: 1 1 calc(50% - 1rem); /* Each item takes 50% width minus the gap */
-      min-width: 150px; /* Ensure a minimum width for smaller screens */
+      width: 200px !important; /* Ensure a minimum width for smaller screens */
     }
   }
 

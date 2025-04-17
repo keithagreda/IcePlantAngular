@@ -85,30 +85,30 @@
               </mat-form-field>
 
               <!-- Search Button -->
-            </div>
-            <div class="button-container">
-              <button
-                type="submit"
-                mat-flat-button
-                color="primary"
-                class="m-t-4"
-                matTooltip="Search"
-                [disabled]="filterForm.invalid"
-              >
-                <mat-icon style="margin: 0">search</mat-icon>
-              </button>
+              <div class="button-container item">
+                <button
+                  type="submit"
+                  mat-flat-button
+                  color="primary"
+                  class="m-t-4"
+                  matTooltip="Search"
+                  [disabled]="filterForm.invalid"
+                >
+                  <mat-icon style="margin: 0">search</mat-icon>
+                </button>
 
-              <!-- Clear Dates Button -->
-              <button
-                type="button"
-                mat-flat-button
-                color="warn"
-                class="m-t-4"
-                (click)="clearDates()"
-                matTooltip="Clear Dates"
-              >
-                <mat-icon style="margin: 0">free_cancellation</mat-icon>
-              </button>
+                <!-- Clear Dates Button -->
+                <button
+                  type="button"
+                  mat-flat-button
+                  color="warn"
+                  class="m-t-4"
+                  (click)="clearDates()"
+                  matTooltip="Clear Dates"
+                >
+                  <mat-icon style="margin: 0">free_cancellation</mat-icon>
+                </button>
+              </div>
             </div>
           </div>
         </mat-card-title>
