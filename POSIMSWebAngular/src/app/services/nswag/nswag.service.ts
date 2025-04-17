@@ -2185,7 +2185,7 @@ export class SalesService {
         this.baseUrl = baseUrl ?? "https://localhost:7050";
     }
 
-    getSales(transNum: string | null | undefined, minTransDate: Date | null | undefined, maxTransDate: Date | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfSalesHeaderDto> {
+    getSales(transNum: string | null | undefined, minTransDate: Date | null | undefined, maxTransDate: Date | null | undefined, paymentStatus: number | null | undefined, saleType: number | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfSalesHeaderDto> {
         let url_ = this.baseUrl + "/api/Sales/GetSales?";
         if (transNum !== undefined && transNum !== null)
             url_ += "TransNum=" + encodeURIComponent("" + transNum) + "&";
@@ -2193,6 +2193,10 @@ export class SalesService {
             url_ += "MinTransDate=" + encodeURIComponent(minTransDate ? "" + minTransDate.toISOString() : "") + "&";
         if (maxTransDate !== undefined && maxTransDate !== null)
             url_ += "MaxTransDate=" + encodeURIComponent(maxTransDate ? "" + maxTransDate.toISOString() : "") + "&";
+        if (paymentStatus !== undefined && paymentStatus !== null)
+            url_ += "PaymentStatus=" + encodeURIComponent("" + paymentStatus) + "&";
+        if (saleType !== undefined && saleType !== null)
+            url_ += "SaleType=" + encodeURIComponent("" + saleType) + "&";
         if (pageNumber !== undefined && pageNumber !== null)
             url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
         if (pageSize !== undefined && pageSize !== null)
@@ -7661,6 +7665,8 @@ export class SalesHeaderDto implements ISalesHeaderDto {
     customerName?: string;
     salesDetailsDto?: SalesDetailDto[];
     isInventoryClosed?: boolean | null;
+    paymentStatus?: PaymentStatus;
+    saleType?: SaleType;
 
     constructor(data?: ISalesHeaderDto) {
         if (data) {
@@ -7688,6 +7694,8 @@ export class SalesHeaderDto implements ISalesHeaderDto {
                 this.salesDetailsDto = <any>null;
             }
             this.isInventoryClosed = _data["isInventoryClosed"] !== undefined ? _data["isInventoryClosed"] : <any>null;
+            this.paymentStatus = _data["paymentStatus"] !== undefined ? _data["paymentStatus"] : <any>null;
+            this.saleType = _data["saleType"] !== undefined ? _data["saleType"] : <any>null;
         }
     }
 
@@ -7712,6 +7720,8 @@ export class SalesHeaderDto implements ISalesHeaderDto {
                 data["salesDetailsDto"].push(item.toJSON());
         }
         data["isInventoryClosed"] = this.isInventoryClosed !== undefined ? this.isInventoryClosed : <any>null;
+        data["paymentStatus"] = this.paymentStatus !== undefined ? this.paymentStatus : <any>null;
+        data["saleType"] = this.saleType !== undefined ? this.saleType : <any>null;
         return data;
     }
 }
@@ -7725,6 +7735,8 @@ export interface ISalesHeaderDto {
     customerName?: string;
     salesDetailsDto?: SalesDetailDto[];
     isInventoryClosed?: boolean | null;
+    paymentStatus?: PaymentStatus;
+    saleType?: SaleType;
 }
 
 export class SalesDetailDto implements ISalesDetailDto {
@@ -7781,6 +7793,17 @@ export interface ISalesDetailDto {
     productName?: string;
     actualSellingPrice?: number;
     amount?: number;
+}
+
+export enum PaymentStatus {
+    Unpaid = 0,
+    PartiallyPaid = 1,
+    Paid = 2,
+}
+
+export enum SaleType {
+    Cash = 0,
+    Credit = 1,
 }
 
 export class CreateOrEditSalesDto implements ICreateOrEditSalesDto {
@@ -8041,11 +8064,6 @@ export interface ISalesPaymentDto {
     totalAmount?: number;
     amountPaid?: number;
     salesHeaderId?: string | null;
-}
-
-export enum SaleType {
-    Cash = 0,
-    Credit = 1,
 }
 
 export class ApiResponseOfGetTotalSalesDto implements IApiResponseOfGetTotalSalesDto {

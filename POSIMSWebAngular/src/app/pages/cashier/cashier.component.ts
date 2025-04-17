@@ -59,6 +59,7 @@ export class CashierComponent implements OnInit {
   customerNames: string[] = [];
   filterCustomerName: string = '';
   totalAmount: number = 0; // Add a property to store the total amount
+  partialPayment: number | null = null;
 
   constructor(
     private _productService: ProductService,
@@ -116,6 +117,10 @@ export class CashierComponent implements OnInit {
     this.getCustomerNames();
   }
 
+  onSelect(event: any){
+    this.filterCustomerName = event.value.toLowerCase();
+  }
+
   onCustomerSelect() {
     debugger;
     // Normalize the customer names and filterCustomerName by trimming spaces and converting to lowercase
@@ -171,8 +176,6 @@ export class CashierComponent implements OnInit {
     // Parse JSON data
     const parsedCartData = JSON.parse(cartData);
 
-    console.log(parsedCartData);
-
     // Map parsed data to SalesDetail instances
     const createSalesDetailV1Dto = parsedCartData.map(
       (item: CreateSalesDetailV1Dto) => {
@@ -185,12 +188,10 @@ export class CashierComponent implements OnInit {
       }
     );
 
-    console.log('sales detail', createSalesDetailV1Dto);
-
     const payment = SalesPaymentDto.fromJS({
-      saleType: 0,
+      saleType: this.partialPayment != null ? 1: 0,
       totalAmount: 0,
-      amountPaid: 0,
+      amountPaid: this.partialPayment != null ? this.partialPayment: 0,
     })
 
     const salesDto = CreateOrEditSalesV1Dto.fromJS({
@@ -200,12 +201,9 @@ export class CashierComponent implements OnInit {
       salesPaymentDto: payment,
     });
 
-    console.log('salesDtoInstance', salesDto); // Log the final DTO for debugging
-
     this._salesService.createSales(salesDto).subscribe({
       next: (res) => {
         if (res.isSuccess) {
-          
           Swal.fire({
             title: 'Success!',
             text: 'Sales Transaction Saved!',
@@ -229,12 +227,18 @@ export class CashierComponent implements OnInit {
         this.sideBarVisible2 = false;
         this.getCustomerNames();
         this.saving = false;
+        this.partialPayment = null;
       },
       error: (err) => {
         this.saving = false;
         console.error(err); // Log error for debugging
+        this.partialPayment = null;
       },
     });
+  }
+
+  setPartialPaymentToNull(){
+    this.partialPayment = null;
   }
 
   saveTransaction() {

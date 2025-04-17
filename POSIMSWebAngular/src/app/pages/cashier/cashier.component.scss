@@ -102,3 +102,13 @@
 .mt-2 {
   margin-top: 1rem;
 }
+
+.trans-btn-container{
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.trash-btn{
+  flex: 1 1 auto;
+}

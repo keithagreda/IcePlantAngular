@@ -6,3 +6,45 @@
     background-color: #ffffff; /* White for even rows */
   }
   
+  .filter-container {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .filter-input {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping if the screen is too small */
+    gap: 1rem; /* Add spacing between items */
+    justify-content: space-between; /* Distribute items evenly */
+
+    .item {
+      flex: 1 1 calc(50% - 1rem); /* Each item takes 50% width minus the gap */
+      min-width: 150px; /* Ensure a minimum width for smaller screens */
+    }
+  }
+
+  /* Media query for small screens (320px width) */
+  @media screen and (max-width: 320px) {
+    .filter-input {
+      flex-direction: column; /* Stack items vertically */
+    }
+
+    .item {
+      flex: 1 1 100%; /* Each item takes full width */
+      min-width: unset; /* Remove the minimum width restriction */
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column; /* Stack buttons vertically */
+      gap: 0.5rem; /* Add spacing between buttons */
+    }
+  }
+
+  .button-container{
+    display: flex;
+    justify-content: end;
+    gap: 1rem;
+    margin-top: 1rem;
+  }

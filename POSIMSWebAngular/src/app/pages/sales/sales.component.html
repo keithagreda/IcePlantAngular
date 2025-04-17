@@ -1,11 +1,119 @@
 <mat-card
   class="cardWithShadow"
-  *ngIf="authService.hasRole('Cashier') || authService.hasRole('Admin') || authService.hasRole('Owner')"
+  *ngIf="
+    authService.hasRole('Cashier') ||
+    authService.hasRole('Admin') ||
+    authService.hasRole('Owner')
+  "
 >
   <mat-card-content>
-    <div class="k-header">
-      <mat-card-title>Sales Table</mat-card-title>
-      <!-- <button
+    <form [formGroup]="filterForm" (ngSubmit)="onFilter()">
+      <div class="k-header">
+        <mat-card-title
+          >Sales Table
+          <div class="filter-container">
+            <div class="filter-input">
+              <!-- Transaction Number Filter -->
+              <mat-form-field
+                appearance="outline"
+                class="w-100 item"
+                color="primary"
+              >
+                <mat-label class="f-w-600 m-b-8 d-block"
+                  >Transaction Number</mat-label
+                >
+                <input
+                  matInput
+                  formControlName="transNum"
+                  placeholder="Transaction #"
+                />
+              </mat-form-field>
+
+              <!-- Date From Filter -->
+              <mat-form-field appearance="outline" class="item" color="primary">
+                <mat-label class="f-w-600 m-b-8 d-block">Date From</mat-label>
+                <input
+                  matInput
+                  formControlName="minTransDate"
+                  placeholder="Date From"
+                  [matDatepicker]="picker1"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker1"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+              </mat-form-field>
+
+              <!-- Date To Filter -->
+              <mat-form-field appearance="outline" class="item" color="primary">
+                <mat-label class="f-w-600 m-b-8 d-block">Date To</mat-label>
+                <input
+                  matInput
+                  formControlName="maxTransDate"
+                  placeholder="Date To"
+                  [matDatepicker]="picker2"
+                />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="picker2"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field>
+
+              <!-- Sale Type Filter -->
+              <mat-form-field appearance="outline" class="item" color="primary">
+                <mat-label class="f-w-600 m-b-8 d-block">Type</mat-label>
+                <mat-select formControlName="saleType">
+                  <mat-option [value]="null">All</mat-option>
+                  <mat-option [value]="0">Cash</mat-option>
+                  <mat-option [value]="1">Credit</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Payment Status Filter -->
+              <mat-form-field appearance="outline" class="item" color="primary">
+                <mat-label class="f-w-600 m-b-8 d-block"
+                  >Payment Status</mat-label
+                >
+                <mat-select formControlName="paymentStatus">
+                  <mat-option [value]="null">All</mat-option>
+                  <mat-option [value]="0">Unpaid</mat-option>
+                  <mat-option [value]="1">Partially Paid</mat-option>
+                  <mat-option [value]="2">Paid</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <!-- Search Button -->
+            </div>
+            <div class="button-container">
+              <button
+                type="submit"
+                mat-flat-button
+                color="primary"
+                class="m-t-4"
+                matTooltip="Search"
+                [disabled]="filterForm.invalid"
+              >
+                <mat-icon style="margin: 0">search</mat-icon>
+              </button>
+
+              <!-- Clear Dates Button -->
+              <button
+                type="button"
+                mat-flat-button
+                color="warn"
+                class="m-t-4"
+                (click)="clearDates()"
+                matTooltip="Clear Dates"
+              >
+                <mat-icon style="margin: 0">free_cancellation</mat-icon>
+              </button>
+            </div>
+          </div>
+        </mat-card-title>
+
+        <!-- <button
         (click)="showCreateModal()"
         mat-flat-button
         color="primary"
@@ -13,7 +121,8 @@
       >
         Add
       </button> -->
-    </div>
+      </div>
+    </form>
     <div class="table-responsive">
       <table mat-table [dataSource]="dataSource" class="w-100">
         <!-- Transaction Number -->
@@ -132,9 +241,10 @@
         </ng-container>
 
         <!-- Action -->
-        <ng-container matColumnDef="action" *ngIf="
-        authService.hasRole('Admin') || authService.hasRole('Cashier')
-      ">
+        <ng-container
+          matColumnDef="action"
+          *ngIf="authService.hasRole('Admin') || authService.hasRole('Cashier')"
+        >
           <th
             mat-header-cell
             *matHeaderCellDef
@@ -180,6 +290,48 @@
                   <span>Delete</span>
                 </button> -->
             </mat-menu>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="saleType">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14"
+          >
+            Type
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            class="mat-body-1"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
+            {{ saleTypeEnum[element.saleType] }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentStatus">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            class="f-w-600 mat-subtitle-1 f-s-14"
+          >
+            Status
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            class="mat-body-1"
+            [ngClass]="{
+              'table-row-even': i % 2 === 0,
+              'table-row-odd': i % 2 !== 0
+            }"
+          >
+            {{ paymentStatusEnum[element.paymentStatus] }}
           </td>
         </ng-container>
 

@@ -41,9 +41,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { LuxonDatePipe } from './pipes/luxon-date.pipe';
 
 @NgModule({
-  declarations: [],
+  declarations: [LuxonDatePipe],
   exports: [
     MatAutocompleteModule,
     MatCheckboxModule,
@@ -84,6 +85,7 @@ import { MatTableModule } from '@angular/material/table';
         MatBadgeModule,
         MatIconModule,
         MatMenuModule,
+        LuxonDatePipe
   ],
 })
 export class MaterialModule {}

@@ -127,15 +127,39 @@
     <div class="total-amount">
       <strong>Total Amount:</strong> {{ totalAmount | currency : "PHP" }}
     </div>
-    <button
-      *ngIf="cartItem.length > 0"
-      mat-flat-button
-      class="mt-2"
-      color="primary"
-      (click)="openAuthentication()"
-    >
-      Save Transaction
-    </button>
+    <div class="trans-btn-container">
+      <button
+        *ngIf="cartItem.length > 0"
+        mat-flat-button
+        class="mt-2 trans-btn"
+        color="primary"
+        (click)="openAuthentication(); setPartialPaymentToNull()"
+        [disabled]="saving"
+      >
+        Paid In Full
+      </button>
+      <div class="partial-input-container" *ngIf="cartItem.length > 0">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Partial Payment</mat-label>
+          <input
+            matInput
+            type="number"
+            placeholder="Enter partial payment"
+            [(ngModel)]="partialPayment"
+          />
+        </mat-form-field>
+      </div>
+      <button
+        *ngIf="cartItem.length > 0"
+        mat-flat-button
+        class="trans-btn"
+        color="warn"
+        (click)="openAuthentication()"
+        [disabled]="!partialPayment || saving"
+      >
+        Partial/Purchase Order
+      </button>
+    </div>
 
     <mat-label *ngIf="cartItem.length <= 0" class="f-w-600 m-b-8 d-block"
       >Cart is empty</mat-label
@@ -160,6 +184,7 @@
     [dropdown]="true"
     [suggestions]="customerNames"
     (completeMethod)="filterCustomer($event)"
+    (onSelect)="onSelect($event)"
     [appendTo]="'body'"
     name="customerName"
     placeholder="Customer Name"

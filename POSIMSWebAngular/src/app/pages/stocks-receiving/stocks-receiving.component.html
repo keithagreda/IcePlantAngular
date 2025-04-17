@@ -127,7 +127,7 @@
             }"
           >
             <span>
-              {{ element.dateReceived }}
+              {{ element.dateReceived | date : "MMM d, y, h:mm a" }}
             </span>
           </td>
         </ng-container>

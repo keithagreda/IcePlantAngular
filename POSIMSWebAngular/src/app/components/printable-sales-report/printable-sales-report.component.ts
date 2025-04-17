@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableDataSource } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
+import { DateTime } from 'luxon';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -31,8 +32,8 @@ import { SalesService, SalesSummaryDto } from 'src/app/services/nswag/nswag.serv
 export class PrintableSalesReportComponent implements OnInit{
   dataSource: SalesSummaryDto[] = [];
   totalSales: number = 0;
-  dateFrom: Date = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()));
-  dateTo: Date = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate()));
+  dateFrom: Date = DateTime.now().setZone('Asia/Manila').startOf('day').toJSDate(); // Set to Manila time at the start of the day
+  dateTo: Date = DateTime.now().setZone('Asia/Manila').endOf('day').toJSDate(); // Set to Manila time at the end of the day
   loading = false;
   displayedColumns1: string[] = [
     'transNum',
@@ -53,21 +54,29 @@ export class PrintableSalesReportComponent implements OnInit{
   }
 
   setDateRange(range: 'daily' | 'weekly' | 'monthly' | 'yearly'): void {
-    const today = new Date();
+    // Get today's date in Manila time (UTC+8)
+    const today = DateTime.now().setZone('Asia/Manila'); // Set to Manila time zone
+  
     switch (range) {
       case 'daily':
-        // Set UTC date to midnight UTC time (no time part)
-        this.dateFrom = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+        // Set to midnight Manila time
+        this.dateFrom = today.startOf('day').toJSDate();
+        this.dateTo = today.endOf('day').toJSDate();
         break;
       case 'weekly':
-        const startOfWeek = today.getUTCDate() - today.getUTCDay(); // Sunday as the start of the week
-        this.dateFrom = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), startOfWeek));
+        // Start of the week (Sunday) in Manila time
+        this.dateFrom = today.startOf('week').toJSDate();
+        this.dateTo = today.endOf('week').toJSDate();
         break;
       case 'monthly':
-        this.dateFrom = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
+        // First day of the month in Manila time
+        this.dateFrom = today.startOf('month').toJSDate();
+        this.dateTo = today.endOf('month').toJSDate();
         break;
       case 'yearly':
-        this.dateFrom = new Date(Date.UTC(today.getUTCFullYear(), 0, 1));
+        // First day of the year in Manila time
+        this.dateFrom = today.startOf('year').toJSDate();
+        this.dateTo = today.endOf('year').toJSDate();
         break;
     }
   

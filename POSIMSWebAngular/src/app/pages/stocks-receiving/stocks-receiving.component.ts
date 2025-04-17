@@ -32,7 +32,7 @@ export class StocksReceivingComponent implements OnInit {
     'quantity',
     'storageLocation',
     'dateReceived',
-    'action',
+    // 'action',
   ];
   totalRecords = 0;
   constructor(private _stocksReceivingService: StocksService) {}
