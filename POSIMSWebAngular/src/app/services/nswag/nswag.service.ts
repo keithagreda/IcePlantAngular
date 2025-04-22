@@ -27,7 +27,7 @@ export class CustomerService {
     }
 
     customerDropDown(filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfCustomerDropDownDto> {
-        let url_ = this.baseUrl + "/api/Customer?";
+        let url_ = this.baseUrl + "/api/Customer/CustomerDropDown?";
         if (filterText !== undefined && filterText !== null)
             url_ += "FilterText=" + encodeURIComponent("" + filterText) + "&";
         if (pageNumber !== undefined && pageNumber !== null)
@@ -70,6 +70,62 @@ export class CustomerService {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = ApiResponseOfPaginatedResultOfCustomerDropDownDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getAllCustomer(hasPendingTrans: boolean | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfCustomerDto> {
+        let url_ = this.baseUrl + "/api/Customer/GetAllCustomer?";
+        if (hasPendingTrans !== undefined && hasPendingTrans !== null)
+            url_ += "HasPendingTrans=" + encodeURIComponent("" + hasPendingTrans) + "&";
+        if (filterText !== undefined && filterText !== null)
+            url_ += "FilterText=" + encodeURIComponent("" + filterText) + "&";
+        if (pageNumber !== undefined && pageNumber !== null)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllCustomer(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllCustomer(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfPaginatedResultOfCustomerDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfPaginatedResultOfCustomerDto>;
+        }));
+    }
+
+    protected processGetAllCustomer(response: HttpResponseBase): Observable<ApiResponseOfPaginatedResultOfCustomerDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfPaginatedResultOfCustomerDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1220,6 +1276,112 @@ export class PaymentService {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = ApiResponseOfString.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    salesPaymentReport(): Observable<SalesPaymentReportDto> {
+        let url_ = this.baseUrl + "/api/Payment/SalesPaymentReport";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSalesPaymentReport(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSalesPaymentReport(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SalesPaymentReportDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SalesPaymentReportDto>;
+        }));
+    }
+
+    protected processSalesPaymentReport(response: HttpResponseBase): Observable<SalesPaymentReportDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SalesPaymentReportDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    salesPaymentReportV1(dateFrom: Date | null | undefined, dateTo: Date | null | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<SalesPaymentReportV1Dto> {
+        let url_ = this.baseUrl + "/api/Payment/SalesPaymentReportV1?";
+        if (dateFrom !== undefined && dateFrom !== null)
+            url_ += "DateFrom=" + encodeURIComponent(dateFrom ? "" + dateFrom.toISOString() : "") + "&";
+        if (dateTo !== undefined && dateTo !== null)
+            url_ += "DateTo=" + encodeURIComponent(dateTo ? "" + dateTo.toISOString() : "") + "&";
+        if (filterText !== undefined && filterText !== null)
+            url_ += "FilterText=" + encodeURIComponent("" + filterText) + "&";
+        if (pageNumber !== undefined && pageNumber !== null)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSalesPaymentReportV1(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSalesPaymentReportV1(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SalesPaymentReportV1Dto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SalesPaymentReportV1Dto>;
+        }));
+    }
+
+    protected processSalesPaymentReportV1(response: HttpResponseBase): Observable<SalesPaymentReportV1Dto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SalesPaymentReportV1Dto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3541,6 +3703,183 @@ export interface ICustomerDropDownDto {
     customerFullName?: string;
 }
 
+export class ApiResponseOfPaginatedResultOfCustomerDto implements IApiResponseOfPaginatedResultOfCustomerDto {
+    data!: PaginatedResultOfCustomerDto;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+
+    constructor(data?: IApiResponseOfPaginatedResultOfCustomerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.data = new PaginatedResultOfCustomerDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? PaginatedResultOfCustomerDto.fromJS(_data["data"]) : new PaginatedResultOfCustomerDto();
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+            else {
+                this.errors = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ApiResponseOfPaginatedResultOfCustomerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseOfPaginatedResultOfCustomerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IApiResponseOfPaginatedResultOfCustomerDto {
+    data: PaginatedResultOfCustomerDto;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+}
+
+export class PaginatedResultOfCustomerDto implements IPaginatedResultOfCustomerDto {
+    items?: CustomerDto[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+
+    constructor(data?: IPaginatedResultOfCustomerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CustomerDto.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+            this.currentPage = _data["currentPage"] !== undefined ? _data["currentPage"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaginatedResultOfCustomerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedResultOfCustomerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        data["currentPage"] = this.currentPage !== undefined ? this.currentPage : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        return data;
+    }
+}
+
+export interface IPaginatedResultOfCustomerDto {
+    items?: CustomerDto[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+}
+
+export class CustomerDto implements ICustomerDto {
+    id?: string;
+    customerFullName?: string;
+    pendingTransactions?: number;
+    totalUnpaidAmount?: number;
+    customerType?: string;
+
+    constructor(data?: ICustomerDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.customerFullName = _data["customerFullName"] !== undefined ? _data["customerFullName"] : <any>null;
+            this.pendingTransactions = _data["pendingTransactions"] !== undefined ? _data["pendingTransactions"] : <any>null;
+            this.totalUnpaidAmount = _data["totalUnpaidAmount"] !== undefined ? _data["totalUnpaidAmount"] : <any>null;
+            this.customerType = _data["customerType"] !== undefined ? _data["customerType"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CustomerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["customerFullName"] = this.customerFullName !== undefined ? this.customerFullName : <any>null;
+        data["pendingTransactions"] = this.pendingTransactions !== undefined ? this.pendingTransactions : <any>null;
+        data["totalUnpaidAmount"] = this.totalUnpaidAmount !== undefined ? this.totalUnpaidAmount : <any>null;
+        data["customerType"] = this.customerType !== undefined ? this.customerType : <any>null;
+        return data;
+    }
+}
+
+export interface ICustomerDto {
+    id?: string;
+    customerFullName?: string;
+    pendingTransactions?: number;
+    totalUnpaidAmount?: number;
+    customerType?: string;
+}
+
 export class ApiResponseOfPaginatedResultOfEntityHistoryDto implements IApiResponseOfPaginatedResultOfEntityHistoryDto {
     data!: PaginatedResultOfEntityHistoryDto;
     message?: string;
@@ -5604,6 +5943,390 @@ export class PaymentDetailDto implements IPaymentDetailDto {
 export interface IPaymentDetailDto {
     amountPaid?: number;
     paymentHeaderId?: string;
+}
+
+export class SalesPaymentReportDto implements ISalesPaymentReportDto {
+    totalPaid?: number;
+    totalAmount?: number;
+    balance?: number;
+    from?: Date;
+    to?: Date;
+    salesSummaryDtos?: SalesPaymentHeaderReportDto[];
+
+    constructor(data?: ISalesPaymentReportDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalPaid = _data["totalPaid"] !== undefined ? _data["totalPaid"] : <any>null;
+            this.totalAmount = _data["totalAmount"] !== undefined ? _data["totalAmount"] : <any>null;
+            this.balance = _data["balance"] !== undefined ? _data["balance"] : <any>null;
+            this.from = _data["from"] ? new Date(_data["from"].toString()) : <any>null;
+            this.to = _data["to"] ? new Date(_data["to"].toString()) : <any>null;
+            if (Array.isArray(_data["salesSummaryDtos"])) {
+                this.salesSummaryDtos = [] as any;
+                for (let item of _data["salesSummaryDtos"])
+                    this.salesSummaryDtos!.push(SalesPaymentHeaderReportDto.fromJS(item));
+            }
+            else {
+                this.salesSummaryDtos = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): SalesPaymentReportDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesPaymentReportDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalPaid"] = this.totalPaid !== undefined ? this.totalPaid : <any>null;
+        data["totalAmount"] = this.totalAmount !== undefined ? this.totalAmount : <any>null;
+        data["balance"] = this.balance !== undefined ? this.balance : <any>null;
+        data["from"] = this.from ? this.from.toISOString() : <any>null;
+        data["to"] = this.to ? this.to.toISOString() : <any>null;
+        if (Array.isArray(this.salesSummaryDtos)) {
+            data["salesSummaryDtos"] = [];
+            for (let item of this.salesSummaryDtos)
+                data["salesSummaryDtos"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ISalesPaymentReportDto {
+    totalPaid?: number;
+    totalAmount?: number;
+    balance?: number;
+    from?: Date;
+    to?: Date;
+    salesSummaryDtos?: SalesPaymentHeaderReportDto[];
+}
+
+export class SalesPaymentHeaderReportDto implements ISalesPaymentHeaderReportDto {
+    transNum?: string;
+    saleType?: string;
+    status?: string;
+    totalAmount?: number;
+    amountPaid?: number;
+    balance?: number;
+    transactionTime?: Date;
+    soldBy?: string;
+    salesDetailsDtos?: SalesDetailsDto[] | null;
+    salesPaymentDetailsDtos?: SalesPaymentDetailsDto[];
+
+    constructor(data?: ISalesPaymentHeaderReportDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.transNum = _data["transNum"] !== undefined ? _data["transNum"] : <any>null;
+            this.saleType = _data["saleType"] !== undefined ? _data["saleType"] : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+            this.totalAmount = _data["totalAmount"] !== undefined ? _data["totalAmount"] : <any>null;
+            this.amountPaid = _data["amountPaid"] !== undefined ? _data["amountPaid"] : <any>null;
+            this.balance = _data["balance"] !== undefined ? _data["balance"] : <any>null;
+            this.transactionTime = _data["transactionTime"] ? new Date(_data["transactionTime"].toString()) : <any>null;
+            this.soldBy = _data["soldBy"] !== undefined ? _data["soldBy"] : <any>null;
+            if (Array.isArray(_data["salesDetailsDtos"])) {
+                this.salesDetailsDtos = [] as any;
+                for (let item of _data["salesDetailsDtos"])
+                    this.salesDetailsDtos!.push(SalesDetailsDto.fromJS(item));
+            }
+            else {
+                this.salesDetailsDtos = <any>null;
+            }
+            if (Array.isArray(_data["salesPaymentDetailsDtos"])) {
+                this.salesPaymentDetailsDtos = [] as any;
+                for (let item of _data["salesPaymentDetailsDtos"])
+                    this.salesPaymentDetailsDtos!.push(SalesPaymentDetailsDto.fromJS(item));
+            }
+            else {
+                this.salesPaymentDetailsDtos = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): SalesPaymentHeaderReportDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesPaymentHeaderReportDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["transNum"] = this.transNum !== undefined ? this.transNum : <any>null;
+        data["saleType"] = this.saleType !== undefined ? this.saleType : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        data["totalAmount"] = this.totalAmount !== undefined ? this.totalAmount : <any>null;
+        data["amountPaid"] = this.amountPaid !== undefined ? this.amountPaid : <any>null;
+        data["balance"] = this.balance !== undefined ? this.balance : <any>null;
+        data["transactionTime"] = this.transactionTime ? this.transactionTime.toISOString() : <any>null;
+        data["soldBy"] = this.soldBy !== undefined ? this.soldBy : <any>null;
+        if (Array.isArray(this.salesDetailsDtos)) {
+            data["salesDetailsDtos"] = [];
+            for (let item of this.salesDetailsDtos)
+                data["salesDetailsDtos"].push(item.toJSON());
+        }
+        if (Array.isArray(this.salesPaymentDetailsDtos)) {
+            data["salesPaymentDetailsDtos"] = [];
+            for (let item of this.salesPaymentDetailsDtos)
+                data["salesPaymentDetailsDtos"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ISalesPaymentHeaderReportDto {
+    transNum?: string;
+    saleType?: string;
+    status?: string;
+    totalAmount?: number;
+    amountPaid?: number;
+    balance?: number;
+    transactionTime?: Date;
+    soldBy?: string;
+    salesDetailsDtos?: SalesDetailsDto[] | null;
+    salesPaymentDetailsDtos?: SalesPaymentDetailsDto[];
+}
+
+export class SalesDetailsDto implements ISalesDetailsDto {
+    productName?: string;
+    quantity?: number;
+    rate?: number;
+    totalPrice?: number;
+
+    constructor(data?: ISalesDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.productName = _data["productName"] !== undefined ? _data["productName"] : <any>null;
+            this.quantity = _data["quantity"] !== undefined ? _data["quantity"] : <any>null;
+            this.rate = _data["rate"] !== undefined ? _data["rate"] : <any>null;
+            this.totalPrice = _data["totalPrice"] !== undefined ? _data["totalPrice"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SalesDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["productName"] = this.productName !== undefined ? this.productName : <any>null;
+        data["quantity"] = this.quantity !== undefined ? this.quantity : <any>null;
+        data["rate"] = this.rate !== undefined ? this.rate : <any>null;
+        data["totalPrice"] = this.totalPrice !== undefined ? this.totalPrice : <any>null;
+        return data;
+    }
+}
+
+export interface ISalesDetailsDto {
+    productName?: string;
+    quantity?: number;
+    rate?: number;
+    totalPrice?: number;
+}
+
+export class SalesPaymentDetailsDto implements ISalesPaymentDetailsDto {
+    amountPaid?: number;
+    creationTime?: Date;
+
+    constructor(data?: ISalesPaymentDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.amountPaid = _data["amountPaid"] !== undefined ? _data["amountPaid"] : <any>null;
+            this.creationTime = _data["creationTime"] ? new Date(_data["creationTime"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SalesPaymentDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesPaymentDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amountPaid"] = this.amountPaid !== undefined ? this.amountPaid : <any>null;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export interface ISalesPaymentDetailsDto {
+    amountPaid?: number;
+    creationTime?: Date;
+}
+
+export class SalesPaymentReportV1Dto implements ISalesPaymentReportV1Dto {
+    totalPaid?: number;
+    totalAmount?: number;
+    balance?: number;
+    from?: Date;
+    to?: Date;
+    salesPaymentHeaderReports?: SalesPaymentHeaderReportV1Dto[];
+
+    constructor(data?: ISalesPaymentReportV1Dto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalPaid = _data["totalPaid"] !== undefined ? _data["totalPaid"] : <any>null;
+            this.totalAmount = _data["totalAmount"] !== undefined ? _data["totalAmount"] : <any>null;
+            this.balance = _data["balance"] !== undefined ? _data["balance"] : <any>null;
+            this.from = _data["from"] ? new Date(_data["from"].toString()) : <any>null;
+            this.to = _data["to"] ? new Date(_data["to"].toString()) : <any>null;
+            if (Array.isArray(_data["salesPaymentHeaderReports"])) {
+                this.salesPaymentHeaderReports = [] as any;
+                for (let item of _data["salesPaymentHeaderReports"])
+                    this.salesPaymentHeaderReports!.push(SalesPaymentHeaderReportV1Dto.fromJS(item));
+            }
+            else {
+                this.salesPaymentHeaderReports = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): SalesPaymentReportV1Dto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesPaymentReportV1Dto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalPaid"] = this.totalPaid !== undefined ? this.totalPaid : <any>null;
+        data["totalAmount"] = this.totalAmount !== undefined ? this.totalAmount : <any>null;
+        data["balance"] = this.balance !== undefined ? this.balance : <any>null;
+        data["from"] = this.from ? this.from.toISOString() : <any>null;
+        data["to"] = this.to ? this.to.toISOString() : <any>null;
+        if (Array.isArray(this.salesPaymentHeaderReports)) {
+            data["salesPaymentHeaderReports"] = [];
+            for (let item of this.salesPaymentHeaderReports)
+                data["salesPaymentHeaderReports"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ISalesPaymentReportV1Dto {
+    totalPaid?: number;
+    totalAmount?: number;
+    balance?: number;
+    from?: Date;
+    to?: Date;
+    salesPaymentHeaderReports?: SalesPaymentHeaderReportV1Dto[];
+}
+
+export class SalesPaymentHeaderReportV1Dto implements ISalesPaymentHeaderReportV1Dto {
+    transNum?: string;
+    saleType?: string;
+    status?: string;
+    totalAmount?: number;
+    amountPaid?: number;
+    balance?: number;
+    transactionTime?: Date;
+    soldBy?: string;
+    customerName?: string;
+
+    constructor(data?: ISalesPaymentHeaderReportV1Dto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.transNum = _data["transNum"] !== undefined ? _data["transNum"] : <any>null;
+            this.saleType = _data["saleType"] !== undefined ? _data["saleType"] : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+            this.totalAmount = _data["totalAmount"] !== undefined ? _data["totalAmount"] : <any>null;
+            this.amountPaid = _data["amountPaid"] !== undefined ? _data["amountPaid"] : <any>null;
+            this.balance = _data["balance"] !== undefined ? _data["balance"] : <any>null;
+            this.transactionTime = _data["transactionTime"] ? new Date(_data["transactionTime"].toString()) : <any>null;
+            this.soldBy = _data["soldBy"] !== undefined ? _data["soldBy"] : <any>null;
+            this.customerName = _data["customerName"] !== undefined ? _data["customerName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SalesPaymentHeaderReportV1Dto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SalesPaymentHeaderReportV1Dto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["transNum"] = this.transNum !== undefined ? this.transNum : <any>null;
+        data["saleType"] = this.saleType !== undefined ? this.saleType : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        data["totalAmount"] = this.totalAmount !== undefined ? this.totalAmount : <any>null;
+        data["amountPaid"] = this.amountPaid !== undefined ? this.amountPaid : <any>null;
+        data["balance"] = this.balance !== undefined ? this.balance : <any>null;
+        data["transactionTime"] = this.transactionTime ? this.transactionTime.toISOString() : <any>null;
+        data["soldBy"] = this.soldBy !== undefined ? this.soldBy : <any>null;
+        data["customerName"] = this.customerName !== undefined ? this.customerName : <any>null;
+        return data;
+    }
+}
+
+export interface ISalesPaymentHeaderReportV1Dto {
+    transNum?: string;
+    saleType?: string;
+    status?: string;
+    totalAmount?: number;
+    amountPaid?: number;
+    balance?: number;
+    transactionTime?: Date;
+    soldBy?: string;
+    customerName?: string;
 }
 
 export class ApiResponseOfBoolean implements IApiResponseOfBoolean {

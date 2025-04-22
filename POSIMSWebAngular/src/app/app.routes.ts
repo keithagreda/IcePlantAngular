@@ -4,6 +4,8 @@ import { FullComponent } from './layouts/full/full.component';
 import { RoleGuard } from './services/auth/authguard/roleguard';
 import { AuthGuard } from './services/auth/authguard/authguard';
 import { PrintableSalesReportComponent } from './components/printable-sales-report/printable-sales-report.component';
+import { PrintablePaymentReportComponent } from './components/printable-payment-report/printable-payment-report.component';
+import { CustomerTableComponent } from './components/customer-table/customer-table/customer-table.component';
 
 export const routes: Routes = [
   {
@@ -97,6 +99,14 @@ export const routes: Routes = [
       {
         path: 'printable-sales-report',
         component: PrintableSalesReportComponent,
+      },
+      {
+        path: 'printable-payment-report',
+        component: PrintablePaymentReportComponent,
+      },
+      {
+        path: 'customer',
+        component: CustomerTableComponent,
       }
     ],
     canActivate: [RoleGuard],

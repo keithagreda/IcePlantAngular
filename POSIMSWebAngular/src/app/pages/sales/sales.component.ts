@@ -30,6 +30,11 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DateTime } from 'luxon';
 
+export enum SaleTypeV1 {
+    Cash = 0,
+    PurchaseOrder = 1,
+}
+
 @Component({
   selector: 'app-sales',
   standalone: true,
@@ -68,7 +73,7 @@ export class SalesComponent implements OnInit {
   ];
   totalRecords = 0;
   filterForm!: FormGroup;
-  saleTypeEnum = SaleType;
+  saleTypeEnum = SaleTypeV1;
   paymentStatusEnum = PaymentStatus;
 
   constructor(

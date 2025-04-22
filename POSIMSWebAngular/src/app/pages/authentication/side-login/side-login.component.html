@@ -25,19 +25,29 @@
             </a>
           </div> -->
 
-          <form [formGroup]="form" (ngSubmit)="login()" class="m-t-30">
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
-              >Username</mat-label
-            >
+          <form [formGroup]="form" (ngSubmit)="authenticate()" class="m-t-30">
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">
+              Username
+            </mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
               <input matInput formControlName="uname" />
+              <mat-error *ngIf="f.uname?.hasError('required')"
+                >Username is required</mat-error
+              >
+              <mat-error *ngIf="f.uname?.hasError('minlength')">
+                Username must be at least 3 characters
+              </mat-error>
             </mat-form-field>
-            <!-- password -->
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block"
-              >Password</mat-label
-            >
+
+            <!-- Password -->
+            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">
+              Password
+            </mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
               <input matInput type="password" formControlName="password" />
+              <mat-error *ngIf="f.password?.hasError('required')"
+                >Password is required</mat-error
+              >
             </mat-form-field>
 
             <div
@@ -52,26 +62,26 @@
               >
             </div>
             <ng-container *ngIf="authentication">
-              <a
-                (click)="authenticate()"
+              <button
+                type="submit"
                 mat-flat-button
                 color="primary"
                 class="w-100"
                 [disabled]="saving"
               >
                 Authenticate
-              </a>
+              </button>
             </ng-container>
             <ng-container *ngIf="!authentication">
-              <a
-                (click)="login()"
+              <button
+                type="submit"
                 mat-flat-button
                 color="primary"
                 class="w-100"
                 [disabled]="saving"
               >
                 Sign In
-              </a>
+              </button>
             </ng-container>
 
             <!-- input -->

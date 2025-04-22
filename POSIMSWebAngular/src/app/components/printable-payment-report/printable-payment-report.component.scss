@@ -1,0 +1,191 @@
+.date-range-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.table-container {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for touch devices */
+}
+
+.action{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+// .date-range-buttons button {
+//   flex: 1;
+// }
+.header{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.printable{
+  position: relative;
+}
+
+.signature-container {
+  margin-top: 100px;
+  break-before: page; /* Forces this content to a new page if necessary */
+}
+
+.signature-item {
+  display: inline-block;
+  width: 40%;  /* Adjust width as needed */
+  text-align: center;
+  margin-right: 5%;
+}
+
+.signature-item p {
+  margin: 0;
+}
+
+.title {
+  flex: 1 1 auto;
+}
+
+.date{
+  display: flex;
+  gap: 10px;
+  justify-content: space-between
+}
+
+.date-range{
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.sales-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.sales-summary-table thead th {
+  background-color: #013519;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.sales-summary-table tbody tr {
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+}
+
+.sales-summary-table td {
+  padding: 12px;
+  color: #333;
+  font-size: 14px;
+}
+
+.sales-summary-table tfoot .total-row td {
+  background-color: #e8eaf6;
+  font-size: 16px;
+  font-weight: bold;
+  border-top: 2px solid #c5cae9;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.sales-summary-table tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.sales-summary-table tbody tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.sales-summary-table tbody tr {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+@media print {
+  
+  .total-row{
+    break-before: auto;
+  }
+  .signature-container {
+    break-before: auto; /* Let the signature section stay on the same page if there's space */
+  }
+  .print-button {
+    display: none !important;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .sales-summary-container {
+    width: 100%;
+    background: white !important;
+    color: black !important;
+  }
+
+  .sales-summary-container h2 {
+    font-size: 18pt;
+    margin-bottom: 10mm;
+  }
+
+  .date-range {
+    font-size: 12pt;
+    margin-bottom: 10mm;
+  }
+
+  .sales-summary-table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+  }
+
+  .sales-summary-table thead th,
+  .sales-summary-table td {
+    font-size: 10pt;
+    border: 1px solid #000;
+  }
+
+  .sales-summary-table thead th {
+    background-color: #ccc !important;
+    color: #000 !important;
+  }
+
+  .sales-summary-table tbody tr:nth-child(odd) {
+    background-color: #fff !important;
+  }
+
+  .sales-summary-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2 !important;
+  }
+
+  .sales-summary-table tfoot td {
+    background-color: #e0e0e0 !important;
+    font-weight: bold;
+  }
+
+  @page {
+    size: 8.5in 11in; /* Short bond paper */
+    margin: 20mm;
+  }
+  
+}

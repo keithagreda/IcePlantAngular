@@ -31,6 +31,18 @@ export const navItems: NavItem[] = [
     roles: ['Admin', 'Owner', 'Cashier'],
   },
   {
+    displayName: 'Payment Summary Report',
+    iconName: 'solar:hand-money-bold',
+    route: '/printable-payment-report',
+    roles: ['Admin', 'Owner', 'Cashier'],
+  },
+  {
+    displayName: 'Customers',
+    iconName: 'solar:hand-money-bold',
+    route: '/customer',
+    roles: ['Admin', 'Owner', 'Cashier'],
+  },
+  {
     displayName: 'Products',
     iconName: 'solar:widget-add-line-duotone',
     route: '/products',

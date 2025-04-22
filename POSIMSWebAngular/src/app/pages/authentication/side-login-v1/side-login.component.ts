@@ -45,7 +45,7 @@ export class AppSideLoginComponent implements OnInit{
     private _loading: LoadingService
   ) {}
   form = new FormGroup({
-    uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    uname: new FormControl('', [Validators.required, Validators.minLength(3)]),
     password: new FormControl('', [Validators.required]),
   });
 

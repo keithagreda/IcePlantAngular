@@ -188,6 +188,9 @@ export class CashierComponent implements OnInit {
       }
     );
 
+    //if partial payment is not null the payment transaction is automatically
+    //treated as credit while if its null it is treated as cash
+
     const payment = SalesPaymentDto.fromJS({
       saleType: this.partialPayment != null ? 1: 0,
       totalAmount: 0,
@@ -222,6 +225,14 @@ export class CashierComponent implements OnInit {
               },
             });
           this.viewSalesDetailsComponent.initialize();
+        }
+
+        if(!res.isSuccess){
+          Swal.fire({
+            title: 'Error!',
+            text: res.message,
+            icon: 'error',
+          });
         }
         this.visible = false;
         this.sideBarVisible2 = false;

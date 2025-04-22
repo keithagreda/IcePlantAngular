@@ -15,7 +15,12 @@
     <div class="col-md-4 d-flex align-items-center justify-content-center">
       <div class="login-container">
         <div class="login-item logo-container">
-          <img class="logo-image" src="../../../../assets/images/logos/rfiilogo.png" alt="" srcset="">
+          <img
+            class="logo-image"
+            src="../../../../assets/images/logos/rfiilogo.png"
+            alt=""
+            srcset=""
+          />
         </div>
         <div class="login-item p-32 login-form">
           <form [formGroup]="form" (ngSubmit)="login()" class="m-t-30">
@@ -45,15 +50,15 @@
               >
             </div>
             <ng-container *ngIf="!authentication">
-              <a
-                (click)="login()"
+              <button
+                type="submit"
                 mat-flat-button
                 color="primary"
                 class="w-100"
                 [disabled]="saving"
               >
                 Sign In
-              </a>
+              </button>
             </ng-container>
 
             <!-- input -->

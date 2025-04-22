@@ -67,7 +67,7 @@
                 <mat-select formControlName="saleType">
                   <mat-option [value]="null">All</mat-option>
                   <mat-option [value]="0">Cash</mat-option>
-                  <mat-option [value]="1">Credit</mat-option>
+                  <mat-option [value]="1">Purchase Order</mat-option>
                 </mat-select>
               </mat-form-field>
 
@@ -310,7 +310,7 @@
               'table-row-odd': i % 2 !== 0
             }"
           >
-            {{ saleTypeEnum[element.saleType] }}
+            {{ element.saleType == 0 ? "Cash" : "Purchase Order" }}
           </td>
         </ng-container>
 

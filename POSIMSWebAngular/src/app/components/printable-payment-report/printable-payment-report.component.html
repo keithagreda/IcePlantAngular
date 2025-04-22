@@ -1,0 +1,110 @@
+<div class="action">
+  <div class="date-range-buttons">
+    <button mat-flat-button color="primary" (click)="setDateRange('daily')">
+      Daily
+    </button>
+    <button mat-flat-button color="primary" (click)="setDateRange('weekly')">
+      Weekly
+    </button>
+    <button mat-flat-button color="primary" (click)="setDateRange('monthly')">
+      Monthly
+    </button>
+    <button mat-flat-button color="primary" (click)="setDateRange('yearly')">
+      Yearly
+    </button>
+  </div>
+  <div class="print">
+    <button
+      mat-flat-button
+      color="primary"
+      id="printBtn"
+      class="print-button"
+      (click)="print()"
+    >
+      🖨️ Print
+    </button>
+  </div>
+</div>
+<div class="printable">
+  <div class="sales-summary-container">
+    <div class="header">
+      <div class="title">
+        <h1>Payment Summary</h1>
+      </div>
+      <div class="date-range">
+        <div class="date">
+          <strong>From:</strong> {{ dateFrom | date : "MMM d, y" }}
+        </div>
+        <div class="date">
+          <strong>To:</strong> {{ dateTo | date : "MMM d, y" }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Add a scrollable container for the table -->
+    <div class="table-container">
+      <div class="loading" *ngIf="loading">
+        <p-progressSpinner ariaLabel="loading" />
+      </div>
+      <table class="sales-summary-table" *ngIf="!loading">
+        <thead>
+          <tr>
+            <th>Transaction #</th>
+            <th>Transaction Time</th>
+            <th>Customer Name</th>
+            <th>Sale Type</th>
+            <th>Total Amount</th>
+            <th>Amount Paid</th>
+            <th>Balance</th>
+            <th>Status</th>
+            <th>Sold By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of dataSource">
+            <tr>
+              <td>{{ item.transNum }}</td>
+              <td>{{ item.transactionTime | date : "MMM d, y, h:mm a" }}</td>
+              <td>{{ item.customerName }}</td>
+              <td>{{ item.saleType }}</td>
+              <td>₱{{ item.totalAmount | number : "1.0-0" }}</td>
+              <td>₱{{ item.amountPaid | number : "1.0-0" }}</td>
+              <td>₱{{ item.balance | number : "1.0-0" }}</td>
+              <td>{{ item.status }}</td>
+              <td>{{ item.soldBy }}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+
+        <tr class="total-row">
+          <td colspan="4">
+            <p><strong>Prepared By:</strong> [Employee Name]</p>
+            <p><strong>Reprint Count:</strong> 1</p>
+          </td>
+          <td>
+            <strong>Total Amount: ₱{{ totalAmount | number : "1.0-0" }}</strong>
+          </td>
+          <td>
+            <strong>Total Paid: ₱{{ totalSales | number : "1.0-0" }}</strong>
+          </td>
+          <td>
+            <strong
+              >Total Balance: ₱{{ totalUnpaid | number : "1.0-0" }}</strong
+            >
+          </td>
+          <td colspan="2"></td>
+        </tr>
+      </table>
+    </div>
+    <div class="signature-container">
+      <div class="signature-item">
+        <p>[Approver Name]</p>
+        <strong>Approver</strong>
+      </div>
+      <div class="signature-item">
+        <p>[Noted By Name]</p>
+        <strong>Noted By</strong>
+      </div>
+    </div>
+  </div>
+</div>
