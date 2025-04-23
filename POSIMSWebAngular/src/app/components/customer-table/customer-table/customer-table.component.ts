@@ -9,6 +9,7 @@ import { DialogModule } from 'primeng/dialog';
 import { TabViewModule } from 'primeng/tabview';
 import { MaterialModule } from 'src/app/material.module';
 import { CustomerDto, CustomerService } from 'src/app/services/nswag/nswag.service';
+import { CustomerTransTableComponent } from '../customer-trans-table/customer-trans-table.component';
 
 @Component({
   selector: 'app-customer-table',
@@ -22,23 +23,26 @@ import { CustomerDto, CustomerService } from 'src/app/services/nswag/nswag.servi
     MatDatepickerModule,
     MatNativeDateModule,
     ReactiveFormsModule,
-  ],
+    CustomerTransTableComponent
+],
   templateUrl: './customer-table.component.html',
   styleUrls: ['./customer-table.component.scss'],
 })
 export class CustomerTableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(CustomerTransTableComponent) customerTransTableComponent!: CustomerTransTableComponent;
   dataSource = new MatTableDataSource<CustomerDto>([]);
   displayedColumns: string[] = [
     'customerFullName',
     'pendingTransactions',
     'totalUnpaidAmount',
     'customerType',
+    'action'
   ];
   totalRecords = 0;
   hasPendingTransFilter: boolean | null = null;
   textFilter = '';
-
+  visible = false;
   constructor(
     private _customerService: CustomerService, // Assuming you have a service to fetch customer data
   ) {}
@@ -66,5 +70,10 @@ export class CustomerTableComponent implements OnInit {
       }
     });
     // Simulate API call
+  }
+
+  viewTransaction(customerId: string){
+    this.customerTransTableComponent.getCustomerTrans(customerId);
+    this.visible = true;
   }
 }

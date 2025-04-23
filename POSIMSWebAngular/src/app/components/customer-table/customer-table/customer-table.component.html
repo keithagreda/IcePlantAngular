@@ -4,89 +4,51 @@
       <table mat-table [dataSource]="dataSource" class="w-100">
         <!-- Customer Name -->
         <ng-container matColumnDef="customerFullName">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            class="f-w-600 mat-subtitle-1 f-s-14"
-          >
-            Customer Name
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element; let i = index"
-            class="mat-body-1"
-            [ngClass]="{
-              'table-row-even': i % 2 === 0,
-              'table-row-odd': i % 2 !== 0
-            }"
-          >
+          <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+          <td mat-cell *matCellDef="let element">
             {{ element.customerFullName }}
           </td>
         </ng-container>
 
         <!-- Pending Transactions -->
         <ng-container matColumnDef="pendingTransactions">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            class="f-w-600 mat-subtitle-1 f-s-14"
-          >
-            Pending Transactions
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element; let i = index"
-            class="mat-body-1"
-            [ngClass]="{
-              'table-row-even': i % 2 === 0,
-              'table-row-odd': i % 2 !== 0
-            }"
-          >
+          <th mat-header-cell *matHeaderCellDef>Pending Transactions</th>
+          <td mat-cell *matCellDef="let element">
             {{ element.pendingTransactions }}
           </td>
         </ng-container>
 
         <!-- Total Unpaid Amount -->
         <ng-container matColumnDef="totalUnpaidAmount">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            class="f-w-600 mat-subtitle-1 f-s-14"
-          >
-            Total Unpaid Amount
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element; let i = index"
-            class="mat-body-1"
-            [ngClass]="{
-              'table-row-even': i % 2 === 0,
-              'table-row-odd': i % 2 !== 0
-            }"
-          >
+          <th mat-header-cell *matHeaderCellDef>Total Unpaid Amount</th>
+          <td mat-cell *matCellDef="let element">
             ₱{{ element.totalUnpaidAmount | number : "1.0-0" }}
           </td>
         </ng-container>
 
         <!-- Customer Type -->
         <ng-container matColumnDef="customerType">
-          <th
-            mat-header-cell
-            *matHeaderCellDef
-            class="f-w-600 mat-subtitle-1 f-s-14"
-          >
-            Customer Type
-          </th>
-          <td
-            mat-cell
-            *matCellDef="let element; let i = index"
-            class="mat-body-1"
-            [ngClass]="{
-              'table-row-even': i % 2 === 0,
-              'table-row-odd': i % 2 !== 0
-            }"
-          >
-            {{ element.customerType }}
+          <th mat-header-cell *matHeaderCellDef>Customer Type</th>
+          <td mat-cell *matCellDef="let element">{{ element.customerType }}</td>
+        </ng-container>
+
+        <!-- Action -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef>Action</th>
+          <td mat-cell *matCellDef="let element">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="menu"
+              aria-label="Actions"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="viewTransaction(element.id)">
+                <mat-icon>visibility</mat-icon>
+                <span>View</span>
+              </button>
+            </mat-menu>
           </td>
         </ng-container>
 
@@ -94,6 +56,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
+
       <mat-paginator
         [pageSizeOptions]="[5, 10, 20]"
         [length]="totalRecords"
@@ -103,3 +66,18 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+<p-dialog
+  header="Transaction Details"
+  [(visible)]="visible"
+  [modal]="true"
+  [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  [appendTo]="'body'"
+  [style]="{ width: '70vw', height: '80vh' }"
+>
+  <!-- (onHide)="closeForm()" -->
+
+  <app-customer-trans-table></app-customer-trans-table>
+</p-dialog>

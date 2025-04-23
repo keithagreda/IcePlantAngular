@@ -1,0 +1,92 @@
+<p-table
+  [value]="customerTrans"
+  dataKey="id"
+  [tableStyle]="{ 'min-width': '60rem' }"
+  [expandedRowKeys]="expandedRows"
+  (onRowExpand)="onRowExpand($event)"
+  (onRowCollapse)="onRowCollapse($event)"
+  [paginator]="true"
+  [rows]="5"
+  [rowsPerPageOptions]="[5, 10, 20]"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 5rem"></th>
+      <th pSortableColumn="transNum">
+        Transaction # <p-sortIcon field="transNum" />
+      </th>
+      <th pSortableColumn="balance">Balance <p-sortIcon field="balance" /></th>
+      <th pSortableColumn="totalAmount">
+        Total Amount <p-sortIcon field="totalAmount" />
+      </th>
+      <th pSortableColumn="totalPaid">
+        Total Paid <p-sortIcon field="totalPaid" />
+      </th>
+      <th pSortableColumn="creationTime">
+        Creation Time <p-sortIcon field="creationTime" />
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-trans let-expanded="expanded">
+    <tr>
+      <td>
+        <p-button
+          type="button"
+          pRipple
+          [pRowToggler]="trans"
+          [text]="true"
+          [rounded]="true"
+          [plain]="true"
+        >
+          <mat-icon>{{ expanded ? "expand_more" : "chevron_right" }}</mat-icon>
+        </p-button>
+      </td>
+      <td>{{ trans.transNum }}</td>
+      <td>{{ trans.balance | currency : "PHP" }}</td>
+      <td>{{ trans.totalAmount | currency : "PHP" }}</td>
+      <td>{{ trans.totalPaid | currency : "PHP" }}</td>
+      <td>{{ trans.creationTime | date : "MMM d, y, h:mm a" }}</td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="rowexpansion" let-product>
+    <tr>
+      <td colspan="7">
+        <div class="p-3">
+          <p-table [value]="product.orders" dataKey="id">
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="id">Id <p-sortIcon field="price" /></th>
+                <th pSortableColumn="customer">
+                  Customer <p-sortIcon field="customer" />
+                </th>
+                <th pSortableColumn="date">Date <p-sortIcon field="date" /></th>
+                <th pSortableColumn="amount">
+                  Amount <p-sortIcon field="amount" />
+                </th>
+                <th pSortableColumn="status">
+                  Status <p-sortIcon field="status" />
+                </th>
+                <th style="width: 4rem"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-order>
+              <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.customer }}</td>
+                <td>{{ order.date }}</td>
+                <td>{{ order.amount | currency : "USD" }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6">There are no orders for this product yet.</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

@@ -9,13 +9,6 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.p-autocomplete-dropdown {
-  border: 1px solid #d1d5db; // Match border color
-  border-radius: 4px;
-  background-color: #f9fafb; // Light background
-  box-shadow: none;
-  background-color: transparent;
-}
 
 .k-header {
   display: flex;
@@ -50,4 +43,11 @@ body {
 
 .table-row-odd {
   background-color: #ffffff; /* White for even rows */
+}
+
+.dropdown-style{
+  .p-button{
+    background-color: #36c76c !important;
+    border: 1px solid #36c76c;
+  }
 }

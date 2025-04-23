@@ -135,6 +135,64 @@ export class CustomerService {
         }
         return _observableOf(null as any);
     }
+
+    getCustomerTrans(id: string | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfPaginatedResultOfCustomerWithTransDto> {
+        let url_ = this.baseUrl + "/api/Customer/GetCustomerTrans?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        if (filterText !== undefined && filterText !== null)
+            url_ += "FilterText=" + encodeURIComponent("" + filterText) + "&";
+        if (pageNumber !== undefined && pageNumber !== null)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerTrans(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerTrans(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfPaginatedResultOfCustomerWithTransDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfPaginatedResultOfCustomerWithTransDto>;
+        }));
+    }
+
+    protected processGetCustomerTrans(response: HttpResponseBase): Observable<ApiResponseOfPaginatedResultOfCustomerWithTransDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfPaginatedResultOfCustomerWithTransDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -3878,6 +3936,187 @@ export interface ICustomerDto {
     pendingTransactions?: number;
     totalUnpaidAmount?: number;
     customerType?: string;
+}
+
+export class ApiResponseOfPaginatedResultOfCustomerWithTransDto implements IApiResponseOfPaginatedResultOfCustomerWithTransDto {
+    data!: PaginatedResultOfCustomerWithTransDto;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+
+    constructor(data?: IApiResponseOfPaginatedResultOfCustomerWithTransDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.data = new PaginatedResultOfCustomerWithTransDto();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.data = _data["data"] ? PaginatedResultOfCustomerWithTransDto.fromJS(_data["data"]) : new PaginatedResultOfCustomerWithTransDto();
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+            else {
+                this.errors = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ApiResponseOfPaginatedResultOfCustomerWithTransDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseOfPaginatedResultOfCustomerWithTransDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["data"] = this.data ? this.data.toJSON() : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IApiResponseOfPaginatedResultOfCustomerWithTransDto {
+    data: PaginatedResultOfCustomerWithTransDto;
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+}
+
+export class PaginatedResultOfCustomerWithTransDto implements IPaginatedResultOfCustomerWithTransDto {
+    items?: CustomerWithTransDto[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+
+    constructor(data?: IPaginatedResultOfCustomerWithTransDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CustomerWithTransDto.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+            this.currentPage = _data["currentPage"] !== undefined ? _data["currentPage"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaginatedResultOfCustomerWithTransDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedResultOfCustomerWithTransDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        data["currentPage"] = this.currentPage !== undefined ? this.currentPage : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        return data;
+    }
+}
+
+export interface IPaginatedResultOfCustomerWithTransDto {
+    items?: CustomerWithTransDto[];
+    totalCount?: number;
+    totalPages?: number;
+    currentPage?: number;
+    pageSize?: number;
+}
+
+export class CustomerWithTransDto implements ICustomerWithTransDto {
+    id?: string;
+    transNum?: string;
+    balance?: number;
+    totalAmount?: number;
+    totalPaid?: number;
+    creationTime?: Date;
+
+    constructor(data?: ICustomerWithTransDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.transNum = _data["transNum"] !== undefined ? _data["transNum"] : <any>null;
+            this.balance = _data["balance"] !== undefined ? _data["balance"] : <any>null;
+            this.totalAmount = _data["totalAmount"] !== undefined ? _data["totalAmount"] : <any>null;
+            this.totalPaid = _data["totalPaid"] !== undefined ? _data["totalPaid"] : <any>null;
+            this.creationTime = _data["creationTime"] ? new Date(_data["creationTime"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CustomerWithTransDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerWithTransDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["transNum"] = this.transNum !== undefined ? this.transNum : <any>null;
+        data["balance"] = this.balance !== undefined ? this.balance : <any>null;
+        data["totalAmount"] = this.totalAmount !== undefined ? this.totalAmount : <any>null;
+        data["totalPaid"] = this.totalPaid !== undefined ? this.totalPaid : <any>null;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export interface ICustomerWithTransDto {
+    id?: string;
+    transNum?: string;
+    balance?: number;
+    totalAmount?: number;
+    totalPaid?: number;
+    creationTime?: Date;
 }
 
 export class ApiResponseOfPaginatedResultOfEntityHistoryDto implements IApiResponseOfPaginatedResultOfEntityHistoryDto {

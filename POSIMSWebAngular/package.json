@@ -37,6 +37,7 @@
     "ngx-toastr": "^19.0.0",
     "nswag": "^14.2.0",
     "postcss-scss": "^4.0.9",
+    "primeicons": "^7.0.0",
     "primeng": "^17.18.13",
     "rxjs": "~7.5.0",
     "sass": "^1.57.1",
