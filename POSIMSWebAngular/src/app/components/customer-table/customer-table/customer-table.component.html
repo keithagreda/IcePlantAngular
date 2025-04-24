@@ -76,8 +76,9 @@
   [resizable]="false"
   [appendTo]="'body'"
   [style]="{ width: '70vw', height: '80vh' }"
+  (onHide)="closeCustomerTrans()"
+
 >
-  <!-- (onHide)="closeForm()" -->
 
   <app-customer-trans-table></app-customer-trans-table>
 </p-dialog>

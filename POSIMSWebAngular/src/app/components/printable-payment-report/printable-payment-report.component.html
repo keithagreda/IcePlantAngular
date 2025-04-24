@@ -55,7 +55,7 @@
             <th>Sale Type</th>
             <th>Total Amount</th>
             <th>Amount Paid</th>
-            <th>Balance</th>
+            <th>Remaining Balance</th>
             <th>Status</th>
             <th>Sold By</th>
           </tr>
@@ -82,14 +82,14 @@
             <p><strong>Reprint Count:</strong> 1</p>
           </td>
           <td>
-            <strong>Total Amount: ₱{{ totalAmount | number : "1.0-0" }}</strong>
+            <strong>Grand Total Amount: ₱{{ totalAmount | number : "1.0-0" }}</strong>
           </td>
           <td>
-            <strong>Total Paid: ₱{{ totalSales | number : "1.0-0" }}</strong>
+            <strong>Total Amount Paid: ₱{{ totalSales | number : "1.0-0" }}</strong>
           </td>
           <td>
             <strong
-              >Total Balance: ₱{{ totalUnpaid | number : "1.0-0" }}</strong
+              >Total Remaining Balance: ₱{{ totalUnpaid | number : "1.0-0" }}</strong
             >
           </td>
           <td colspan="2"></td>

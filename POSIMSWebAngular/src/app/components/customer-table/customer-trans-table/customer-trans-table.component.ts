@@ -34,6 +34,7 @@ export class CustomerTransTableComponent {
   customerId = '';
   expandedRows = {};
   customerTrans: CustomerWithTransDto[] = [];
+  // selectedTransDetails = TransPaymentDetail[] = []
   constructor(
     private _customerService: CustomerService, 
     private _paymentService: PaymentService,
