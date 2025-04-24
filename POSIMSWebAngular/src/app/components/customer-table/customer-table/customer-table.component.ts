@@ -73,7 +73,11 @@ export class CustomerTableComponent implements OnInit {
   }
 
   viewTransaction(customerId: string){
-    this.customerTransTableComponent.getCustomerTrans(customerId);
+    this.customerTransTableComponent.showCustomerTrans(customerId);
     this.visible = true;
   }
+
+  closeCustomerTrans(){{
+    this.customerTransTableComponent.resetCustomerId();
+  }}
 }

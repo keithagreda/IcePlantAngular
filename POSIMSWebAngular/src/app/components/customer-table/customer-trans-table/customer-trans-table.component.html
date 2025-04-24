@@ -15,16 +15,18 @@
       <th pSortableColumn="transNum">
         Transaction # <p-sortIcon field="transNum" />
       </th>
-      <th pSortableColumn="balance">Balance <p-sortIcon field="balance" /></th>
+      <th pSortableColumn="creationTime">
+        Creation Time <p-sortIcon field="creationTime" />
+      </th>
       <th pSortableColumn="totalAmount">
         Total Amount <p-sortIcon field="totalAmount" />
       </th>
       <th pSortableColumn="totalPaid">
         Total Paid <p-sortIcon field="totalPaid" />
       </th>
-      <th pSortableColumn="creationTime">
-        Creation Time <p-sortIcon field="creationTime" />
-      </th>
+      <th pSortableColumn="balance">Remaining Balance <p-sortIcon field="balance" /></th>
+      <th >Action</th>
+      
     </tr>
   </ng-template>
 
@@ -43,10 +45,17 @@
         </p-button>
       </td>
       <td>{{ trans.transNum }}</td>
-      <td>{{ trans.balance | currency : "PHP" }}</td>
+      <td>{{ trans.creationTime | date : "MMM d, y, h:mm a" }}</td>
+
       <td>{{ trans.totalAmount | currency : "PHP" }}</td>
       <td>{{ trans.totalPaid | currency : "PHP" }}</td>
-      <td>{{ trans.creationTime | date : "MMM d, y, h:mm a" }}</td>
+      <td>{{ trans.balance | currency : "PHP" }}</td>
+      <td>
+        <button mat-menu-item (click)="payUnpaidTrans(trans.id)">
+          Pay Transaction
+          <mat-icon>payment</mat-icon>
+        </button>
+    </td>
     </tr>
   </ng-template>
 

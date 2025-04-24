@@ -5,11 +5,13 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
+import { ToastrService } from 'ngx-toastr';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule, TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { MaterialModule } from 'src/app/material.module';
-import { CustomerService, CustomerWithTransDto } from 'src/app/services/nswag/nswag.service';
+import { CustomerService, CustomerWithTransDto, PaymentDetailDto, PaymentService } from 'src/app/services/nswag/nswag.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-customer-trans-table',
@@ -29,9 +31,13 @@ import { CustomerService, CustomerWithTransDto } from 'src/app/services/nswag/ns
   styleUrl: './customer-trans-table.component.scss'
 })
 export class CustomerTransTableComponent {
+  customerId = '';
   expandedRows = {};
   customerTrans: CustomerWithTransDto[] = [];
-  constructor(private _customerService: CustomerService) {
+  constructor(
+    private _customerService: CustomerService, 
+    private _paymentService: PaymentService,
+    private _toastr: ToastrService) {
     
   }
 
@@ -48,9 +54,60 @@ onRowCollapse(event: TableRowCollapseEvent) {
   console.log(event.data)
 }
 
-  getCustomerTrans(customerId: string) {
+payUnpaidTrans(paymentHeaderId: string) {
+  Swal.fire({
+    title: 'Enter Payment Amount',
+    input: 'number',
+    inputLabel: 'Payment Amount',
+    inputPlaceholder: 'Enter the amount to pay',
+    showCancelButton: true,
+    confirmButtonText: 'Submit',
+    cancelButtonText: 'Cancel',
+    inputValidator: (value) => {
+      if (!value || parseFloat(value) <= 0) {
+        return 'Please enter a valid amount!';
+      }
+      return null;
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const paymentAmount = parseFloat(result.value!);
+      this.updatePayment(paymentHeaderId, paymentAmount);
+      console.log('Payment Amount:', paymentAmount);
+
+      // Call your payment service or handle the payment logic here
+    }
+  });
+}
+
+updatePayment(paymentHeaderId: string, amount: number){
+  const dto = PaymentDetailDto.fromJS({
+            paymentHeaderId: paymentHeaderId, 
+            amountPaid: amount
+          });
+
+          this._paymentService.updatePayment(dto).subscribe({
+            next: (res) => {
+              if(res.isSuccess){
+                this._toastr.success('Payment updated successfully!');
+                this.getCustomerTrans();
+              } else{
+                this._toastr.error(res.message);
+              }
+            }, error: (err) => {
+              this._toastr.error('An error occurred while updating payment!');
+            }
+          })
+}
+  showCustomerTrans(customerId: string) {
+    this.customerId = customerId;
+    this.getCustomerTrans();
+  }
+
+
+  getCustomerTrans() {
     this._customerService.getCustomerTrans(
-      customerId,
+      this.customerId,
       undefined,
       undefined,
       undefined
@@ -63,4 +120,8 @@ onRowCollapse(event: TableRowCollapseEvent) {
       }
     })
   }
+
+  resetCustomerId(){{
+    this.customerId = '';
+  }}
 }
