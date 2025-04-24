@@ -193,6 +193,64 @@ export class CustomerService {
         }
         return _observableOf(null as any);
     }
+
+    getTransactionPaymentHistory(id: string | undefined, filterText: string | null | undefined, pageNumber: number | null | undefined, pageSize: number | null | undefined): Observable<ApiResponseOfListOfTransPaymentDetail> {
+        let url_ = this.baseUrl + "/api/Customer/GetTransactionPaymentHistory?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&";
+        if (filterText !== undefined && filterText !== null)
+            url_ += "FilterText=" + encodeURIComponent("" + filterText) + "&";
+        if (pageNumber !== undefined && pageNumber !== null)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize !== undefined && pageSize !== null)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTransactionPaymentHistory(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTransactionPaymentHistory(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ApiResponseOfListOfTransPaymentDetail>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ApiResponseOfListOfTransPaymentDetail>;
+        }));
+    }
+
+    protected processGetTransactionPaymentHistory(response: HttpResponseBase): Observable<ApiResponseOfListOfTransPaymentDetail> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ApiResponseOfListOfTransPaymentDetail.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable()
@@ -4116,6 +4174,123 @@ export interface ICustomerWithTransDto {
     balance?: number;
     totalAmount?: number;
     totalPaid?: number;
+    creationTime?: Date;
+}
+
+export class ApiResponseOfListOfTransPaymentDetail implements IApiResponseOfListOfTransPaymentDetail {
+    data!: TransPaymentDetail[];
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+
+    constructor(data?: IApiResponseOfListOfTransPaymentDetail) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.data = [];
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(TransPaymentDetail.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.isSuccess = _data["isSuccess"] !== undefined ? _data["isSuccess"] : <any>null;
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+            else {
+                this.errors = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): ApiResponseOfListOfTransPaymentDetail {
+        data = typeof data === 'object' ? data : {};
+        let result = new ApiResponseOfListOfTransPaymentDetail();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["isSuccess"] = this.isSuccess !== undefined ? this.isSuccess : <any>null;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IApiResponseOfListOfTransPaymentDetail {
+    data: TransPaymentDetail[];
+    message?: string;
+    isSuccess?: boolean;
+    errors?: string[];
+}
+
+export class TransPaymentDetail implements ITransPaymentDetail {
+    id?: string;
+    amountPaid?: number;
+    creationTime?: Date;
+
+    constructor(data?: ITransPaymentDetail) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.amountPaid = _data["amountPaid"] !== undefined ? _data["amountPaid"] : <any>null;
+            this.creationTime = _data["creationTime"] ? new Date(_data["creationTime"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): TransPaymentDetail {
+        data = typeof data === 'object' ? data : {};
+        let result = new TransPaymentDetail();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["amountPaid"] = this.amountPaid !== undefined ? this.amountPaid : <any>null;
+        data["creationTime"] = this.creationTime ? this.creationTime.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export interface ITransPaymentDetail {
+    id?: string;
+    amountPaid?: number;
     creationTime?: Date;
 }
 

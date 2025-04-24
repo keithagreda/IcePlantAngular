@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule, TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { MaterialModule } from 'src/app/material.module';
-import { CustomerService, CustomerWithTransDto, PaymentDetailDto, PaymentService } from 'src/app/services/nswag/nswag.service';
+import { CustomerService, CustomerWithTransDto, PaymentDetailDto, PaymentService, TransPaymentDetail } from 'src/app/services/nswag/nswag.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -34,7 +34,7 @@ export class CustomerTransTableComponent {
   customerId = '';
   expandedRows = {};
   customerTrans: CustomerWithTransDto[] = [];
-  // selectedTransDetails = TransPaymentDetail[] = []
+  selectedTransDetails: TransPaymentDetail[] = []
   constructor(
     private _customerService: CustomerService, 
     private _paymentService: PaymentService,
@@ -48,12 +48,13 @@ export class CustomerTransTableComponent {
   }
 
   onRowExpand(event: TableRowExpandEvent) {
-    console.log(event.data);
-}
+    this.selectedTransDetails = [];
+    this.getSelectedTrans(event.data.id);
+  }
 
-onRowCollapse(event: TableRowCollapseEvent) {
-  console.log(event.data)
-}
+  onRowCollapse(event: TableRowCollapseEvent) {
+    this.selectedTransDetails = [];
+  }
 
 payUnpaidTrans(paymentHeaderId: string) {
   Swal.fire({
@@ -122,7 +123,20 @@ updatePayment(paymentHeaderId: string, amount: number){
     })
   }
 
+  getSelectedTrans(paymentHeaderId: string){
+    this._customerService.getTransactionPaymentHistory(paymentHeaderId, undefined, undefined, 
+      undefined).subscribe({
+      next: (res) => {
+        this.selectedTransDetails = res.data ?? [];
+      },
+      error: () => {
+        this._toastr.error('An error occurred while fetching transaction details!');
+      }
+    })
+  }
+
   resetCustomerId(){{
     this.customerId = '';
   }}
+
 }

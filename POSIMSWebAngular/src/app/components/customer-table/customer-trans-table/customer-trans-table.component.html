@@ -24,9 +24,10 @@
       <th pSortableColumn="totalPaid">
         Total Paid <p-sortIcon field="totalPaid" />
       </th>
-      <th pSortableColumn="balance">Remaining Balance <p-sortIcon field="balance" /></th>
-      <th >Action</th>
-      
+      <th pSortableColumn="balance">
+        Remaining Balance <p-sortIcon field="balance" />
+      </th>
+      <th>Action</th>
     </tr>
   </ng-template>
 
@@ -55,7 +56,7 @@
           Pay Transaction
           <mat-icon>payment</mat-icon>
         </button>
-    </td>
+      </td>
     </tr>
   </ng-template>
 
@@ -63,29 +64,21 @@
     <tr>
       <td colspan="7">
         <div class="p-3">
-          <p-table [value]="product.orders" dataKey="id">
+          <p-table [value]="selectedTransDetails" dataKey="id">
             <ng-template pTemplate="header">
               <tr>
-                <th pSortableColumn="id">Id <p-sortIcon field="price" /></th>
-                <th pSortableColumn="customer">
-                  Customer <p-sortIcon field="customer" />
+                <th pSortableColumn="creationTime">
+                  Date <p-sortIcon field="creationTime" />
                 </th>
-                <th pSortableColumn="date">Date <p-sortIcon field="date" /></th>
-                <th pSortableColumn="amount">
-                  Amount <p-sortIcon field="amount" />
+                <th pSortableColumn="amountPaid">
+                  Amount Paid <p-sortIcon field="amountPaid" />
                 </th>
-                <th pSortableColumn="status">
-                  Status <p-sortIcon field="status" />
-                </th>
-                <th style="width: 4rem"></th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-order>
               <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.customer }}</td>
-                <td>{{ order.date }}</td>
-                <td>{{ order.amount | currency : "USD" }}</td>
+                <td>{{ order.creationTime | date : "MMM d, y, h:mm a" }}</td>
+                <td>{{ order.amountPaid | currency : "PHP" }}</td>
               </tr>
             </ng-template>
             <ng-template pTemplate="emptymessage">
